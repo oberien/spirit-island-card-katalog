@@ -92,23 +92,100 @@ class Card {
         if (this.range != null) {
             s += this.range.from + " " + this.range.range + " ";
         }
+        if (this.target == LandAny) {
+            s += "Any ";
+        }
         s += this.target + " " + this.elements + " " + this.description;
         return s;
+    }
+
+    toTableRow() {
+        let row = document.createElement("tr");
+        let type = document.createElement("td");
+        type.innerText = this.type;
+        row.appendChild(type);
+        let cost = document.createElement("td");
+        cost.innerText = this.cost.toString();
+        row.appendChild(cost);
+        let name = document.createElement("td");
+        name.innerText = this.name;
+        row.appendChild(name);
+        let speed = document.createElement("td");
+        speed.innerText = this.speed;
+        row.appendChild(speed);
+        if (this.range != null) {
+            let range = document.createElement("td");
+            range.innerText = this.range.from + " " + this.range.range;
+            row.appendChild(range);
+        } else {
+            row.appendChild(document.createElement("td"));
+        }
+        let target = document.createElement("td");
+        if (this.target instanceof Array) {
+            if (this.target == LandAny) {
+                target.innerText = "Any";
+            } else {
+                target.innerText += this.target.join(", ");
+            }
+        } else {
+            target.innerText += this.target;
+        }
+        row.appendChild(target);
+        let elements = document.createElement("td");
+        elements.innerText = this.elements.join(", ");
+        row.appendChild(elements);
+        let description = document.createElement("td");
+        description.innerText = this.description;
+        row.appendChild(description);
+        return row;
     }
 }
 
 const search = <HTMLInputElement> document.getElementById("search");
 const result = <HTMLParagraphElement> document.getElementById("result");
 search.oninput = evt => {
-    result.innerHTML = "";
-    cards.map(e => e.toSearchString()).filter(e => {
+    let table = document.createElement("table");
+    table.border = "1";
+    let header = document.createElement("tr");
+    let type = document.createElement("th");
+    type.innerText = "Type";
+    header.appendChild(type);
+    let cost = document.createElement("th");
+    cost.innerText = "Cost";
+    header.appendChild(cost);
+    let name = document.createElement("th");
+    name.innerText = "Name";
+    header.appendChild(name);
+    let speed = document.createElement("th");
+    speed.innerText = "Speed";
+    header.appendChild(speed);
+    let range = document.createElement("th");
+    range.innerText = "Range";
+    header.appendChild(range);
+    let target = document.createElement("th");
+    target.innerText = "Target";
+    header.appendChild(target);
+    let elements = document.createElement("th");
+    elements.innerText = "Elements";
+    header.appendChild(elements);
+    let description = document.createElement("th");
+    description.innerText = "Description";
+    header.appendChild(description);
+    table.appendChild(header);
+
+    cards.filter(e => {
+        let contains = true;
         for (const word of search.value.toLowerCase().split(" ")) {
-            if (e.toLowerCase().indexOf(word) >= 0) {
-                return true;
-            }
+            contains = contains && e.toSearchString().toLowerCase().indexOf(word) >= 0;
         }
-        return false;
-    }).forEach(s => result.innerHTML += s + "<br/>");
+        return contains;
+    }).forEach(e => table.appendChild(e.toTableRow()));
+
+    // clear old content
+    if (result.firstChild) {
+        result.removeChild(result.firstChild);
+    }
+    result.appendChild(table);
 };
 
 const cards = [
@@ -134,3 +211,6 @@ const cards = [
     // new Card(Spirit.SHADOWS_FLICKER_LIKE_FLAME, )
     // new Card(Spirit.SHADOWS_FLICKER_LIKE_FLAME, )
 ];
+
+search.oninput(null);
+
