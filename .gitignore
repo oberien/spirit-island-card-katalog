@@ -1,0 +1,9 @@
+*.js
+*.js.map
+
+# intellij
+.idea/
+
+# vim
+*.swp
+*.swo
