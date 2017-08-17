@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "none",
     "target": "es5",
     "sourceMap": true,
     "noEmitOnError": true,
@@ -12,7 +12,8 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "outFile": "cards.js"
   },
   "include": [
     "cards.ts"

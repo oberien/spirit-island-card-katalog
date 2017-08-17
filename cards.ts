@@ -35,14 +35,11 @@ enum Source {
 }
 
 class Ranges {
-    from: Source;
-    land: Land[];
-    range: number | number[];
+    constructor(public from: Source, public range: number | number[], public land?: (Land[] | undefined)) {
+    }
 
-    constructor(from: Source, range: number | number[], land?: Land[]) {
-        this.from = from;
-        this.range = range;
-        this.land = land;
+    toString() {
+        return " " + this.from + " " + this.range;
     }
 }
 
@@ -58,14 +55,14 @@ enum Elements {
 }
 
 enum Spirit {
-    A_SPREAD_OF_RAMPANT_GREEN = "A Spread of Rampant Green",
-    BRINGER_OF_DREAMS_AND_NIGHTMARES = "Bringer of Dreams and Nightmares",
-    LIGHTNINGS_SWIFT_STRIKE = "Lightning's Swift Strike",
-    OCEANS_HUNGRY_GRASP = "Ocean's Hungry Grasp",
-    RIVER_SURGES_IN_SUNLIGHT = "River Surges in Sunlight",
-    SHADOWS_FLICKER_LIKE_FLAME = "Shadows Flicker Like Flame",
-    THUNDERSPEAKER = "Thunderspeaker",
-    VITAL_STRENGTH_OF_THE_EARTH = "Vital Strength of the Earth",
+    ASpreadOfRampantGreen = "A Spread of Rampant Green",
+    BringerOfDreamsAndNightmares = "Bringer of Dreams and Nightmares",
+    LightngingsSwiftStrike = "Lightning's Swift Strike",
+    OceansHungryGrasp = "Ocean's Hungry Grasp",
+    RiverSurgesInSunlight = "River Surges in Sunlight",
+    ShadowsFlickerLikeFlame = "Shadows Flicker Like Flame",
+    Thunderspeaker = "Thunderspeaker",
+    VitalStrengthOfTheEarth = "Vital Strength of the Earth",
 }
 
 enum CardType {
@@ -76,25 +73,9 @@ enum CardType {
 type PowerType = Spirit | CardType;
 
 class Card {
-    type: PowerType;
-    cost: number;
-    name: string;
-    speed: Speed;
-    range: Ranges;
-    target: Target;
-    elements: Elements[];
-    description: string;
-
-    constructor(type: PowerType, name: string, cost: number, speed: Speed, range: Ranges, target: Target,
-                elements: Elements[], description: string) {
-        this.type = type;
-        this.name = name;
-        this.cost = cost;
-        this.speed = speed;
-        this.range = range;
-        this.target = target;
-        this.elements = elements;
-        this.description = description;
+    constructor(public type: PowerType, public name: string, public cost: number, public speed: Speed,
+                public range: Ranges | null, public target: Target, public elements: Elements[],
+                public description: string) {
     }
 
     toSearchString() {
@@ -141,7 +122,8 @@ class Card {
 
 const search = <HTMLInputElement> document.getElementById("search");
 const result = <HTMLParagraphElement> document.getElementById("result");
-search.oninput = evt => {
+
+function update() {
     let table = document.createElement("table");
     table.border = "1";
     let header = document.createElement("tr");
@@ -172,22 +154,20 @@ search.oninput = evt => {
     table.appendChild(header);
 
     let searchstring = search.value.toLowerCase();
+    let cards = CARDS;
 
-    let typefilter = getFilter(searchstring, "type");
-    let costfilter = getFilter(searchstring, "cost");
-    let namefilter = getFilter(searchstring, "name");
-    let speedfilter = getFilter(searchstring, "speed");
-    let rangefilter = getFilter(searchstring, "range");
-    let targetfilter = getFilter(searchstring, "target");
-    let elementfilter = getFilter(searchstring, "element");
-    let descriptionfilter = getFilter(searchstring, "description");
-
-    if (typefilter)
+    [cards, searchstring] = filter(cards, searchstring, "type");
+    [cards, searchstring] = filter(cards, searchstring, "cost");
+    [cards, searchstring] = filter(cards, searchstring, "name");
+    [cards, searchstring] = filter(cards, searchstring, "speed");
+    [cards, searchstring] = filter(cards, searchstring, "range");
+    [cards, searchstring] = filter(cards, searchstring, "target");
+    [cards, searchstring] = filter(cards, searchstring, "element");
+    [cards, searchstring] = filter(cards, searchstring, "description");
 
     cards.filter(e => {
-
         let contains = true;
-        for (const word of search.value.toLowerCase().split(" ")) {
+        for (const word of searchstring.split(" ")) {
             contains = contains && e.toSearchString().toLowerCase().indexOf(word) >= 0;
         }
         return contains;
@@ -198,88 +178,118 @@ search.oninput = evt => {
         result.removeChild(result.firstChild);
     }
     result.appendChild(table);
-};
-
-function getFilter(search: string, name: string) {
-    let idx = search.indexOf(name + ":");
-    if (idx >= 0) {
-        let start = idx + name.length + 2;
-        let end;
-        if (search[start] == '"') {
-             end = search.indexOf('"', start);
-        } else {
-            end = search.indexOf(' ', start);
-        }
-        return search.substring(start, end);
-    }
-    return null;
 }
 
-const cards = [
+search.oninput = _ => update();
+
+function getFilter(search: string, name: string): [string | null, string] {
+    let idx = search.indexOf(name + ":");
+    if (idx >= 0) {
+        let start = idx + name.length + 1;
+        let end;
+        let rest_off;
+        if (search[start] == '"') {
+            start += 1;
+             end = search.indexOf('"', start);
+             rest_off = 2;
+        } else {
+            end = search.indexOf(' ', start);
+            rest_off = 1;
+        }
+        if (end == -1) {
+            end = search.length;
+        }
+        console.log("start: ", start);
+        console.log("end: ", end);
+        console.log("rest_off: ", rest_off);
+        console.log("res: '" + search.substring(0, idx) + search.substring(end + rest_off, search.length) + "'");
+        return [search.substring(start, end), search.substring(0, idx) + search.substring(end + rest_off, search.length)];
+    }
+    return [null, search];
+}
+
+function filter(cards: Card[], searchstring: string, property: string): [Card[], string] {
+    let filter: string | null = "";
+    let search: string = searchstring;
+    while (filter != null) {
+        [filter, search] = getFilter(search, property);
+        if (filter) {
+            console.log("filter: '" + filter + "'");
+            cards = cards.filter(c => {
+                if ((c as any)[property] != null) {
+                }
+                return (c as any)[property] != null && (c as any)[property].toString().toLowerCase().indexOf(filter) >= 0;
+            });
+        }
+    }
+    return [cards, search];
+}
+
+const CARDS = [
     // Spirit Cards
-    new Card(Spirit.LIGHTNINGS_SWIFT_STRIKE, "Shatter Homesteads", 2, Speed.Slow, new Ranges(Source.SacredSite, 2), LandAny,
+    new Card(Spirit.LightngingsSwiftStrike, "Shatter Homesteads", 2, Speed.Slow, new Ranges(Source.SacredSite, 2), LandAny,
         [Elements.Fire, Elements.Air], "1 Fear. Destroy 1 Village."),
-    new Card(Spirit.LIGHTNINGS_SWIFT_STRIKE, "Raging Storm", 3, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.LightngingsSwiftStrike, "Raging Storm", 3, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Fire, Elements.Air, Elements.Water], "1 Damage to each Invader."),
-    new Card(Spirit.LIGHTNINGS_SWIFT_STRIKE, "Lighning's Boon", 1, Speed.Fast, null, TargetSpirit.Any,
+    new Card(Spirit.LightngingsSwiftStrike, "Lighning's Boon", 1, Speed.Fast, null, TargetSpirit.Any,
         [Elements.Fire, Elements.Air], "Target Spirit may use up to 2 Slow Powers as if they were Fast Powers this turn"),
-    new Card(Spirit.LIGHTNINGS_SWIFT_STRIKE, "Harbingers of the Lightning", 0, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.LightngingsSwiftStrike, "Harbingers of the Lightning", 0, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Fire, Elements.Air], "Push up to 2 Dahan. 1 Fear if you pushed any Dahan into a land with Town / City"),
-    new Card(Spirit.RIVER_SURGES_IN_SUNLIGHT, "Flash Floods", 2, Speed.Fast, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.RiverSurgesInSunlight, "Flash Floods", 2, Speed.Fast, new Ranges(Source.Site, 1), LandAny,
         [Elements.Sun, Elements.Water], "1 Damage. If target land is Coastal, +1 Damage."),
-    new Card(Spirit.RIVER_SURGES_IN_SUNLIGHT, "Wash Away", 1, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.RiverSurgesInSunlight, "Wash Away", 1, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Water, Elements.Earth], "Push up to 3 Explorers / Towns"),
-    new Card(Spirit.RIVER_SURGES_IN_SUNLIGHT, "Boon of Vigor", 0, Speed.Fast, null, TargetSpirit.Any,
+    new Card(Spirit.RiverSurgesInSunlight, "Boon of Vigor", 0, Speed.Fast, null, TargetSpirit.Any,
         [Elements.Sun, Elements.Water, Elements.Planet], "If you target yourself, gain 1 Energy. If you target another Spirit, they gain 1 Energy per Power Card they played this turn."),
-    new Card(Spirit.RIVER_SURGES_IN_SUNLIGHT, "River's Bounty", 0, Speed.Slow, new Ranges(Source.Site, 0), LandAny,
+    new Card(Spirit.RiverSurgesInSunlight, "River's Bounty", 0, Speed.Slow, new Ranges(Source.Site, 0), LandAny,
         [Elements.Sun, Elements.Water, Elements.Animal], "Gather up to 2 Dahan. If there are now at least 2 Dahan, add 1 Dahan and gain 1 Energy."),
-    new Card(Spirit.SHADOWS_FLICKER_LIKE_FLAME, "Concealing Shadows", 0, Speed.Fast, new Ranges(Source.Site, 0), LandAny,
+    new Card(Spirit.ShadowsFlickerLikeFlame, "Concealing Shadows", 0, Speed.Fast, new Ranges(Source.Site, 0), LandAny,
         [Elements.Moon, Elements.Air], "1 Fear. Dahan take no damage from Ravaging Invaders this turn."),
-    new Card(Spirit.SHADOWS_FLICKER_LIKE_FLAME, "Favors Called Due", 1, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.ShadowsFlickerLikeFlame, "Favors Called Due", 1, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Moon, Elements.Air, Elements.Animal], "Gather up to 4 Dahan. If Invaders are present and Dahan now outnumber them, 3 Fear."),
-    new Card(Spirit.SHADOWS_FLICKER_LIKE_FLAME, "Mantle of Dread", 1, Speed.Slow, null, TargetSpirit.Any,
+    new Card(Spirit.ShadowsFlickerLikeFlame, "Mantle of Dread", 1, Speed.Slow, null, TargetSpirit.Any,
         [Elements.Moon, Elements.Fire, Elements.Air], "2 Fear. Target Spirit may Push 1 Explorer and 1 Town from one of their lands."),
-    new Card(Spirit.SHADOWS_FLICKER_LIKE_FLAME, "Crops Wither and Fade", 1, Speed.Slow, new Ranges(Source.Site, 0), LandAny,
+    new Card(Spirit.ShadowsFlickerLikeFlame, "Crops Wither and Fade", 1, Speed.Slow, new Ranges(Source.Site, 0), LandAny,
         [Elements.Moon, Elements.Fire, Elements.Planet], "2 Fear. Replace 1 Town with 1 Explorer. *or* Replace 1 City with 1 Town."),
-    new Card(Spirit.VITAL_STRENGTH_OF_THE_EARTH, "Guard the Healing Land", 3, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
+    new Card(Spirit.VitalStrengthOfTheEarth, "Guard the Healing Land", 3, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
         [Elements.Water, Elements.Earth, Elements.Planet], "Remove 1 Blight. Defend 4."),
-    new Card(Spirit.VITAL_STRENGTH_OF_THE_EARTH, "A Year of Perfect Stillness", 3, Speed.Fast, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.VitalStrengthOfTheEarth, "A Year of Perfect Stillness", 3, Speed.Fast, new Ranges(Source.Site, 1), LandAny,
         [Elements.Sun, Elements.Earth], "Invaders skipp all Actions in target land this turn."),
-    new Card(Spirit.VITAL_STRENGTH_OF_THE_EARTH, "Rituals of Destruction", 3, Speed.Slow, new Ranges(Source.SacredSite, 1), TargetProperty.Dahan,
+    new Card(Spirit.VitalStrengthOfTheEarth, "Rituals of Destruction", 3, Speed.Slow, new Ranges(Source.SacredSite, 1), TargetProperty.Dahan,
         [Elements.Sun, Elements.Moon, Elements.Fire, Elements.Earth, Elements.Planet], "2 Damage. If target land has at least 3 Dahan, +3 Damage and 2 Fear."),
-    new Card(Spirit.VITAL_STRENGTH_OF_THE_EARTH, "Draw of the Fruitful Earth", 1, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.VitalStrengthOfTheEarth, "Draw of the Fruitful Earth", 1, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Earth, Elements.Planet, Elements.Animal], "Gather up to 2 Explorer. Gather up to 2 Dahan."),
-    new Card(Spirit.THUNDERSPEAKER, "Manifestation of Power and Glory", 3, Speed.Slow, new Ranges(Source.Site, 0), TargetProperty.Dahan,
+    new Card(Spirit.Thunderspeaker, "Manifestation of Power and Glory", 3, Speed.Slow, new Ranges(Source.Site, 0), TargetProperty.Dahan,
         [Elements.Sun, Elements.Fire, Elements.Air], "1 Fear. Each Dahan deals damage equal to the number of your Site in target land."),
-    new Card(Spirit.THUNDERSPEAKER, "Words of Warning", 1, Speed.Fast, new Ranges(Source.Site, 1), TargetProperty.Dahan,
+    new Card(Spirit.Thunderspeaker, "Words of Warning", 1, Speed.Fast, new Ranges(Source.Site, 1), TargetProperty.Dahan,
         [Elements.Sun, Elements.Air, Elements.Animal], "Defend 3. During Ravage, Dahan in target land deal damage simultaneously with Invaders."),
-    new Card(Spirit.THUNDERSPEAKER, "Sudden Ambush", 2, Speed.Fast, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.Thunderspeaker, "Sudden Ambush", 2, Speed.Fast, new Ranges(Source.Site, 1), LandAny,
         [Elements.Fire, Elements.Air, Elements.Animal], "You may Gather 1 Dahan. Each Dahan destroys 1 Explorer."),
-    new Card(Spirit.THUNDERSPEAKER, "Voice of Thunder", 0, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.Thunderspeaker, "Voice of Thunder", 0, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Sun, Elements.Air], "Push up to 4 Dahan. *or* If Invaders are Present, 2 Fear."),
-    new Card(Spirit.OCEANS_HUNGRY_GRASP, "Call of the Deeps", 0, Speed.Fast, new Ranges(Source.Site, 0), Land.Coastal,
+    new Card(Spirit.OceansHungryGrasp, "Call of the Deeps", 0, Speed.Fast, new Ranges(Source.Site, 0), Land.Coastal,
         [Elements.Moon, Elements.Air, Elements.Water], "Gather 1 Explorer. If target land is the Ocean, you may Gather another Explorer."),
-    new Card(Spirit.OCEANS_HUNGRY_GRASP, "Grasping Tide", 1, Speed.Fast, new Ranges(Source.Site, 1), Land.Coastal,
+    new Card(Spirit.OceansHungryGrasp, "Grasping Tide", 1, Speed.Fast, new Ranges(Source.Site, 1), Land.Coastal,
         [Elements.Moon, Elements.Water], "2 Fear. Defend 4."),
-    new Card(Spirit.OCEANS_HUNGRY_GRASP, "Swallow the Land-Dwellers", 0, Speed.Slow, new Ranges(Source.Site, 0), Land.Coastal,
+    new Card(Spirit.OceansHungryGrasp, "Swallow the Land-Dwellers", 0, Speed.Slow, new Ranges(Source.Site, 0), Land.Coastal,
         [Elements.Water, Elements.Earth], "Drown 1 Explorer, 1 Town, and 1 Dahan."),
-    new Card(Spirit.OCEANS_HUNGRY_GRASP, "Tidal Boon", 1, Speed.Slow, null, TargetSpirit.Another,
+    new Card(Spirit.OceansHungryGrasp, "Tidal Boon", 1, Speed.Slow, null, TargetSpirit.Another,
         [Elements.Moon, Elements.Water, Elements.Earth], "Target Spirit gains 2 Energy and may Push 1 Town and up to 2 Dahan from one of their lands. If Dahan are pushed to your ocean, you may move them to any Coastal land instead of Drowning them."),
-    new Card(Spirit.BRINGER_OF_DREAMS_AND_NIGHTMARES, "Predatory Nightmares", 2, Speed.Slow, new Ranges(Source.SacredSite, 1), TargetProperty.Invaders,
+    new Card(Spirit.BringerOfDreamsAndNightmares, "Predatory Nightmares", 2, Speed.Slow, new Ranges(Source.SacredSite, 1), TargetProperty.Invaders,
         [Elements.Moon, Elements.Fire, Elements.Earth, Elements.Animal], "2 Damage. Push up to 2 Dahan. (When your powers would destroy Invaders, instead they generate Fear and/or Push those Invaders.)"),
-    new Card(Spirit.BRINGER_OF_DREAMS_AND_NIGHTMARES, "Dread Apparitions", 2, Speed.Fast, new Ranges(Source.Site, 1), TargetProperty.Invaders,
+    new Card(Spirit.BringerOfDreamsAndNightmares, "Dread Apparitions", 2, Speed.Fast, new Ranges(Source.Site, 1), TargetProperty.Invaders,
         [Elements.Moon, Elements.Air], "When Powers generate Fear in target land, Defend 1 per Fear. 1 Fear. (Fear from To Dream a Thousand Death counts. Fear from Destroying Town / City does not."),
-    new Card(Spirit.BRINGER_OF_DREAMS_AND_NIGHTMARES, "Call on Midnight's Dreams", 0, Speed.Fast, new Ranges(Source.Site, 0), LandAny,
+    new Card(Spirit.BringerOfDreamsAndNightmares, "Call on Midnight's Dreams", 0, Speed.Fast, new Ranges(Source.Site, 0), LandAny,
         [Elements.Moon, Elements.Animal], "If target land has Dahan, gain a Major Power. If you Forget this Power, gain Energy equal to Dahan and you may play the Major Power immediately, paying its cost. *or* If Invaders are present, 2 Fear."),
-    new Card(Spirit.BRINGER_OF_DREAMS_AND_NIGHTMARES, "Dreams of the Dahan", 0, Speed.Fast, new Ranges(Source.Site, 2), LandAny,
+    new Card(Spirit.BringerOfDreamsAndNightmares, "Dreams of the Dahan", 0, Speed.Fast, new Ranges(Source.Site, 2), LandAny,
         [Elements.Moon, Elements.Air], "Gather up to 2 Dahan. *or* If target land has Town / City, 1 Fear for each Dahan, to a maximum of 3 Fear."),
-    new Card(Spirit.VITAL_STRENGTH_OF_THE_EARTH, "Overgrow in a Night", 2, Speed.Fast, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.ASpreadOfRampantGreen, "Overgrow in a Night", 2, Speed.Fast, new Ranges(Source.Site, 1), LandAny,
         [Elements.Moon, Elements.Planet], "Add 1 Site. *or* If target land has your Site and Invaders, 3 Fear."),
-    new Card(Spirit.VITAL_STRENGTH_OF_THE_EARTH, "Gift of Proliferation", 1, Speed.Fast, null, TargetSpirit.Another,
+    new Card(Spirit.ASpreadOfRampantGreen, "Gift of Proliferation", 1, Speed.Fast, null, TargetSpirit.Another,
         [Elements.Moon, Elements.Planet], "Target Spirit adds 1 Site up to 1 Range from their Site."),
-    new Card(Spirit.VITAL_STRENGTH_OF_THE_EARTH, "Fields Choked with Growth", 0, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
+    new Card(Spirit.ASpreadOfRampantGreen, "Fields Choked with Growth", 0, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Sun, Elements.Water, Elements.Planet], "Push 1 Town. *or* Push 3 Dahan"),
-    new Card(Spirit.VITAL_STRENGTH_OF_THE_EARTH, "Stem the Flow of Fresh Water", 0, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,
+    new Card(Spirit.ASpreadOfRampantGreen, "Stem the Flow of Fresh Water", 0, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,
         [Elements.Water, Elements.Planet], "1 Damage to 1 Town or 1 City. If target land is M/S, instead, 1 Damage to each Town / City."),
 
     // Colored Corners
@@ -410,5 +420,4 @@ const cards = [
         [Elements.Fire, Elements.Water, Elements.Animal], "Replace 1 City with 2 Explorer. Replace 1 Town with 1 Explorer. Replace 1 Dahan with 1 Explorer. Push all Explorer from target land to as many different lands as possible. *If you have* 2 Fire, 2 Water, 3 Animal: Before Pushing, Explorer and Town / City do Damage to each other."),
 ];
 
-search.oninput(null);
-
+update();
