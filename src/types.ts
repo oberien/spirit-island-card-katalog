@@ -59,7 +59,7 @@ namespace Types {
         Air = "Air",
         Water = "Water",
         Earth = "Earth",
-        Planet = "Planet",
+        Plant = "Plant",
         Animal = "Animal",
     }
 
@@ -126,6 +126,10 @@ namespace Types {
             row.insertCell().innerText = this.elements.join(", ");
             row.insertCell().innerText = this.description;
             return row;
+        }
+
+        toFileName() {
+            return this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "");
         }
     }
 }

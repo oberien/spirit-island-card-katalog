@@ -1,14 +1,21 @@
 /// <reference path="db.ts" />
 /// <reference path="types.ts" />
 
-import CARDS = DB.CARDS;
+const LandAny = Types.LandAny;
+type Card = Types.Card;
+
+const CARDS = DB.CARDS;
 
 const search = <HTMLInputElement> document.getElementById("search");
 const result = <HTMLParagraphElement> document.getElementById("result");
 
 function update() {
     let table = document.createElement("table");
+    table.id = "table";
+    table.cellSpacing = "0";
+    table.width = "100%";
     table.border = "1";
+    table.classList.add("table", "table-striped", "table-bordered", "nowrap");
     let header = document.createElement("tr");
     let type = document.createElement("th");
     type.innerText = "Type";
