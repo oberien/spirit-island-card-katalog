@@ -106,11 +106,14 @@ function filter(cards: Card[], searchstring: string, property: string): [Card[],
                 if (prop == null) {
                     return false;
                 }
-                if (filterString.indexOf("<") == 0) {
+                if (filterString.indexOf("<=") == 0) {
+                    return prop <= filterString.substring(2);
+                } else if (filterString.indexOf(">=") == 0) {
+                    return prop >= filterString.substring(2);
+                } else if (filterString.indexOf("<") == 0) {
                     return prop < filterString.substring(1);
-                }
-                if (filterString.indexOf(">") == 0) {
-                    return prop > filterString.substring(2);
+                } else if (filterString.indexOf(">") == 0) {
+                    return prop > filterString.substring(1);
                 }
                 return propToString((c as any)[property]).toLowerCase().indexOf(filter) >= 0;
             });
@@ -119,4 +122,6 @@ function filter(cards: Card[], searchstring: string, property: string): [Card[],
     return [cards, search];
 }
 
-update();
+document.addEventListener("DOMContentLoaded", () => {
+    update();
+});
