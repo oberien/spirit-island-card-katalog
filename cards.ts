@@ -39,7 +39,15 @@ class Ranges {
     }
 
     toString() {
-        return " " + this.from + " " + this.range;
+        let res = this.from + " ";
+        if (this.land) {
+            res += "on" + this.land + ", ";
+        }
+        return res + this.range;
+    }
+
+    valueOf() {
+        return this.range;
     }
 }
 
@@ -199,10 +207,6 @@ function getFilter(search: string, name: string): [string | null, string] {
         if (end == -1) {
             end = search.length;
         }
-        console.log("start: ", start);
-        console.log("end: ", end);
-        console.log("rest_off: ", rest_off);
-        console.log("res: '" + search.substring(0, idx) + search.substring(end + rest_off, search.length) + "'");
         return [search.substring(start, end), search.substring(0, idx) + search.substring(end + rest_off, search.length)];
     }
     return [null, search];
@@ -222,7 +226,6 @@ function filter(cards: Card[], searchstring: string, property: string): [Card[],
         [filter, search] = getFilter(search, property);
         if (filter != null) {
             let filterString = filter as string;
-            console.log("filter: '" + filter + "'");
             cards = cards.filter(c => {
                 let prop = (c as any)[property];
                 if (prop == null) {
