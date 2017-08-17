@@ -135,7 +135,7 @@ namespace Types {
         }
 
         toImageName() {
-            return "imgs/" + this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "") + ".jpg";
+            return "imgs/cards/" + this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "") + ".jpg";
         }
     }
 }
