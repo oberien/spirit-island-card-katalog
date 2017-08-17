@@ -6,16 +6,22 @@ type Card = Types.Card;
 
 const CARDS = DB.CARDS;
 
-const search = <HTMLInputElement> document.getElementById("search");
-const result = <HTMLParagraphElement> document.getElementById("result");
-
 function update() {
+    const search = <HTMLInputElement> document.getElementById("search");
+    const result = <HTMLParagraphElement> document.getElementById("result");
+
+    // clear old content
+    while (result.firstChild) {
+        result.removeChild(result.firstChild);
+    }
+
     let table = document.createElement("table");
     table.id = "table";
     table.cellSpacing = "0";
     table.width = "100%";
     table.border = "1";
     table.classList.add("table", "table-striped", "table-bordered", "nowrap");
+    let thead = document.createElement("thead");
     let header = document.createElement("tr");
     let type = document.createElement("th");
     type.innerText = "Type";
@@ -41,7 +47,9 @@ function update() {
     let description = document.createElement("th");
     description.innerText = "Description";
     header.appendChild(description);
-    table.appendChild(header);
+    thead.appendChild(header);
+    table.appendChild(thead);
+    let tbody = document.createElement("tbody");
 
     let searchstring = search.value.toLowerCase();
     let cards = CARDS;
@@ -61,16 +69,12 @@ function update() {
             contains = contains && e.toSearchString().toLowerCase().indexOf(word) >= 0;
         }
         return contains;
-    }).forEach(e => table.appendChild(e.toTableRow()));
+    }).forEach(e => result.appendChild(e.toImage()));
+    table.appendChild(tbody);
 
-    // clear old content
-    if (result.firstChild) {
-        result.removeChild(result.firstChild);
-    }
-    result.appendChild(table);
+    // result.appendChild(table);
 }
 
-search.oninput = _ => update();
 
 function getFilter(search: string, name: string): [string | null, string] {
     let idx = search.indexOf(name + ":");
@@ -130,5 +134,7 @@ function filter(cards: Card[], searchstring: string, property: string): [Card[],
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    const search = <HTMLInputElement> document.getElementById("search");
+    search.oninput = _ => update();
     update();
 });

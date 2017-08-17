@@ -128,8 +128,14 @@ namespace Types {
             return row;
         }
 
-        toFileName() {
-            return this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "");
+        toImage() {
+            let img = document.createElement("img");
+            img.src = this.toImageName();
+            return img;
+        }
+
+        toImageName() {
+            return "imgs/" + this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "") + ".jpg";
         }
     }
 }

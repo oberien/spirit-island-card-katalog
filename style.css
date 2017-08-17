@@ -6,3 +6,104 @@ code {
     margin: 0;
     padding: 0.2em 0;
 }
+
+div {
+    border: 1px solid black;
+}
+
+.btn-toggle {
+    margin:4px;
+    background-color: saddlebrown;
+    border:1px solid #D0D0D0;
+    overflow:auto;
+    float:left;
+    box-shadow: 0 0 10px;
+}
+/*.btn-toggle {*/
+    /*float:left;*/
+    /*width:4.0em;*/
+/*}*/
+
+.btn-toggle span {
+    text-align:center;
+    padding:3px 0px;
+    display:block;
+}
+
+.btn-toggle input {
+    position: absolute;
+    top:-20px;
+}
+
+.btn-toggle input:checked + span {
+    box-shadow: inset 0 0 10px;
+}
+
+.round {
+    border-radius: 50%;
+}
+
+.sun {
+    background-color: yellow;
+}
+.moon {
+    background-color: lightgray;
+}
+.fire {
+    background-color: orangered;
+}
+.air {
+    background-color: mediumpurple;
+}
+.water {
+    background-color: cornflowerblue;
+}
+.earth {
+    background-color: dimgray;
+}
+.planet {
+    background-color: greenyellow;
+}
+.animal {
+    background-color: red;
+}
+
+.filter {
+    width: 250px;
+}
+.flex {
+    display: flex;
+}
+.row {
+    flex-flow: row;
+}
+.column {
+    flex-flow: column;
+}
+.nowrap {
+    flex-flow: nowrap;
+}
+.flex-5 {
+    flex-basis: 5%;
+}
+.flex-10 {
+    flex-basis: 10%;
+}
+.flex-40 {
+    flex-basis: 40%;
+}
+.flex-90 {
+    flex-basis: 90%;
+}
+
+.inputspan {
+    width: 100%;
+}
+
+.result {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.card {
+}
