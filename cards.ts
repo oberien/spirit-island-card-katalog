@@ -12,7 +12,7 @@ enum Land {
     Coastal = "Coastal",
 }
 
-const LandAny = [Land.Ocean, Land.Jungle, Land.Wetland, Land.Mountain, Land.Sand];
+const LandAny = [Land.Ocean, Land.Jungle, Land.Wetland, Land.Mountain, Land.Sand, Land.Coastal];
 
 enum TargetSpirit {
     Any = "Any Spirit",
@@ -162,7 +162,7 @@ function update() {
     [cards, searchstring] = filter(cards, searchstring, "speed");
     [cards, searchstring] = filter(cards, searchstring, "range");
     [cards, searchstring] = filter(cards, searchstring, "target");
-    [cards, searchstring] = filter(cards, searchstring, "element");
+    [cards, searchstring] = filter(cards, searchstring, "elements");
     [cards, searchstring] = filter(cards, searchstring, "description");
 
     cards.filter(e => {
@@ -208,17 +208,33 @@ function getFilter(search: string, name: string): [string | null, string] {
     return [null, search];
 }
 
+function propToString(prop: any) {
+    if (prop == LandAny) {
+        return "Any (" + prop.toString() + ")";
+    }
+    return prop.toString();
+}
+
 function filter(cards: Card[], searchstring: string, property: string): [Card[], string] {
     let filter: string | null = "";
     let search: string = searchstring;
     while (filter != null) {
         [filter, search] = getFilter(search, property);
-        if (filter) {
+        if (filter != null) {
+            let filterString = filter as string;
             console.log("filter: '" + filter + "'");
             cards = cards.filter(c => {
-                if ((c as any)[property] != null) {
+                let prop = (c as any)[property];
+                if (prop == null) {
+                    return false;
                 }
-                return (c as any)[property] != null && (c as any)[property].toString().toLowerCase().indexOf(filter) >= 0;
+                if (filterString.indexOf("<") == 0) {
+                    return prop < filterString.substring(1);
+                }
+                if (filterString.indexOf(">") == 0) {
+                    return prop > filterString.substring(2);
+                }
+                return propToString((c as any)[property]).toLowerCase().indexOf(filter) >= 0;
             });
         }
     }
@@ -346,7 +362,7 @@ const CARDS = [
     new Card(CardType.Minor, "Call to Migrate", 1, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Fire, Elements.Air, Elements.Animal], "Gather up to 3 Dahan. Push up to 3 Dahan."),
     new Card(CardType.Minor, "Call to Tend", 1, Speed.Slow, new Ranges(Source.Site, 1), TargetProperty.Dahan,
-        [Elements.Water, Elements.Planet, Elements.Animal], "Remove 10Blight. *or* Push up to 3 Dahan."),
+        [Elements.Water, Elements.Planet, Elements.Animal], "Remove 1 Blight. *or* Push up to 3 Dahan."),
     new Card(CardType.Minor, "Quicken the Earth's Struggles", 1, Speed.Fast, new Ranges(Source.SacredSite, 0), LandAny,
         [Elements.Moon, Elements.Fire, Elements.Earth, Elements.Animal], "1 Damage to each Town / City. *or* Defend 10."),
     new Card(CardType.Minor, "Delusions of Danger", 1, Speed.Fast, new Ranges(Source.Site, 1), LandAny,
@@ -379,7 +395,7 @@ const CARDS = [
     new Card(CardType.Major, "Cleansing Floods", 5, Speed.Slow, new Ranges(Source.Site, 1, [Land.Wetland]), LandAny,
         [Elements.Sun, Elements.Water], "4 Damage. Remove 1 Blight. *If you have* 4 Water: +10 Damage."),
     new Card(CardType.Major, "Pillar of Living Flame", 5, Speed.Slow, new Ranges(Source.SacredSite, 2), LandAny,
-        [Elements.Fire], "3 Fear. 5 Damage. If target land is J/W, add 1 Blight. *If you have* 40Fire: +2 Fear and +5 Damage."),
+        [Elements.Fire], "3 Fear. 5 Damage. If target land is J/W, add 1 Blight. *If you have* 4 Fire: +2 Fear and +5 Damage."),
     new Card(CardType.Major, "Poisoned Land", 3, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Earth, Elements.Planet, Elements.Animal], "1 Fear. 7 Damage. Add 1 Blight and destroy all Dahan. *If you have* 3 Earth, 2 Planet, 2 Fire: Per Blight, +1 Fear and +4 Damage."),
     new Card(CardType.Major, "Terrifying Nightmares", 4, Speed.Fast, new Ranges(Source.Site, 2), LandAny,
@@ -387,7 +403,7 @@ const CARDS = [
     new Card(CardType.Major, "The Trees and Stones Speak of War", 2, Speed.Fast, new Ranges(Source.Site, 1), TargetProperty.Dahan,
         [Elements.Sun, Elements.Earth, Elements.Planet], "1 Damage and Defend 2 per Dahan in target land. *If you have* 2 Sun, 2 Earth, 2 Planet: You may Push up to 2 Dahan, moving the Defend effect with them"),
     new Card(CardType.Major, "Entwined Power", 2, Speed.Fast, null, TargetSpirit.Another,
-        [Elements.Moon, Elements.Water, Elements.Planet], "You and target Spirit may use each other's Site to target Powers. Target Spirit gains a Power Card. You take one of the power Cards they did not keep. *If you have* 2 Water, 4 Planet: You and target Spirit each gain 3 Energy and may gift each other 10Power from hand."),
+        [Elements.Moon, Elements.Water, Elements.Planet], "You and target Spirit may use each other's Site to target Powers. Target Spirit gains a Power Card. You take one of the power Cards they did not keep. *If you have* 2 Water, 4 Planet: You and target Spirit each gain 3 Energy and may gift each other 1 Power from hand."),
     new Card(CardType.Major, "Paralyzing Frigh", 4, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
         [Elements.Air, Elements.Earth], "4 Fear. Invaders skip all Actions in target land this turn. *If you have* 2 Air, 3 Earth: +4 Fear."),
     new Card(CardType.Major, "Powerstorm", 3, Speed.Fast, null, TargetSpirit.Any,
@@ -415,7 +431,7 @@ const CARDS = [
     new Card(CardType.Major, "Mists of Oblivion", 4, Speed.Slow, new Ranges(Source.Site, 3), LandAny,
         [Elements.Moon, Elements.Air, Elements.Water], "1 Damage to each Invader in target land. 1 Fear per Town / City destroyed by this Power, to a maximum of 4. *If you have* 2 Moon, 3 Air, 2 Water: +3 Damage."),
     new Card(CardType.Major, "Infinite Vitality", 3, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
-        [Elements.Earth, Elements.Planet, Elements.Animal], "Dahan have +40Health while in target land. Whenever Blight would be added to target land, instead leave it on the card. *If you have* 4 Earth: Dahan ignore Damage and Destruction effects. Remove 1 Blight from target or adjacent land."),
+        [Elements.Earth, Elements.Planet, Elements.Animal], "Dahan have +4 Health while in target land. Whenever Blight would be added to target land, instead leave it on the card. *If you have* 4 Earth: Dahan ignore Damage and Destruction effects. Remove 1 Blight from target or adjacent land."),
     new Card(CardType.Major, "Dissolve the bonds", 4, Speed.Slow, new Ranges(Source.Site, 1), LandAny,
         [Elements.Fire, Elements.Water, Elements.Animal], "Replace 1 City with 2 Explorer. Replace 1 Town with 1 Explorer. Replace 1 Dahan with 1 Explorer. Push all Explorer from target land to as many different lands as possible. *If you have* 2 Fire, 2 Water, 3 Animal: Before Pushing, Explorer and Town / City do Damage to each other."),
 ];
