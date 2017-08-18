@@ -3,7 +3,6 @@ body {
     min-height: 100vh;
     margin: 0 auto;
     flex-direction: column;
-    padding-bottom: 30px;
 }
 
 header {
@@ -17,14 +16,10 @@ header {
 }
 
 footer {
-    position: fixed;
+    margin-top: 20px;
     padding: 5px;
-    bottom: 0;
-    left: 0;
-    right: 0;
     background-color: lightgray;
     text-align: center;
-    font-size: 12px;
 }
 
 /* ripped straight from github */
