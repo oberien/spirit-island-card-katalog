@@ -1,5 +1,20 @@
 # SICK - Spirit Island Card Katalog
 
+This project provides a website containing (not yet) all cards of the board game *Spirit Island*.
+It is hosted on [http://novalis.oberien.de/sick/](http://novalis.oberien.de/sick/).
+
+## Building
+
+You need to have `tsc` installed:
+```sh
+npm install --global tsc
+```
+
+With `tsc` you can build and watch for changes:
+```sh
+tsc --pretty --watch
+```
+
 
 # License
 
