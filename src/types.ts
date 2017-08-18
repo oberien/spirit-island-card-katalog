@@ -99,10 +99,51 @@ namespace Types {
             return s;
         }
 
-        toImage() {
+        toCard() {
+            let container = document.createElement("div");
+            container.classList.add("flip-container");
+            container.onclick = () => container.classList.toggle("flipped");
+            let flipper = document.createElement("div");
+            flipper.classList.add("flipper");
+
+            let front = document.createElement("div");
+            front.classList.add("front");
             let img = document.createElement("img");
             img.src = this.toImageName();
-            return img;
+            front.appendChild(img);
+
+            let back = document.createElement("div");
+            back.classList.add("back");
+            let backdiv = document.createElement("div");
+            backdiv.style.padding = "10px";
+            let text = "";
+            text += "<b>Type</b>: " + this.type + "<br/>";
+            text += "<b>Name</b>: " + this.name + "<br/>";
+            text += "<b>Cost</b>: " + this.cost + "<br/>";
+            text += "<b>Speed</b>: " + this.speed + "<br/>";
+            text += "<b>Range</b>: " + this.range + "<br/>";
+            let target = "";
+            if (Array.isArray(this.target)) {
+                if (this.target == LandAny) {
+                    target = "Any"
+                } else {
+                    target = (this.target as Land[]).join(", ");
+                }
+            } else {
+                target = this.target;
+            }
+            text += "<b>Target</b>: " + target + "<br/>";
+            text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
+            text += "<b>Description</b>: " + this.description + "<br/>";
+            let p = document.createElement("p");
+            p.innerHTML = text;
+            backdiv.appendChild(p);
+            back.appendChild(backdiv);
+
+            flipper.appendChild(back);
+            flipper.appendChild(front);
+            container.appendChild(flipper);
+            return container;
         }
 
         toImageName() {

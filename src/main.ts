@@ -14,11 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     search.oninput = _ => update();
     sort.onchange = _ => update();
     order.onclick = _ => {
-        if (order.classList.contains("rotated")) {
-            order.classList.remove("rotated");
-        } else {
-            order.classList.add("rotated");
-        }
+        order.classList.toggle("rotated");
         update();
     };
 
@@ -52,7 +48,6 @@ function update() {
     [cards, searchstring] = filter(cards, searchstring, "description");
 
     let groups = searchgroups(searchstring);
-    console.log(groups);
 
     cards = cards.filter(e => {
         let contains = true;
@@ -71,7 +66,7 @@ function update() {
     for (const card of cards) {
         let flex = <HTMLDivElement> document.createElement("div");
         flex.classList.add("flex-50", "xs-flex-33", "sm-flex-25", "md-flex-20", "l-flex-15", "xl-flex-12", "xxl-flex-10");
-        flex.appendChild(card.toImage());
+        flex.appendChild(card.toCard());
         result.appendChild(flex);
     }
 
@@ -152,9 +147,7 @@ function searchgroups(search: string): string[] {
         }
         res.push(search.substring(start + 1, end));
         search = search.substring(0, start) + search.substring(end+1);
-        console.log("part: '" + res[res.length - 1] + "'");
     }
-    console.log(search);
     res = res.concat(search.split(" "));
     return res;
 }
