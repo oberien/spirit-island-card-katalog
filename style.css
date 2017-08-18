@@ -3,6 +3,7 @@ body {
     min-height: 100vh;
     margin: 0 auto;
     flex-direction: column;
+    padding-bottom: 30px;
 }
 
 footer {
@@ -25,8 +26,21 @@ code {
     padding: 0.2em 0;
 }
 
-div {
-    border: 1px solid black;
+#arrow {
+    font-size: 30px;
+    font-weight: bold;
+    position: relative;
+    top: 6px;
+    display: inline-block;
+}
+
+.rotatable {
+    transform: rotate(0deg);
+    transition: transform ease-in .2s;
+}
+
+.rotated {
+    transform: rotate(180deg);
 }
 
 .btn-toggle {
@@ -86,11 +100,16 @@ div {
     background-color: red;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 .filter {
     width: 250px;
 }
 .flex {
     display: flex;
+    justify-content: space-around;
 }
 .row {
     flex-flow: row;
@@ -98,8 +117,11 @@ div {
 .column {
     flex-flow: column;
 }
-.nowrap {
-    flex-flow: nowrap;
+.wrap {
+    flex-flow: wrap;
+}
+.flex-start {
+    justify-content: flex-start;
 }
 .flex-5 {
     flex-basis: 5%;
@@ -107,11 +129,23 @@ div {
 .flex-10 {
     flex-basis: 10%;
 }
+.flex-20 {
+    flex-basis: 20%;
+}
 .flex-40 {
     flex-basis: 40%;
 }
+.flex-70 {
+    flex-basis: 70%;
+}
 .flex-90 {
     flex-basis: 90%;
+}
+.flex-95 {
+    flex-basis: 95%;
+}
+.flex-100 {
+    flex-basis: 100%;
 }
 
 .inputspan {

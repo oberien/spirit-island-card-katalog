@@ -2,12 +2,27 @@
 <head>
     <title>Spirit Island Card Katalog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     <script src="cards.js"></script>
 </head>
 <body>
     <h1>Spirit Island Card Katalog</h1>
-    <span class="inputspan"><input class="inputspan" type="text" id="search" placeholder="Search here..." autofocus /></span>
+    <div class="flex row">
+        <input class="flex-70" type="text" id="search" placeholder="Search here..." autofocus />
+
+        <div class="flex-20">
+            <select id="sort">
+                <option>Type</option>
+                <option>Name</option>
+                <option>Cost</option>
+                <option>Speed</option>
+                <option>Range</option>
+                <option>Target</option>
+            </select>
+            <span id="arrow" class="clickable rotatable">↓</span>
+        </div>
+    </div>
     <!--<div class="filter">-->
         <!--<div class="flex column">-->
             <!--<div class="flex row flex-10">-->
@@ -83,13 +98,15 @@
             <!--</div>-->
         <!--</div>-->
     <!--</div>-->
-    <p>Examples:
-        <code>Gather Dahan</code>,
-        <code>elements:plant elements:earth</code>,
-        <code>description:"add 1 site"</code>,
-        <code>range:sacred range:>=2 cost:<5</code>
-    </p>
-    <div id="result" class="result"></div>
+    <div class="flex">
+        <p class="flex-95">Examples:
+            <code>Gather Dahan</code>,
+            <code>elements:plant elements:earth</code>,
+            <code>description:"add 1 site"</code>,
+            <code>range:sacred range:>=2 cost:<5</code>
+        </p>
+    </div>
+    <div id="result" class="flex row wrap flex-start"></div>
     <footer>
         This is an unofficial website. "Spirit Island Card Katalog" is not affiliated with Greater Than Games, LLC.
         All materials belong to Greater Than Games, LLC.

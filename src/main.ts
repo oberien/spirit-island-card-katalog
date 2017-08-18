@@ -6,52 +6,40 @@ type Card = Types.Card;
 
 const CARDS = DB.CARDS;
 
+document.addEventListener("DOMContentLoaded", () => {
+    const search = <HTMLInputElement> document.getElementById("search");
+    const sort = <HTMLSelectElement> document.getElementById("sort");
+    const order = <HTMLDivElement> document.getElementById("arrow");
+
+    search.oninput = _ => update();
+    sort.onchange = _ => update();
+    order.onclick = _ => {
+        if (order.classList.contains("rotated")) {
+            order.classList.remove("rotated");
+        } else {
+            order.classList.add("rotated");
+        }
+        update();
+    };
+
+    update();
+
+});
+
 function update() {
     const search = <HTMLInputElement> document.getElementById("search");
     const result = <HTMLParagraphElement> document.getElementById("result");
+    const sort = <HTMLSelectElement> document.getElementById("sort");
+    const order = <HTMLDivElement> document.getElementById("arrow");
 
     // clear old content
     while (result.firstChild) {
         result.removeChild(result.firstChild);
     }
 
-    let table = document.createElement("table");
-    table.id = "table";
-    table.cellSpacing = "0";
-    table.width = "100%";
-    table.border = "1";
-    table.classList.add("table", "table-striped", "table-bordered", "nowrap");
-    let thead = document.createElement("thead");
-    let header = document.createElement("tr");
-    let type = document.createElement("th");
-    type.innerText = "Type";
-    header.appendChild(type);
-    let cost = document.createElement("th");
-    cost.innerText = "Cost";
-    header.appendChild(cost);
-    let name = document.createElement("th");
-    name.innerText = "Name";
-    header.appendChild(name);
-    let speed = document.createElement("th");
-    speed.innerText = "Speed";
-    header.appendChild(speed);
-    let range = document.createElement("th");
-    range.innerText = "Range";
-    header.appendChild(range);
-    let target = document.createElement("th");
-    target.innerText = "Target";
-    header.appendChild(target);
-    let elements = document.createElement("th");
-    elements.innerText = "Elements";
-    header.appendChild(elements);
-    let description = document.createElement("th");
-    description.innerText = "Description";
-    header.appendChild(description);
-    thead.appendChild(header);
-    table.appendChild(thead);
-    let tbody = document.createElement("tbody");
-
     let searchstring = search.value.toLowerCase();
+    let sortby = sort.value.toLowerCase();
+    let ascending = !order.classList.contains("rotated");
     let cards = CARDS;
 
     [cards, searchstring] = filter(cards, searchstring, "type");
@@ -62,21 +50,27 @@ function update() {
     [cards, searchstring] = filter(cards, searchstring, "target");
     [cards, searchstring] = filter(cards, searchstring, "elements");
     [cards, searchstring] = filter(cards, searchstring, "description");
-
-    cards.filter(e => {
+    cards = cards.filter(e => {
         let contains = true;
         for (const word of searchstring.split(" ")) {
             contains = contains && e.toSearchString().toLowerCase().indexOf(word) >= 0;
         }
         return contains;
-    }).forEach(e => result.appendChild(e.toImage()));
-    table.appendChild(tbody);
-
-    // result.appendChild(table);
+    });
+    cards = cards.sort((a, b) => {
+        let propa = (a as any)[sortby];
+        let propb = (b as any)[sortby];
+        let st = ascending ? -1 : 1;
+        let gt = ascending ? 1 : -1;
+        return propa === propb ? 0 : (propa < propb ? st : gt);
+    });
+    for (const card of cards) {
+        result.appendChild(card.toImage());
+    }
 }
 
 
-function getFilter(search: string, name: string): [string | null, string] {
+function getFilter(search: string, name: string): [string | null, string, number | null] {
     let idx = search.indexOf(name + ":");
     if (idx >= 0) {
         let start = idx + name.length + 1;
@@ -93,9 +87,9 @@ function getFilter(search: string, name: string): [string | null, string] {
         if (end == -1) {
             end = search.length;
         }
-        return [search.substring(start, end), search.substring(0, idx) + search.substring(end + rest_off, search.length)];
+        return [search.substring(start, end), search.substring(0, idx) + search.substring(end + rest_off, search.length), idx];
     }
-    return [null, search];
+    return [null, search, null];
 }
 
 function propToString(prop: any) {
@@ -132,9 +126,3 @@ function filter(cards: Card[], searchstring: string, property: string): [Card[],
     }
     return [cards, search];
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    const search = <HTMLInputElement> document.getElementById("search");
-    search.oninput = _ => update();
-    update();
-});
