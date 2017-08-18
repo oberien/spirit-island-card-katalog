@@ -77,6 +77,19 @@ function update() {
         flex.style.height = "0px";
         result.appendChild(flex);
     }
+
+    // scale font of cardbacks to fit size
+    let ps = document.getElementsByClassName("backtext");
+    for (let i = 0; i < ps.length; i++) {
+        let p = <HTMLSpanElement> ps[i];
+        let fontsize = 16;
+        p.style.fontSize = fontsize + "px";
+        let back = (p.parentElement as any).parentElement as any;
+        while (p.offsetHeight > back.offsetHeight) {
+            fontsize -= 0.5;
+            p.style.fontSize = fontsize + "px";
+        }
+    }
 }
 
 

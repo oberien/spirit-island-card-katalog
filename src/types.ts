@@ -115,7 +115,8 @@ namespace Types {
             let back = document.createElement("div");
             back.classList.add("back");
             let backdiv = document.createElement("div");
-            backdiv.style.padding = "10px";
+            backdiv.style.paddingLeft = "10px";
+            backdiv.style.paddingRight = "10px";
             let text = "";
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
@@ -135,7 +136,8 @@ namespace Types {
             text += "<b>Target</b>: " + target + "<br/>";
             text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
-            let p = document.createElement("p");
+            let p = document.createElement("span");
+            p.classList.add("backtext");
             p.innerHTML = text;
             backdiv.appendChild(p);
             back.appendChild(backdiv);
@@ -151,3 +153,4 @@ namespace Types {
         }
     }
 }
+
