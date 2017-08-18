@@ -36,9 +36,67 @@ code {
     padding: 0.2em 0;
 }
 
+label.select {
+    position: relative;
+    display: inline-block;
+}
+
+.select select {
+    display: inline-block;
+    border: 2px solid darkgray;
+    padding: 4px 3px 3px 5px;
+    margin: 0;
+    font: inherit;
+    outline:none;
+    line-height: 1.2;
+    background: inherit;
+    border-radius: 6px 6px 0 0;
+
+    -webkit-appearance:none;
+    /*-moz-appearance: none;*/
+    /*appearance: none;*/
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    .select select {
+        padding-right:30px;
+    }
+}
+
+.select select:hover {
+    box-shadow: 0 0 3px;
+    cursor: pointer;
+}
+.select select:active {
+    box-shadow: 0 0 0;
+    cursor: pointer;
+}
+
+.select:after {
+    content: "▼";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 60%;
+    line-height: 30px;
+    padding: 0 7px;
+    background: darkgray;
+    color: white;
+
+    pointer-events:none;
+
+    border-radius: 0 6px 0 0;
+}
+
+.no-pointer-events .select:after {
+    content: none;
+}
+
 #arrow {
     font-size: 30px;
     font-weight: bold;
+    font-family: "DejaVu Serif";
     position: relative;
     top: 2px;
     display: inline-block;
