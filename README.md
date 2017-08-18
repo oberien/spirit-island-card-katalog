@@ -1,7 +1,7 @@
 # SICK - Spirit Island Card Katalog
 
 This project provides a website containing (not yet) all cards of the board game *Spirit Island*.
-It is hosted on [http://novalis.oberien.de/sick/](http://novalis.oberien.de/sick/).
+It is hosted on [https://sick.oberien.de](https://sick.oberien.de).
 
 ## Building
 
