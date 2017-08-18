@@ -50,9 +50,13 @@ function update() {
     [cards, searchstring] = filter(cards, searchstring, "target");
     [cards, searchstring] = filter(cards, searchstring, "elements");
     [cards, searchstring] = filter(cards, searchstring, "description");
+
+    let groups = searchgroups(searchstring);
+    console.log(groups);
+
     cards = cards.filter(e => {
         let contains = true;
-        for (const word of searchstring.split(" ")) {
+        for (const word of groups) {
             contains = contains && e.toSearchString().toLowerCase().indexOf(word) >= 0;
         }
         return contains;
@@ -128,4 +132,21 @@ function filter(cards: Card[], searchstring: string, property: string): [Card[],
         }
     }
     return [cards, search];
+}
+
+function searchgroups(search: string): string[] {
+    let res = [];
+    while (search.indexOf('"') >= 0) {
+        let start = search.indexOf('"');
+        let end = search.indexOf('"', start + 1);
+        if (end == -1) {
+            end = search.length;
+        }
+        res.push(search.substring(start + 1, end));
+        search = search.substring(0, start) + search.substring(end+1);
+        console.log("part: '" + res[res.length - 1] + "'");
+    }
+    console.log(search);
+    res = res.concat(search.split(" "));
+    return res;
 }
