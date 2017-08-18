@@ -7,20 +7,22 @@
     <script src="cards.js"></script>
 </head>
 <body>
-    <h1>Spirit Island Card Katalog</h1>
+    <header>
+        Spirit Island Card Katalog
+    </header>
     <div class="flex row">
-        <input class="flex-70" type="text" id="search" placeholder="Search here..." autofocus />
+        <input class="flex-75" type="text" id="search" placeholder="Search here..." autofocus />
 
-        <div class="flex-20">
+        <div class="flex flex-15 middle flex-start">
             <select id="sort">
                 <option>Type</option>
                 <option>Name</option>
-                <option>Cost</option>
+                <option selected>Cost</option>
                 <option>Speed</option>
                 <option>Range</option>
                 <option>Target</option>
             </select>
-            <span id="arrow" class="clickable rotatable">↓</span>
+            <span id="arrow" class="round clickable rotatable">↓</span>
         </div>
     </div>
     <!--<div class="filter">-->
