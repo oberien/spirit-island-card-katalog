@@ -1,3 +1,5 @@
+// This file contains material owned by Greater Than Games, LLC.
+
 /// <reference path="types.ts" />
 
 namespace DB {
