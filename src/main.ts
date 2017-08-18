@@ -74,6 +74,14 @@ function update() {
         flex.appendChild(card.toImage());
         result.appendChild(flex);
     }
+
+    // add a few extra to make sure that the trailing line is full as well
+    for (let i = 0; i < 10; i++) {
+        let flex = <HTMLDivElement> document.createElement("div");
+        flex.classList.add("flex-50", "xs-flex-33", "sm-flex-25", "md-flex-20", "l-flex-15", "xl-flex-12", "xxl-flex-10");
+        flex.style.height = "0px";
+        result.appendChild(flex);
+    }
 }
 
 
