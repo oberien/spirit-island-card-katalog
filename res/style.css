@@ -207,48 +207,16 @@ label.select {
 .flex-end {
     justify-content: flex-end;
 }
-.flex-5 {
-    flex-basis: 5%;
-}
-.flex-10 {
-    flex-basis: 10%;
-}
-.flex-15 {
-    flex-basis: 15%;
-}
-.flex-20 {
-    flex-basis: 20%;
-}
-.flex-40 {
-    flex-basis: 40%;
-}
-.flex-70 {
-    flex-basis: 70%;
-}
-.flex-75 {
-    flex-basis: 75%;
-}
-.flex-80 {
-    flex-basis: 80%;
-}
-.flex-90 {
-    flex-basis: 90%;
-}
-.flex-95 {
-    flex-basis: 95%;
-}
-.flex-100 {
-    flex-basis: 100%;
-}
 
 .inputspan {
     width: 100%;
 }
 
-.result {
-    display: flex;
-    flex-flow: row wrap;
+#result div {
+    flex-grow: 1;
+    max-width: 400px;
 }
 
-.card {
+#result div img {
+    width: 100%;
 }

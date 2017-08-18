@@ -99,35 +99,6 @@ namespace Types {
             return s;
         }
 
-        toTableRow() {
-            let row = document.createElement("tr");
-            row.insertCell().innerText = this.type;
-            row.insertCell().innerText = this.cost.toString();
-            row.insertCell().innerText = this.name;
-            row.insertCell().innerText = this.speed;
-            let range = "";
-            if (this.range != null) {
-                range = this.range.from + " " + this.range.range;
-            } else {
-                range = "---";
-            }
-            row.insertCell().innerText = range;
-            let target = "";
-            if (this.target instanceof Array) {
-                if (this.target == LandAny) {
-                    target = "Any";
-                } else {
-                    target += this.target.join(", ");
-                }
-            } else {
-                target += this.target;
-            }
-            row.insertCell().innerText = target;
-            row.insertCell().innerText = this.elements.join(", ");
-            row.insertCell().innerText = this.description;
-            return row;
-        }
-
         toImage() {
             let img = document.createElement("img");
             img.src = this.toImageName();
