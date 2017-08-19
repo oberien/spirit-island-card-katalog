@@ -75,8 +75,10 @@ namespace Types {
     }
 
     export enum CardType {
-        Minor = "Minor",
-        Major = "Major",
+        BasegameMinor = "Basegame Minor",
+        BasegameMajor = "Basegame Major",
+        ExpansionMinor = "Expansion Minor",
+        ExpansionMajor = "Expansion Major",
     }
 
     export type PowerType = Spirit | CardType;
