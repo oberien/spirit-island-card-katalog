@@ -104,7 +104,6 @@ namespace Types {
         toCard() {
             let container = document.createElement("div");
             container.classList.add("flip-container");
-            container.onclick = () => container.classList.toggle("flipped");
             let flipper = document.createElement("div");
             flipper.classList.add("flipper");
 
@@ -139,7 +138,6 @@ namespace Types {
             text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
             let p = document.createElement("span");
-            p.classList.add("backtext");
             p.innerHTML = text;
             backdiv.appendChild(p);
             back.appendChild(backdiv);
@@ -147,6 +145,19 @@ namespace Types {
             flipper.appendChild(back);
             flipper.appendChild(front);
             container.appendChild(flipper);
+
+            container.onclick = () => {
+                // scale font of cardbacks to fit size
+                let fontsize = 16;
+                p.style.fontSize = fontsize + "px";
+                let back = (p.parentElement as any).parentElement as any;
+                while (p.offsetHeight > back.offsetHeight) {
+                    fontsize -= 0.5;
+                    p.style.fontSize = fontsize + "px";
+                }
+                container.classList.toggle("flipped");
+            };
+
             return container;
         }
 
