@@ -129,6 +129,8 @@ label.select {
 .front {
     position: relative;
     transform: rotateY(0deg);
+    -moz-backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
 
@@ -139,6 +141,8 @@ label.select {
     width: 100%;
     height: 100%;
     transform: rotateY(180deg);
+    -moz-backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
 
