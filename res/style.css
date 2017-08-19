@@ -3,28 +3,25 @@ body {
     min-height: 100vh;
     margin: 0 auto;
     flex-direction: column;
-    margin-bottom: 40px;
 }
 
 header {
     background-color: lightgray;
-    padding-left: 0.5em;
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.name {
     padding-top: 5px;
     padding-bottom: 5px;
-    margin-bottom: 10px;
     font-family: Arial, sans-serif;
     font-size: 40px;
 }
 
-footer {
-    position: fixed;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    margin-top: 20px;
-    padding: 5px;
-    background-color: lightgray;
-    text-align: center;
+.disclaimer {
+    font-size: 14px;
+    padding-left: 10px;
+    padding-bottom: 5px;
 }
 
 /* ripped straight from github */
