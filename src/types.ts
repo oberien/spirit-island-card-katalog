@@ -63,15 +63,15 @@ namespace Types {
         Animal = "Animal",
     }
 
-    export enum Spirit {
-        ASpreadOfRampantGreen = "A Spread of Rampant Green",
-        BringerOfDreamsAndNightmares = "Bringer of Dreams and Nightmares",
-        LightngingsSwiftStrike = "Lightning's Swift Strike",
-        OceansHungryGrasp = "Ocean's Hungry Grasp",
-        RiverSurgesInSunlight = "River Surges in Sunlight",
-        ShadowsFlickerLikeFlame = "Shadows Flicker Like Flame",
-        Thunderspeaker = "Thunderspeaker",
-        VitalStrengthOfTheEarth = "Vital Strength of the Earth",
+    export enum Unique {
+        ASpreadOfRampantGreen = "Unique: A Spread of Rampant Green",
+        BringerOfDreamsAndNightmares = "Unique: Bringer of Dreams and Nightmares",
+        LightngingsSwiftStrike = "Unique: Lightning's Swift Strike",
+        OceansHungryGrasp = "Unique: Ocean's Hungry Grasp",
+        RiverSurgesInSunlight = "Unique: River Surges in Sunlight",
+        ShadowsFlickerLikeFlame = "Unique: Shadows Flicker Like Flame",
+        Thunderspeaker = "Unique: Thunderspeaker",
+        VitalStrengthOfTheEarth = "Unique: Vital Strength of the Earth",
     }
 
     export enum CardType {
@@ -81,7 +81,7 @@ namespace Types {
         ExpansionMajor = "Expansion Major",
     }
 
-    export type PowerType = Spirit | CardType;
+    export type PowerType = Unique | CardType;
 
     export class Card {
         constructor(public type: PowerType, public name: string, public cost: number, public speed: Speed,
