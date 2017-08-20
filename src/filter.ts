@@ -27,9 +27,9 @@ namespace Filter {
     }
 
     class PropFilter extends Filter {
-        constructor(private prop: string, private f: (value: any) => boolean) {
+        constructor(private property: string, private f: (value: any) => boolean) {
             super((card) => {
-                let val = (card as any)[this.prop];
+                let val = (card as any)[this.property];
                 if (val == null) {
                     return false;
                 }
@@ -38,34 +38,77 @@ namespace Filter {
         }
 
         toString() {
-            return "PropFilter on " + this.prop + ": " + this.f.toString();
+            return "PropFilter on " + this.property + ": " + this.f.toString();
         }
     }
 
     class IncludesFilter extends Filter {
-        constructor(includes: string) {
+        constructor(private includes: string) {
             super((card) => {
                 const cardstring = card.toSearchString().toLowerCase();
                 return cardstring.includes(includes);
             });
         }
+
+        toString() {
+            return "IncludesFilter should include '" + this.includes + "'";
+        }
     }
 
-    class PropIncludesFilter extends Filter {
+    class PropIncludesFilter extends PropFilter {
         constructor(private prop: string, private includes: string) {
-            super((card) => {
-                let val = (card as any)[this.prop];
-                if (val == null) {
-                    return false;
-                }
+            super(prop, (val) => {
                 const propstring = propToString(val).toLowerCase();
                 return propstring.includes(this.includes);
             });
         }
 
         toString() {
-            return "PropIncludesFilter on " + this.prop + " should include " + this.includes;
+            return "PropIncludesFilter on " + this.prop + " should include '" + this.includes + "'";
         }
+    }
+
+    class PropWholeWordFilter extends PropFilter {
+        private regex: RegExp;
+
+        constructor(private prop: string, private word: string) {
+            super(prop, (val) => {
+                const propstring = propToString(val).toLowerCase();
+                return this.regex.test(propstring);
+            });
+            let escaped = regexEscape(this.word);
+            let delim = "(^|$|[^a-zA-Z0-9_])";
+            let regex = delim + escaped + delim;
+            this.regex = new RegExp(regex);
+        }
+
+        toString() {
+            return "PropWholeWordFilter on " + this.prop + " should include word group '" + this.word
+                + "' by testing for " + this.regex;
+        }
+    }
+
+    class WholeWordFilter extends Filter {
+        private regex: RegExp;
+
+        constructor(private word: string) {
+            super((card) => {
+                const cardstring = card.toSearchString().toLowerCase();
+                return this.regex.test(cardstring);
+            });
+            let escaped = regexEscape(this.word);
+            let delim = "(^|$|[^a-zA-Z0-9_])";
+            let regex = delim + escaped + delim;
+            this.regex = new RegExp(regex);
+        }
+
+        toString() {
+            return "WholeWordFilter should include word group '" + this.word + "' by testing for " + this.regex;
+        }
+    }
+
+    function regexEscape(str: string) {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
     function getPropertyFilterString(search: string, name: string): [string | null, string, number | null] {
@@ -73,18 +116,14 @@ namespace Filter {
         if (idx >= 0) {
             let start = idx + name.length + 1;
             let end;
-            let rest_off;
             if (search[start] == '"') {
-                end = search.indexOf('"', start) + 1;
-                rest_off = 1;
+                end = search.indexOf('"', start + 1);
+                end = end == -1 ? search.length : end + 1;
             } else {
                 end = search.indexOf(' ', start);
-                rest_off = 1;
+                end = end == -1 ? search.length : end;
             }
-            if (end == -1) {
-                end = search.length;
-            }
-            return [search.substring(start, end), search.substring(0, idx) + search.substring(end + rest_off, search.length), idx];
+            return [search.substring(start, end), search.substring(0, idx) + search.substring(end + 1, search.length), idx];
         }
         return [null, search, null];
     }
@@ -115,6 +154,14 @@ namespace Filter {
                 filters.push(new PropFilter(property, (val) => val < filterString.substring(2)));
             } else if (filterString.startsWith(">")) {
                 filters.push(new PropFilter(property, (val) => val > filterString.substring(2)));
+            } else if (filterString.startsWith('"')) {
+                let end;
+                if (filterString.endsWith('"') && filterString.length > 1) {
+                    end = filterString.length - 1;
+                } else {
+                    end = filterString.length;
+                }
+                filters.push(new PropWholeWordFilter(property, filterString.substring(1, end)));
             } else {
                 filters.push(new PropIncludesFilter(property, filterString));
             }
@@ -141,7 +188,17 @@ namespace Filter {
         // word groups
         let groups = searchgroups(searchstring);
         for (const group of groups) {
-            filters.push(new IncludesFilter(group));
+            if (group.startsWith('"')) {
+                let end;
+                if (group.endsWith('"')) {
+                    end = group.length - 1;
+                } else {
+                    end = group.length;
+                }
+                filters.push(new WholeWordFilter(group.substring(1, end)));
+            } else {
+                filters.push(new IncludesFilter(group));
+            }
         }
         return filters;
     }
@@ -159,12 +216,12 @@ namespace Filter {
         }
         while (search.indexOf('"') >= 0) {
             let start = search.indexOf('"');
-            let end = search.indexOf('"', start + 1);
-            if (end == -1) {
+            let end = search.indexOf('"', start + 1) + 1;
+            if (end == 0) {
                 end = search.length;
             }
-            res.push(search.substring(start + 1, end));
-            search = search.substring(0, start) + search.substring(end + 1);
+            res.push(search.substring(start, end));
+            search = search.substring(0, start) + search.substring(end);
         }
         res = res.concat(search.split(" "));
         return res;
