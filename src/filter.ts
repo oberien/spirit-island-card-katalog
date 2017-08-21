@@ -151,9 +151,9 @@ namespace Filter {
             } else if (filterString.startsWith(">=")) {
                 filters.push(new PropFilter(property, (val) => val >= filterString.substring(2)));
             } else if (filterString.startsWith("<")) {
-                filters.push(new PropFilter(property, (val) => val < filterString.substring(2)));
+                filters.push(new PropFilter(property, (val) => val < filterString.substring(1)));
             } else if (filterString.startsWith(">")) {
-                filters.push(new PropFilter(property, (val) => val > filterString.substring(2)));
+                filters.push(new PropFilter(property, (val) => val > filterString.substring(1)));
             } else if (filterString.startsWith('"')) {
                 let end;
                 if (filterString.endsWith('"') && filterString.length > 1) {
