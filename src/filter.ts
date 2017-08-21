@@ -130,7 +130,7 @@ namespace Filter {
 
     function propToString(prop: any) {
         if (prop == LandAny) {
-            return "Any (" + prop.toString() + ")";
+            return "Any";
         }
         return prop.toString();
     }

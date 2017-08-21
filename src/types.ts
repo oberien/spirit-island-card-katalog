@@ -31,7 +31,7 @@ namespace Types {
     export type Target = Land | Land[] | TargetSpirit | TargetProperty;
 
     export enum Source {
-        Site = "Site",
+        Presence = "Presence",
         SacredSite = "SacredSite",
     }
 
@@ -96,8 +96,10 @@ namespace Types {
             }
             if (this.target == LandAny) {
                 s += " Any";
+            } else {
+                s += " " + this.target;
             }
-            s += " " + this.target + " " + this.elements + " " + this.description;
+            s += " " + this.elements + " " + this.description;
             return s;
         }
 
