@@ -26,6 +26,12 @@ namespace Filter {
         }
     }
 
+    class NegationFilter extends Filter {
+        constructor(filter: Filter) {
+            super((card) => !filter(card));
+        }
+    }
+
     class PropFilter extends Filter {
         constructor(private property: string, private f: (value: any) => boolean) {
             super((card) => {
@@ -135,6 +141,30 @@ namespace Filter {
         return prop.toString();
     }
 
+    function stringToPropertyFilter(filterString: string, property: string): Filter {
+        if (filterString.startsWith("<=")) {
+            return new PropFilter(property, (val) => val <= filterString.substring(2));
+        } else if (filterString.startsWith(">=")) {
+            return new PropFilter(property, (val) => val >= filterString.substring(2));
+        } else if (filterString.startsWith("<")) {
+            return new PropFilter(property, (val) => val < filterString.substring(1));
+        } else if (filterString.startsWith(">")) {
+            return new PropFilter(property, (val) => val > filterString.substring(1));
+        } else if (filterString.startsWith("!")) {
+            return new NegationFilter(stringToPropertyFilter(filterString.substring(1), property))
+        } else if (filterString.startsWith('"')) {
+            let end;
+            if (filterString.endsWith('"') && filterString.length > 1) {
+                end = filterString.length - 1;
+            } else {
+                end = filterString.length;
+            }
+            return new PropWholeWordFilter(property, filterString.substring(1, end));
+        } else {
+            return new PropIncludesFilter(property, filterString);
+        }
+    }
+
     function getPropertyFilters(searchstring: string, property: string): [Filter[], string] {
         let filter: string | null = "";
         let search: string = searchstring;
@@ -144,28 +174,7 @@ namespace Filter {
             if (filter == null) {
                 break;
             }
-            let filterString = filter as string;
-
-            if (filterString.startsWith("<=")) {
-                filters.push(new PropFilter(property, (val) => val <= filterString.substring(2)));
-            } else if (filterString.startsWith(">=")) {
-                filters.push(new PropFilter(property, (val) => val >= filterString.substring(2)));
-            } else if (filterString.startsWith("<")) {
-                filters.push(new PropFilter(property, (val) => val < filterString.substring(1)));
-            } else if (filterString.startsWith(">")) {
-                filters.push(new PropFilter(property, (val) => val > filterString.substring(1)));
-            } else if (filterString.startsWith('"')) {
-                let end;
-                if (filterString.endsWith('"') && filterString.length > 1) {
-                    end = filterString.length - 1;
-                } else {
-                    end = filterString.length;
-                }
-                filters.push(new PropWholeWordFilter(property, filterString.substring(1, end)));
-            } else {
-                filters.push(new PropIncludesFilter(property, filterString));
-            }
-
+            filters.push(stringToPropertyFilter(filter as string, property));
         }
         return [filters, search];
     }
