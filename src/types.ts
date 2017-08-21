@@ -139,6 +139,8 @@ namespace Types {
             text += "<b>Target</b>: " + target + "<br/>";
             text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
+            text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
+                + encodeURIComponent(this.name) + "\" target='_blank'>FAQ</a><br/>";
             let p = document.createElement("span");
             p.innerHTML = text;
             backdiv.appendChild(p);
@@ -148,14 +150,20 @@ namespace Types {
             flipper.appendChild(front);
             container.appendChild(flipper);
 
-            container.onclick = () => {
-                // scale font of cardbacks to fit size
-                let fontsize = 16;
-                p.style.fontSize = fontsize + "px";
-                let back = (p.parentElement as any).parentElement as any;
-                while (p.offsetHeight > back.offsetHeight) {
-                    fontsize -= 0.5;
+            container.onclick = (e) => {
+                if (e.target instanceof HTMLAnchorElement) {
+                    // link was clicked - ignore
+                    return;
+                }
+                if (!container.classList.contains("flipped")) {
+                    // scale font of cardbacks to fit size
+                    let fontsize = 16;
                     p.style.fontSize = fontsize + "px";
+                    let back = (p.parentElement as any).parentElement as any;
+                    while (p.offsetHeight > back.offsetHeight) {
+                        fontsize -= 0.5;
+                        p.style.fontSize = fontsize + "px";
+                    }
                 }
                 container.classList.toggle("flipped");
             };
