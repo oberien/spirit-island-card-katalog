@@ -150,9 +150,18 @@ namespace Types {
             flipper.appendChild(front);
             container.appendChild(flipper);
 
-            container.onclick = (e) => {
+            let x: number, y: number;
+            container.onmousedown = (e) => {
+                x = e.x;
+                y = e.y;
+            };
+            container.onmouseup = (e) => {
                 if (e.target instanceof HTMLAnchorElement) {
                     // link was clicked - ignore
+                    return;
+                }
+                if (Math.abs(x - e.x) > 5 || Math.abs(y - e.y) > 5) {
+                    // it was a drag (e.g. to select and copy something) - ignore
                     return;
                 }
                 if (!container.classList.contains("flipped")) {
