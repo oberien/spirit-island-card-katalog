@@ -122,8 +122,8 @@ namespace Filter {
         if (idx >= 0) {
             let start = idx + name.length + 1;
             let end;
-            if (search[start] == '"') {
-                end = search.indexOf('"', start + 1);
+            if (search[start] == '"' || (search[start] == "!" && search.length > start+1 && search[start+1] == '"')) {
+                end = search.indexOf('"', search[start] == "!" ? start + 2 : start + 1);
                 end = end == -1 ? search.length : end + 1;
             } else {
                 end = search.indexOf(' ', start);

@@ -11,6 +11,7 @@ namespace Types {
         Mountain = "Mountain",
         Sand = "Sand",
         Coastal = "Coastal",
+        Inland = "Inland",
     }
 
     export const LandAny = [Land.Ocean, Land.Jungle, Land.Wetland, Land.Mountain, Land.Sand, Land.Coastal];
@@ -23,6 +24,7 @@ namespace Types {
     export enum TargetProperty {
         Dahan = "Dahan",
         Invaders = "Invaders",
+        City = "City",
         Blight = "Blight",
         NoBlight = "No Blight",
         NoInvaders = "No Invaders",
@@ -44,7 +46,12 @@ namespace Types {
             if (this.land) {
                 res += "on" + this.land + ", ";
             }
-            return res + this.range;
+            if (Array.isArray(this.range)) {
+                res += this.range.join(" & ");
+            } else {
+                res += this.range;
+            }
+            return res;
         }
 
         valueOf() {
@@ -72,6 +79,8 @@ namespace Types {
         ShadowsFlickerLikeFlame = "Unique: Shadows Flicker Like Flame",
         Thunderspeaker = "Unique: Thunderspeaker",
         VitalStrengthOfTheEarth = "Unique: Vital Strength of the Earth",
+        SharpFangsBehindTheLeaves = "Unique: Sharp Fangs behind the Leaves",
+        KeeperOfTheForbiddenWilds = "Unique: Keeper of the Forbidden Wilds",
     }
 
     export enum CardType {
@@ -86,7 +95,7 @@ namespace Types {
     export class Card {
         constructor(public type: PowerType, public name: string, public cost: number, public speed: Speed,
                     public range: Ranges | null, public target: Target, public elements: Elements[],
-                    public description: string) {
+                    public artist: string, public description: string) {
         }
 
         toSearchString() {
@@ -139,6 +148,7 @@ namespace Types {
             text += "<b>Target</b>: " + target + "<br/>";
             text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
+            text += "<b>Artist</b>: " + this.artist + "<br/>";
             text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
                 + encodeURIComponent(this.name) + "\" target='_blank'>FAQ</a><br/>";
             let p = document.createElement("span");
