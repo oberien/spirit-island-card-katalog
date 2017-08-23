@@ -55,6 +55,9 @@ namespace Types {
         }
 
         valueOf() {
+            if (Array.isArray(this.range)) {
+                return Math.max.apply(null, this.range);
+            }
             return this.range;
         }
     }
@@ -115,7 +118,7 @@ namespace Types {
             } else {
                 s += " " + this.target;
             }
-            s += " " + this.elements + " " + this.description;
+            s += " " + this.elements + " " + this.artist + " " + this.description;
             return s;
         }
 

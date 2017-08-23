@@ -16,6 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const order = <HTMLDivElement> document.getElementById("arrow");
 
     body.onresize = () => CARDS.forEach(c => c.onresize());
+    body.onkeypress = e => {
+        if (e.key === 's' && !(e.target instanceof HTMLInputElement)) {
+            search.focus();
+        }
+    };
     search.oninput = _ => update();
     sort.onchange = _ => update();
     order.onclick = _ => {
