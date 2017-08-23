@@ -193,6 +193,10 @@ label.select {
     width: 100%;
 }
 
+#num-results {
+    text-align: center;
+}
+
 #result div {
     flex-grow: 1;
     max-width: 400px;

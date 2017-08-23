@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function update() {
     const search = <HTMLInputElement> document.getElementById("search");
     const result = <HTMLParagraphElement> document.getElementById("result");
+    const numResults = <HTMLDivElement> document.getElementById("num-results");
     const sort = <HTMLSelectElement> document.getElementById("sort");
     const order = <HTMLDivElement> document.getElementById("arrow");
 
@@ -42,6 +43,8 @@ function update() {
     let cards = CARDS;
 
     cards = filterAll(cards, searchstring);
+
+    numResults.innerText = "Results: " + cards.length;
 
     cards = cards.sort((a, b) => {
         let propa = (a as any)[sortby];
