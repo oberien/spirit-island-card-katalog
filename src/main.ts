@@ -10,10 +10,12 @@ const CARDS = DB.CARDS;
 const filterAll = Filter.filterAll;
 
 document.addEventListener("DOMContentLoaded", () => {
+    const body = <HTMLBodyElement> document.getElementsByTagName("body")[0];
     const search = <HTMLInputElement> document.getElementById("search");
     const sort = <HTMLSelectElement> document.getElementById("sort");
     const order = <HTMLDivElement> document.getElementById("arrow");
 
+    body.onresize = () => CARDS.forEach(c => c.onresize());
     search.oninput = _ => update();
     sort.onchange = _ => update();
     order.onclick = _ => {

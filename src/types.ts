@@ -93,9 +93,16 @@ namespace Types {
     export type PowerType = Unique | CardType;
 
     export class Card {
+        private fontSize: number | null;
+        private p: HTMLSpanElement | null;
+        private container: HTMLDivElement | null;
+
         constructor(public type: PowerType, public name: string, public cost: number, public speed: Speed,
                     public range: Ranges | null, public target: Target, public elements: Elements[],
                     public artist: string, public description: string) {
+            this.fontSize = null;
+            this.p = null;
+            this.container = null;
         }
 
         toSearchString() {
@@ -114,6 +121,7 @@ namespace Types {
 
         toCard() {
             let container = document.createElement("div");
+            this.container = container;
             container.classList.add("flip-container");
             let flipper = document.createElement("div");
             flipper.classList.add("flipper");
@@ -152,6 +160,7 @@ namespace Types {
             text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
                 + encodeURIComponent(this.name) + "\" target='_blank'>FAQ</a><br/>";
             let p = document.createElement("span");
+            this.p = p;
             p.innerHTML = text;
             backdiv.appendChild(p);
             back.appendChild(backdiv);
@@ -175,13 +184,10 @@ namespace Types {
                     return;
                 }
                 if (!container.classList.contains("flipped")) {
-                    // scale font of cardbacks to fit size
-                    let fontsize = 16;
-                    p.style.fontSize = fontsize + "px";
-                    let back = (p.parentElement as any).parentElement as any;
-                    while (p.offsetHeight > back.offsetHeight) {
-                        fontsize -= 0.5;
-                        p.style.fontSize = fontsize + "px";
+                    if (this.fontSize == null) {
+                        this.scaleFontSize();
+                    } else {
+                        p.style.fontSize = this.fontSize + "px";
                     }
                 }
                 container.classList.toggle("flipped");
@@ -192,6 +198,25 @@ namespace Types {
 
         toImageName() {
             return "imgs/cards/" + this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "") + ".jpg";
+        }
+
+        onresize() {
+            this.fontSize = null;
+            if (this.p != null && this.container != null && this.container.classList.contains("flipped")) {
+                this.scaleFontSize();
+            }
+        }
+
+        // scale font of cardbacks to fit size
+        scaleFontSize() {
+            let p = <HTMLSpanElement> this.p;
+            this.fontSize = 16;
+            p.style.fontSize = this.fontSize + "px";
+            let back = (p.parentElement as any).parentElement as any;
+            while (p.offsetHeight > back.offsetHeight) {
+                this.fontSize -= 0.5;
+                p.style.fontSize = this.fontSize + "px";
+            }
         }
     }
 }
