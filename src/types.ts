@@ -161,10 +161,10 @@ namespace Types {
             let overlay = <HTMLDivElement> document.createElement("div");
             overlay.style.position = "absolute";
             overlay.style.backgroundColor = toColor(this.type);
-            overlay.style.width = "72%";
-            overlay.style.height = "35%";
-            overlay.style.left = "22%";
-            overlay.style.top = "59%";
+            overlay.style.width = "74%";
+            overlay.style.height = "37%";
+            overlay.style.left = "21%";
+            overlay.style.top = "58%";
             overlay.style.zIndex = "1";
             front.appendChild(overlay);
 
