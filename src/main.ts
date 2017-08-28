@@ -9,6 +9,16 @@ const Card = Types.Card;
 const CARDS = DB.CARDS;
 const filterAll = Filter.filterAll;
 
+function getParameterByName(name: string) {
+    let url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const body = <HTMLBodyElement> document.getElementsByTagName("body")[0];
     const search = <HTMLInputElement> document.getElementById("search");
@@ -28,6 +38,12 @@ document.addEventListener("DOMContentLoaded", () => {
         update();
     };
 
+    // get query parameter
+    let query = getParameterByName("query");
+    if (query) {
+        search.value = query;
+    }
+
     update();
 
 });
@@ -38,6 +54,8 @@ function update() {
     const numResults = <HTMLDivElement> document.getElementById("num-results");
     const sort = <HTMLSelectElement> document.getElementById("sort");
     const order = <HTMLDivElement> document.getElementById("arrow");
+
+    history.replaceState(null, "", "?query=" + encodeURIComponent(search.value));
 
     // clear old content
     while (result.firstChild) {
