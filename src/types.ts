@@ -99,12 +99,10 @@ namespace Types {
         switch (type) {
             case CardType.BasegameMinor:
             case CardType.ExpansionMinor:
-                // return "rgba(50, 50, 50, 0.3)";
-                return "saddlebrown";
+                return "rgba(50, 50, 50, 0.3)";
             case CardType.BasegameMajor:
             case CardType.ExpansionMajor:
-                // return "rgba(255, 255, 0, 0.25)";
-                return "goldenrod";
+                return "rgba(255, 255, 0, 0.25)";
             case Unique.ASpreadOfRampantGreen:
             case Unique.BringerOfDreamsAndNightmares:
             case Unique.LightngingsSwiftStrike:
@@ -115,9 +113,7 @@ namespace Types {
             case Unique.VitalStrengthOfTheEarth:
             case Unique.SharpFangsBehindTheLeaves:
             case Unique.KeeperOfTheForbiddenWilds:
-                // return "rgba(0, 128, 0, 0.25)";
-                // return "darkolivegreen";
-                return "#6B8E23";
+                return "rgba(0, 128, 0, 0.25)";
             default:
                 throw new Error();
         }
@@ -164,14 +160,13 @@ namespace Types {
             front.appendChild(img);
             let overlay = <HTMLDivElement> document.createElement("div");
             overlay.style.position = "absolute";
-            overlay.style.border = "15px solid";
-            overlay.style.borderColor = toColor(this.type);
-            overlay.style.width = "90%";
-            overlay.style.height = "93%";
-            overlay.style.left = "0";
-            overlay.style.top = "0";
+            overlay.style.backgroundColor = toColor(this.type);
+            overlay.style.width = "67%";
+            overlay.style.height = "10%";
+            overlay.style.left = "27%";
+            overlay.style.top = "4%";
             overlay.style.zIndex = "1";
-            overlay.style.borderRadius = "20px";
+            overlay.style.borderRadius = "0 13px 0 0";
             front.appendChild(overlay);
 
             let back = document.createElement("div");
