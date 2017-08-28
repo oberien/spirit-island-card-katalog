@@ -99,10 +99,10 @@ namespace Types {
         switch (type) {
             case CardType.BasegameMinor:
             case CardType.ExpansionMinor:
-                return "rgba(128, 128, 128, 0.25)";
+                return "rgba(50, 50, 50, 0.3)";
             case CardType.BasegameMajor:
             case CardType.ExpansionMajor:
-                return "rgba(255, 150, 0, 0.3)";
+                return "rgba(255, 255, 0, 0.25)";
             case Unique.ASpreadOfRampantGreen:
             case Unique.BringerOfDreamsAndNightmares:
             case Unique.LightngingsSwiftStrike:
@@ -161,11 +161,12 @@ namespace Types {
             let overlay = <HTMLDivElement> document.createElement("div");
             overlay.style.position = "absolute";
             overlay.style.backgroundColor = toColor(this.type);
-            overlay.style.width = "74%";
-            overlay.style.height = "37%";
-            overlay.style.left = "21%";
-            overlay.style.top = "58%";
+            overlay.style.width = "67%";
+            overlay.style.height = "10%";
+            overlay.style.left = "27%";
+            overlay.style.top = "4%";
             overlay.style.zIndex = "1";
+            overlay.style.borderRadius = "0 13px 0 0";
             front.appendChild(overlay);
 
             let back = document.createElement("div");
