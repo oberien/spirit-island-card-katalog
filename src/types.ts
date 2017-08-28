@@ -95,6 +95,30 @@ namespace Types {
 
     export type PowerType = Unique | CardType;
 
+    function toColor(type: string) {
+        switch (type) {
+            case CardType.BasegameMinor:
+            case CardType.ExpansionMinor:
+                return "rgba(128, 128, 128, 0.25)";
+            case CardType.BasegameMajor:
+            case CardType.ExpansionMajor:
+                return "rgba(255, 150, 0, 0.3)";
+            case Unique.ASpreadOfRampantGreen:
+            case Unique.BringerOfDreamsAndNightmares:
+            case Unique.LightngingsSwiftStrike:
+            case Unique.OceansHungryGrasp:
+            case Unique.RiverSurgesInSunlight:
+            case Unique.ShadowsFlickerLikeFlame:
+            case Unique.Thunderspeaker:
+            case Unique.VitalStrengthOfTheEarth:
+            case Unique.SharpFangsBehindTheLeaves:
+            case Unique.KeeperOfTheForbiddenWilds:
+                return "rgba(0, 128, 0, 0.25)";
+            default:
+                throw new Error();
+        }
+    }
+
     export class Card {
         private fontSize: number | null;
         private p: HTMLSpanElement | null;
@@ -134,6 +158,15 @@ namespace Types {
             let img = document.createElement("img");
             img.src = this.toImageName();
             front.appendChild(img);
+            let overlay = <HTMLDivElement> document.createElement("div");
+            overlay.style.position = "absolute";
+            overlay.style.backgroundColor = toColor(this.type);
+            overlay.style.width = "72%";
+            overlay.style.height = "35%";
+            overlay.style.left = "22%";
+            overlay.style.top = "59%";
+            overlay.style.zIndex = "1";
+            front.appendChild(overlay);
 
             let back = document.createElement("div");
             back.classList.add("back");
