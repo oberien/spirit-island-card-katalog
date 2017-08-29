@@ -194,8 +194,9 @@ namespace Types {
             text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
             text += "<b>Artist</b>: " + this.artist + "<br/>";
+            const tag = this.type.startsWith("Unique") ? this.name + " (" + this.type.substring(8) + ")" : this.name;
             text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
-                + encodeURIComponent(this.name) + "\" target='_blank'>FAQ</a><br/>";
+                + encodeURIComponent(tag) + "\" target='_blank'>FAQ</a><br/>";
             let p = document.createElement("span");
             this.p = p;
             p.innerHTML = text;
