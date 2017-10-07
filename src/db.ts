@@ -425,7 +425,7 @@ namespace DB {
         new Card(CardType.ExpansionMinor, "Call to Trade", 1, Speed.Fast, new Ranges(Source.Presence, 2), TargetProperty.Dahan,
             [Elements.Air, Elements.Water, Elements.Earth, Elements.Plant], "Kat Birmelin",
             "You may Gather 1 Dahan. If the Terror Level is 2 or lower, Gather 1 Town and the first Ravage in target land this turn becomes a Build there instead."),
-        new Card(CardType.ExpansionMinor, "Confunding Mists", 1, Speed.Fast, new Ranges(Source.Presence, 1), LandAny,
+        new Card(CardType.ExpansionMinor, "Confounding Mists", 1, Speed.Fast, new Ranges(Source.Presence, 1), LandAny,
             [Elements.Air, Elements.Water], "Loic Belliau",
             "Defend 4. -or- Each Invader added to target land this turn may be immediately Pushed to any adjacent land."),
         new Card(CardType.ExpansionMinor, "Cycles of Time and Tide", 1, Speed.Fast, new Ranges(Source.Presence, 1), [Land.Coastal],
