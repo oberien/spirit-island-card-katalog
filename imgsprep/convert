@@ -1,0 +1,14 @@
+#!/bin/sh
+set -xe
+
+# convert
+#for f in *-00*.JPG; do
+  #ffmpeg -i $f -preset drawing -compression_level 6 -qscale 25 `basename $f .JPG`.webp
+#done
+
+# scale down
+for f in *-00*.JPG; do
+  #ffmpeg -i $f -vf scale=600:-1 -preset drawing -compression_level 6 -qscale 50 `basename $f .JPG`_small.webp
+  #ffmpeg -i $f -vf scale=300:-1 `basename $f .JPG`_small.jpg
+  convert -strip -interlace Plane -quality 80 -resize 300 $f `basename $f .JPG`.jpg
+done

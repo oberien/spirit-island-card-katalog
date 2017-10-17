@@ -1,0 +1,6 @@
+#!/bin/sh
+set -xe
+
+for f in *.JPG; do
+  ./multicrop -b white -f 20 -u 1 $f $f
+done
