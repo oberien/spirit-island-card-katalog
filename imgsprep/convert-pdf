@@ -1,0 +1,29 @@
+#!/bin/sh
+set -e
+
+echo > ocr.txt
+
+# scale down
+for f in {base,branchclaw,promo}/{major,minor,spirit}-*.ppm; do
+  if [ ! -f $f ]; then
+    continue
+  fi
+  base="`dirname $f`/`basename $f .ppm`"
+
+  # ocr name
+  convert -crop 500x100+200+40 -level 65%,75% $f $base.pbm
+  name=`tesseract $base.pbm stdout 2>/dev/null`
+  name=`echo -n $name`
+  name=`tr [[:upper:]] [[:lower:]] <<< "$name"`
+  name=`sed s/0/o/g <<< "$name"`
+  name=`sed 's/[^a-z]/ /g' <<< "$name"`
+  name=`sed 's/\s\+/_/g' <<< "$name"`
+  echo $base $name >> ocr.txt
+
+  # transparent corners
+  convert $f -virtual-pixel transparent -channel A -blur 0x20 $base.gif
+  # webp
+  ffmpeg -y -i $base.gif -vf scale=600:-1 -preset drawing -compression_level 6 -qscale 50 $base.webp
+  # jpg
+  convert -background white -alpha remove -strip -interlace Plane -quality 80 -resize 300 $base.gif $base.jpg
+done

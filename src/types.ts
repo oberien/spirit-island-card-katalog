@@ -30,7 +30,9 @@ namespace Types {
         NoInvaders = "No Invaders",
     }
 
-    export type Target = Land | Land[] | TargetSpirit | TargetProperty;
+    export type TargetType = Land | TargetSpirit | TargetProperty;
+
+    export type Target = TargetType | TargetType[];
 
     export enum Source {
         Presence = "Presence",
@@ -84,6 +86,8 @@ namespace Types {
         VitalStrengthOfTheEarth = "Unique: Vital Strength of the Earth",
         SharpFangsBehindTheLeaves = "Unique: Sharp Fangs behind the Leaves",
         KeeperOfTheForbiddenWilds = "Unique: Keeper of the Forbidden Wilds",
+        SerpentSlumberingBeneathTheIsland = "Unique: Serpent Slumbering Beneath the Island",
+        HeartOfTheWildfire = "Unique: Heart of the Wildfire",
     }
 
     export enum CardType {
@@ -113,6 +117,8 @@ namespace Types {
             case Unique.VitalStrengthOfTheEarth:
             case Unique.SharpFangsBehindTheLeaves:
             case Unique.KeeperOfTheForbiddenWilds:
+            case Unique.HeartOfTheWildfire:
+            case Unique.SerpentSlumberingBeneathTheIsland:
                 return "rgba(0, 128, 0, 0.25)";
             default:
                 throw new Error();
@@ -136,6 +142,9 @@ namespace Types {
             let s = this.type + " " + this.cost + " " + this.name + " " + this.speed;
             if (this.range != null) {
                 s += " " + this.range.from + " " + this.range.range;
+                if (this.range.land != null) {
+                    s += " " + this.range.land;
+                }
             }
             if (this.target == LandAny) {
                 s += " Any";
@@ -155,9 +164,21 @@ namespace Types {
 
             let front = document.createElement("div");
             front.classList.add("front");
-            let img = document.createElement("img");
-            img.src = this.toImageName();
-            front.appendChild(img);
+            // image with webp by default and jpg as fallback
+            let picture = document.createElement("picture");
+            let webp = document.createElement("source");
+            webp.srcset = this.toImageName() + ".webp";
+            webp.type = "image/webp";
+            picture.appendChild(webp);
+            let jpg = document.createElement("source");
+            jpg.srcset = this.toImageName() + ".jpg";
+            jpg.type = "image/jpg";
+            picture.appendChild(jpg);
+            let fallback = document.createElement("img");
+            fallback.src = this.toImageName() + ".jpg";
+            picture.appendChild(fallback);
+            front.appendChild(picture);
+
             let overlay = <HTMLDivElement> document.createElement("div");
             overlay.style.position = "absolute";
             overlay.style.backgroundColor = toColor(this.type);
@@ -185,7 +206,7 @@ namespace Types {
                 if (this.target == LandAny) {
                     target = "Any"
                 } else {
-                    target = (this.target as Land[]).join(", ");
+                    target = (this.target as TargetType[]).join(", ");
                 }
             } else {
                 target = this.target;
@@ -235,7 +256,7 @@ namespace Types {
         }
 
         toImageName() {
-            return "imgs/cards/" + this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "") + ".jpg";
+            return "imgs/cards/" + this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "");
         }
 
         onresize() {

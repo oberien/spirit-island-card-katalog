@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+for pdf in {base,branchclaw,promo}/*.pdf; do
+    dir=`dirname $pdf`
+    name=`basename $pdf .pdf`
+    name=${name:6}
+    pdfimages $pdf "$dir/$name"
+done
