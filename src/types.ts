@@ -100,8 +100,8 @@ namespace Types {
     export type PowerType = Unique | PowerDeckType;
 
     export enum FearType {
-        BasegameFear = "Basegame Fear",
-        ExpansionFear = "Expansion Fear",
+        Basegame = "Basegame Fear",
+        Expansion = "Expansion Fear",
     }
 
     export type CardType = PowerType | FearType;
@@ -144,7 +144,7 @@ namespace Types {
         }
 
         abstract getSearchString(): string;
-        abstract getImagePath(): string;
+        abstract getImageFolder(): string;
         abstract getBacksideText(): string;
         abstract getFrontOverlay(): Node | null;
 
@@ -218,6 +218,19 @@ namespace Types {
             return container;
         }
 
+        private getImagePath() {
+            let name;
+            if (Array.isArray(this.name)) {
+                name = this.name[0];
+            } else {
+                name = this.name;
+            }
+            return this.getImageFolder() + name
+                .toLowerCase()
+                .replace(/ /g, "_")
+                .replace(/[^a-z_]/g, "");
+        }
+
         // scale font of cardbacks to fit size
         private scaleFontSize() {
             let p = <HTMLSpanElement> this.p;
@@ -245,7 +258,7 @@ namespace Types {
             super(type, name);
         }
 
-        getSearchString() {
+        getSearchString(): string {
             let s = this.type + " " + this.cost + " " + this.name + " " + this.speed;
             if (this.range != null) {
                 s += " " + this.range.from + " " + this.range.range;
@@ -262,7 +275,7 @@ namespace Types {
             return s;
         }
 
-        getFrontOverlay() {
+        getFrontOverlay(): Node | null {
             let overlay = <HTMLDivElement> document.createElement("div");
             overlay.style.position = "absolute";
             overlay.style.backgroundColor = toColor(this.type);
@@ -275,7 +288,7 @@ namespace Types {
             return overlay;
         }
 
-        getBacksideText() {
+        getBacksideText(): string {
             let text = "";
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
@@ -302,8 +315,8 @@ namespace Types {
             return text;
         }
 
-        getImagePath() {
-            return "imgs/cards/" + this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "");
+        getImageFolder(): string {
+            return "imgs/powers/";
         }
     }
 }
