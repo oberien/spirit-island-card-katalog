@@ -3,8 +3,8 @@
 /// <reference path="filter.ts" />
 
 const LandAny = Types.LandAny;
-type Card = Types.Card;
-const Card = Types.Card;
+type Card = Types.PowerCard;
+const Card = Types.PowerCard;
 
 const CARDS = DB.CARDS;
 const filterAll = Filter.filterAll;
@@ -82,7 +82,7 @@ function update() {
     for (const card of cards) {
         let flex = <HTMLDivElement> document.createElement("div");
         flex.classList.add("flex-50", "xs-flex-33", "sm-flex-25", "md-flex-20", "l-flex-15", "xl-flex-12", "xxl-flex-10");
-        flex.appendChild(card.toCard());
+        flex.appendChild(card.getCard());
         result.appendChild(flex);
     }
 

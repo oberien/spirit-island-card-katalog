@@ -51,7 +51,7 @@ namespace Filter {
     class IncludesFilter extends Filter {
         constructor(private includes: string) {
             super((card) => {
-                const cardstring = card.toSearchString().toLowerCase();
+                const cardstring = card.getSearchString().toLowerCase();
                 return cardstring.includes(includes);
             });
         }
@@ -99,7 +99,7 @@ namespace Filter {
 
         constructor(private word: string) {
             super((card) => {
-                const cardstring = card.toSearchString().toLowerCase();
+                const cardstring = card.getSearchString().toLowerCase();
                 return this.regex.test(cardstring);
             });
             let escaped = regexEscape(this.word);

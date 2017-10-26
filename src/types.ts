@@ -90,22 +90,29 @@ namespace Types {
         HeartOfTheWildfire = "Unique: Heart of the Wildfire",
     }
 
-    export enum CardType {
+    export enum PowerDeckType {
         BasegameMinor = "Basegame Minor",
         BasegameMajor = "Basegame Major",
         ExpansionMinor = "Expansion Minor",
         ExpansionMajor = "Expansion Major",
     }
 
-    export type PowerType = Unique | CardType;
+    export type PowerType = Unique | PowerDeckType;
+
+    export enum FearType {
+        BasegameFear = "Basegame Fear",
+        ExpansionFear = "Expansion Fear",
+    }
+
+    export type CardType = PowerType | FearType;
 
     function toColor(type: string) {
         switch (type) {
-            case CardType.BasegameMinor:
-            case CardType.ExpansionMinor:
+            case PowerDeckType.BasegameMinor:
+            case PowerDeckType.ExpansionMinor:
                 return "rgba(50, 50, 50, 0.3)";
-            case CardType.BasegameMajor:
-            case CardType.ExpansionMajor:
+            case PowerDeckType.BasegameMajor:
+            case PowerDeckType.ExpansionMajor:
                 return "rgba(255, 255, 0, 0.25)";
             case Unique.ASpreadOfRampantGreen:
             case Unique.BringerOfDreamsAndNightmares:
@@ -125,37 +132,23 @@ namespace Types {
         }
     }
 
-    export class Card {
+    export abstract class Card {
         private fontSize: number | null;
         private p: HTMLSpanElement | null;
         private container: HTMLDivElement | null;
 
-        constructor(public type: PowerType, public name: string, public cost: number, public speed: Speed,
-                    public range: Ranges | null, public target: Target, public elements: Elements[],
-                    public artist: string, public description: string) {
+        constructor(public type: CardType, public name: string | string[]) {
             this.fontSize = null;
             this.p = null;
             this.container = null;
         }
 
-        toSearchString() {
-            let s = this.type + " " + this.cost + " " + this.name + " " + this.speed;
-            if (this.range != null) {
-                s += " " + this.range.from + " " + this.range.range;
-                if (this.range.land != null) {
-                    s += " " + this.range.land;
-                }
-            }
-            if (this.target == LandAny) {
-                s += " Any";
-            } else {
-                s += " " + this.target;
-            }
-            s += " " + this.elements + " " + this.artist + " " + this.description;
-            return s;
-        }
+        abstract getSearchString(): string;
+        abstract getImagePath(): string;
+        abstract getBacksideText(): string;
+        abstract getFrontOverlay(): Node | null;
 
-        toCard() {
+        public getCard() {
             let container = document.createElement("div");
             this.container = container;
             container.classList.add("flip-container");
@@ -167,60 +160,30 @@ namespace Types {
             // image with webp by default and jpg as fallback
             let picture = document.createElement("picture");
             let webp = document.createElement("source");
-            webp.srcset = this.toImageName() + ".webp";
+            webp.srcset = this.getImagePath() + ".webp";
             webp.type = "image/webp";
             picture.appendChild(webp);
             let jpg = document.createElement("source");
-            jpg.srcset = this.toImageName() + ".jpg";
+            jpg.srcset = this.getImagePath() + ".jpg";
             jpg.type = "image/jpg";
             picture.appendChild(jpg);
             let fallback = document.createElement("img");
-            fallback.src = this.toImageName() + ".jpg";
+            fallback.src = this.getImagePath() + ".jpg";
             picture.appendChild(fallback);
             front.appendChild(picture);
 
-            let overlay = <HTMLDivElement> document.createElement("div");
-            overlay.style.position = "absolute";
-            overlay.style.backgroundColor = toColor(this.type);
-            overlay.style.width = "67%";
-            overlay.style.height = "10%";
-            overlay.style.left = "27%";
-            overlay.style.top = "4%";
-            overlay.style.zIndex = "1";
-            overlay.style.borderRadius = "0 13px 0 0";
-            front.appendChild(overlay);
+            if (this.getFrontOverlay() != null) {
+                front.appendChild(<Node> this.getFrontOverlay());
+            }
 
             let back = document.createElement("div");
             back.classList.add("back");
             let backdiv = document.createElement("div");
             backdiv.style.paddingLeft = "10px";
             backdiv.style.paddingRight = "10px";
-            let text = "";
-            text += "<b>Type</b>: " + this.type + "<br/>";
-            text += "<b>Name</b>: " + this.name + "<br/>";
-            text += "<b>Cost</b>: " + this.cost + "<br/>";
-            text += "<b>Speed</b>: " + this.speed + "<br/>";
-            text += "<b>Range</b>: " + this.range + "<br/>";
-            let target = "";
-            if (Array.isArray(this.target)) {
-                if (this.target == LandAny) {
-                    target = "Any"
-                } else {
-                    target = (this.target as TargetType[]).join(", ");
-                }
-            } else {
-                target = this.target;
-            }
-            text += "<b>Target</b>: " + target + "<br/>";
-            text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
-            text += "<b>Description</b>: " + this.description + "<br/>";
-            text += "<b>Artist</b>: " + this.artist + "<br/>";
-            const tag = this.type.startsWith("Unique") ? this.name + " (" + this.type.substring(8) + ")" : this.name;
-            text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
-                + encodeURIComponent(tag) + "\" target='_blank'>FAQ</a><br/>";
             let p = document.createElement("span");
             this.p = p;
-            p.innerHTML = text;
+            p.innerHTML = this.getBacksideText();
             backdiv.appendChild(p);
             back.appendChild(backdiv);
 
@@ -255,19 +218,8 @@ namespace Types {
             return container;
         }
 
-        toImageName() {
-            return "imgs/cards/" + this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "");
-        }
-
-        onresize() {
-            this.fontSize = null;
-            if (this.p != null && this.container != null && this.container.classList.contains("flipped")) {
-                this.scaleFontSize();
-            }
-        }
-
         // scale font of cardbacks to fit size
-        scaleFontSize() {
+        private scaleFontSize() {
             let p = <HTMLSpanElement> this.p;
             this.fontSize = 16;
             p.style.fontSize = this.fontSize + "px";
@@ -276,6 +228,82 @@ namespace Types {
                 this.fontSize -= 0.5;
                 p.style.fontSize = this.fontSize + "px";
             }
+        }
+
+        onresize() {
+            this.fontSize = null;
+            if (this.p != null && this.container != null && this.container.classList.contains("flipped")) {
+                this.scaleFontSize();
+            }
+        }
+    }
+
+    export class PowerCard extends Card {
+        constructor(public type: PowerType, public name: string, public cost: number, public speed: Speed,
+                    public range: Ranges | null, public target: Target, public elements: Elements[],
+                    public artist: string, public description: string) {
+            super(type, name);
+        }
+
+        getSearchString() {
+            let s = this.type + " " + this.cost + " " + this.name + " " + this.speed;
+            if (this.range != null) {
+                s += " " + this.range.from + " " + this.range.range;
+                if (this.range.land != null) {
+                    s += " " + this.range.land;
+                }
+            }
+            if (this.target == LandAny) {
+                s += " Any";
+            } else {
+                s += " " + this.target;
+            }
+            s += " " + this.elements + " " + this.artist + " " + this.description;
+            return s;
+        }
+
+        getFrontOverlay() {
+            let overlay = <HTMLDivElement> document.createElement("div");
+            overlay.style.position = "absolute";
+            overlay.style.backgroundColor = toColor(this.type);
+            overlay.style.width = "67%";
+            overlay.style.height = "10%";
+            overlay.style.left = "27%";
+            overlay.style.top = "4%";
+            overlay.style.zIndex = "1";
+            overlay.style.borderRadius = "0 13px 0 0";
+            return overlay;
+        }
+
+        getBacksideText() {
+            let text = "";
+            text += "<b>Type</b>: " + this.type + "<br/>";
+            text += "<b>Name</b>: " + this.name + "<br/>";
+            text += "<b>Cost</b>: " + this.cost + "<br/>";
+            text += "<b>Speed</b>: " + this.speed + "<br/>";
+            text += "<b>Range</b>: " + this.range + "<br/>";
+            let target = "";
+            if (Array.isArray(this.target)) {
+                if (this.target == LandAny) {
+                    target = "Any"
+                } else {
+                    target = (this.target as TargetType[]).join(", ");
+                }
+            } else {
+                target = this.target;
+            }
+            text += "<b>Target</b>: " + target + "<br/>";
+            text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
+            text += "<b>Description</b>: " + this.description + "<br/>";
+            text += "<b>Artist</b>: " + this.artist + "<br/>";
+            const tag = this.type.startsWith("Unique") ? this.name + " (" + this.type.substring(8) + ")" : this.name;
+            text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
+                + encodeURIComponent(tag) + "\" target='_blank'>FAQ</a><br/>";
+            return text;
+        }
+
+        getImagePath() {
+            return "imgs/cards/" + this.name.toLowerCase().replace(/ /g, "_").replace(/[^a-z_]/g, "");
         }
     }
 }

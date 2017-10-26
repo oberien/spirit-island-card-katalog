@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-for f in {base,branchclaw,promo}/*.{ppm,pbm,gif,jpg,webp}; do
+for f in {base,branchclaw,promo}/*.{ppm,pbm,gif,jpg,webp} ocr.txt; do
   if [ ! -f $f ]; then
     continue
   fi
