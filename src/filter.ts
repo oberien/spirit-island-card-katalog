@@ -1,6 +1,9 @@
 /// <reference path="types.ts" />
 
 namespace Filter {
+    import PowerCard = Types.PowerCard;
+    import FearCard = Types.FearCard;
+
     class ExtensibleFunction extends Function {
         constructor(fn: (card: Card) => boolean) {
             super();
@@ -182,16 +185,14 @@ namespace Filter {
     function getAllFilters(searchstring: string): Filter[] {
         let filters: Filter[] = [];
         // property filters
-        const dummy = new (Card as any)();
-        for (const prop in dummy) {
-            if (dummy.hasOwnProperty(prop)) {
-                if (typeof(dummy[prop]) == "function") {
-                    continue;
-                }
-                let fs;
-                [fs, searchstring] = getPropertyFilters(searchstring, prop);
-                filters = filters.concat(fs);
-            }
+        const dummyPower = new (PowerCard as any)();
+        const dummyFear = new (FearCard as any)();
+        const props = Object.getOwnPropertyNames(dummyPower)
+            .concat(Object.getOwnPropertyNames(dummyFear));
+        for (const prop of props) {
+            let fs;
+            [fs, searchstring] = getPropertyFilters(searchstring, prop);
+            filters = filters.concat(fs);
         }
 
         // word groups
@@ -214,6 +215,7 @@ namespace Filter {
 
     export function filterAll(cards: Card[], searchstring: string): Card[] {
         const filters = getAllFilters(searchstring);
+        console.log(filters + "");
         cards = cards.filter(c => Filter.all(...filters)(c));
         return cards;
     }

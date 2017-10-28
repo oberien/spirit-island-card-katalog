@@ -133,14 +133,15 @@ namespace Types {
     }
 
     export abstract class Card {
-        private fontSize: number | null;
-        private p: HTMLSpanElement | null;
-        private container: HTMLDivElement | null;
+        // capital so they can not be searched with filters
+        private FontSize: number | null;
+        private P: HTMLSpanElement | null;
+        private Container: HTMLDivElement | null;
 
         constructor(public type: CardType, public name: string | string[]) {
-            this.fontSize = null;
-            this.p = null;
-            this.container = null;
+            this.FontSize = null;
+            this.P = null;
+            this.Container = null;
         }
 
         abstract getSearchString(): string;
@@ -150,7 +151,7 @@ namespace Types {
 
         public getCard() {
             let container = document.createElement("div");
-            this.container = container;
+            this.Container = container;
             container.classList.add("flip-container");
             let flipper = document.createElement("div");
             flipper.classList.add("flipper");
@@ -182,7 +183,7 @@ namespace Types {
             backdiv.style.paddingLeft = "10px";
             backdiv.style.paddingRight = "10px";
             let p = document.createElement("span");
-            this.p = p;
+            this.P = p;
             p.innerHTML = this.getBacksideText();
             backdiv.appendChild(p);
             back.appendChild(backdiv);
@@ -206,10 +207,10 @@ namespace Types {
                     return;
                 }
                 if (!container.classList.contains("flipped")) {
-                    if (this.fontSize == null) {
+                    if (this.FontSize == null) {
                         this.scaleFontSize();
                     } else {
-                        p.style.fontSize = this.fontSize + "px";
+                        p.style.fontSize = this.FontSize + "px";
                     }
                 }
                 container.classList.toggle("flipped");
@@ -233,26 +234,26 @@ namespace Types {
 
         // scale font of cardbacks to fit size
         private scaleFontSize() {
-            let p = <HTMLSpanElement> this.p;
-            this.fontSize = 16;
-            p.style.fontSize = this.fontSize + "px";
+            let p = <HTMLSpanElement> this.P;
+            this.FontSize = 16;
+            p.style.fontSize = this.FontSize + "px";
             let back = (p.parentElement as any).parentElement as any;
             while (p.offsetHeight > back.offsetHeight) {
-                this.fontSize -= 0.5;
-                p.style.fontSize = this.fontSize + "px";
+                this.FontSize -= 0.5;
+                p.style.fontSize = this.FontSize + "px";
             }
         }
 
         onresize() {
-            this.fontSize = null;
-            if (this.p != null && this.container != null && this.container.classList.contains("flipped")) {
+            this.FontSize = null;
+            if (this.P != null && this.Container != null && this.Container.classList.contains("flipped")) {
                 this.scaleFontSize();
             }
         }
     }
 
     export class PowerCard extends Card {
-        constructor(public type: PowerType, public name: string, public cost: number, public speed: Speed,
+        constructor(type: PowerType, name: string, public cost: number, public speed: Speed,
                     public range: Ranges | null, public target: Target, public elements: Elements[],
                     public artist: string, public description: string) {
             super(type, name);
@@ -309,7 +310,7 @@ namespace Types {
             text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
             text += "<b>Artist</b>: " + this.artist + "<br/>";
-            const tag = this.type.startsWith("Unique") ? this.name + " (" + this.type.substring(8) + ")" : this.name;
+            const tag = this.type.startsWith("Unique") ? <string>this.name + " (" + this.type.substring(8) + ")" : <string>this.name;
             text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
                 + encodeURIComponent(tag) + "\" target='_blank'>FAQ</a><br/>";
             return text;
@@ -318,6 +319,39 @@ namespace Types {
         getImageFolder(): string {
             return "imgs/powers/";
         }
+    }
+
+    export class FearCard extends Card {
+        public description: string;
+
+        constructor(public type: FearType, public name: string, public level1: string, public level2: string, public level3: string) {
+            super(type, name);
+            // set description for searching
+            this.description = level1 + " " + level2 + " " + level3;
+        }
+
+        getSearchString(): string {
+            return this.type + " " + this.name + " " + this.level1 + " " + this.level2 + " " + this.level3;
+        }
+
+        getImageFolder(): string {
+            return "imgs/fears/";
+        }
+
+        getBacksideText(): string {
+            let text = "";
+            text += "<b>Type</b>: " + this.type + "<br/>";
+            text += "<b>Name</b>: " + this.name + "<br/>";
+            text += "<b>Level 1</b>: " + this.level1 + "<br/>";
+            text += "<b>Level 2</b>: " + this.level2 + "<br/>";
+            text += "<b>Level 3</b>: " + this.level3 + "<br/>";
+            return text;
+        }
+
+        getFrontOverlay(): Node | null {
+            return null;
+        }
+
     }
 }
 

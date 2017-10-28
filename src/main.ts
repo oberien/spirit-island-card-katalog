@@ -3,8 +3,8 @@
 /// <reference path="filter.ts" />
 
 const LandAny = Types.LandAny;
-type Card = Types.PowerCard;
-const Card = Types.PowerCard;
+type Card = Types.Card;
+const Card = Types.Card;
 
 const CARDS = DB.CARDS;
 const filterAll = Filter.filterAll;
@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     update();
-
 });
 
 function update() {
@@ -65,7 +64,7 @@ function update() {
     let searchstring = search.value.toLowerCase();
     let sortby = sort.value.toLowerCase();
     let ascending = !order.classList.contains("rotated");
-    let cards = CARDS;
+    let cards: Card[] = CARDS;
 
     cards = filterAll(cards, searchstring);
 
@@ -74,6 +73,12 @@ function update() {
     cards = cards.sort((a, b) => {
         let propa = (a as any)[sortby];
         let propb = (b as any)[sortby];
+        if (propa === undefined) {
+            return 1;
+        }
+        if (propb === undefined) {
+            return -1;
+        }
         let st = ascending ? -1 : 1;
         let gt = ascending ? 1 : -1;
         return propa === propb ? 0 : (propa < propb ? st : gt);

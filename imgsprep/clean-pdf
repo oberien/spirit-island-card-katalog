@@ -1,9 +1,11 @@
 #!/bin/sh
 set -e
 
-for f in {base,branchclaw,promo}/*.{ppm,pbm,gif,jpg,webp} ocr.txt; do
-  if [ ! -f $f ]; then
-    continue
+for f in {base,branchclaw,promo}/*.{ppm,pbm,gif,jpg,webp} ocr.txt powers fears; do
+  if [ -f $f ]; then
+    rm $f
+  elif [ -d $f ]; then
+    rm -r $f
   fi
-  rm $f
 done
+
