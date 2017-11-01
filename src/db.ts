@@ -340,7 +340,7 @@ namespace DB {
             [Elements.Fire, Elements.Earth], "Nolan Nasser",
             "6 Fear. 20 Damage. Destroy all Dahan and Beasts. Add 1 Blight. -If you have- 4 Fire, 3 Earth: Destroy all Invaders. Add 1 Wilds. In each adjacent land: 10 Damage. Destroy all Dahan and Beasts. If there are no Blight, add 1 Blight."),
         new PowerCard(PowerDeckType.ExpansionMajor, "Sweep into the Sea", 4, Speed.Slow, new Ranges(Source.Presence, 2), LandAny,
-            [Elements.Sun, Elements.Air, Elements.Earth], "Joshua Wright",
+            [Elements.Sun, Elements.Air, Elements.Water], "Joshua Wright",
             "Push all Explorer and Town one land towards the nearest Ocean. -or- If target land is Coastal, destroy all Explorer and Town. -If you have- 3 Sun, 2 Water: Repeat on an adjacent land."),
         new PowerCard(PowerDeckType.ExpansionMajor, "Manifest Incarnation", 6, Speed.Slow, new Ranges(Source.Presence, 0), TargetProperty.City,
             [Elements.Sun, Elements.Moon, Elements.Earth, Elements.Animal], "Moro Rogers",
