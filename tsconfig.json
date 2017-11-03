@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "none",
-    "target": "es5",
+    "target": "es6",
     "lib": ["DOM","ES6","DOM.Iterable"],
     "sourceMap": false,
     "noEmitOnError": true,

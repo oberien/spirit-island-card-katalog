@@ -23,35 +23,51 @@ function reencode {
 }
 
 # power cards
-for f in {base,branchclaw,promo}/{major,minor,spirit}-*.ppm; do
+#for f in {base,branchclaw,promo}/{major,minor,spirit}-*.ppm; do
+  #if [ ! -f $f ]; then
+    #continue
+  #fi
+  #base="`dirname $f`/`basename $f .ppm`"
+
+  ## ocr name
+  #convert -crop 500x100+200+40 -level 65%,75% $f $base.pbm
+  #name=`ocr "$base.pbm"`
+  #echo $name
+  #echo $base $name >> ocr.txt
+
+  #reencode "$f" "$base"
+#done
+
+## fear cards
+#for f in {base,branchclaw,promo}/fear-*.ppm; do
+  #if [ ! -f $f ]; then
+    #continue
+  #fi
+  #base="`dirname $f`/`basename $f .ppm`"
+
+  ## ocr name
+  #convert -crop 650x82+45+40 -level 65%,75% $f $base.pbm
+  #name=`ocr "$base.pbm"`
+  #echo $name
+  #echo $base $name >> ocr.txt
+
+  #reencode "$f" "$base"
+#done
+## "Panic" is not ocr'd correctly
+#echo branchclaw/fear-012 panic >> ocr.txt
+
+# event cards
+for f in {base,branchclaw,promo}/event-*.ppm; do
   if [ ! -f $f ]; then
     continue
   fi
   base="`dirname $f`/`basename $f .ppm`"
 
   # ocr name
-  convert -crop 500x100+200+40 -level 65%,75% $f $base.pbm
+  convert -crop 530x82+130+40 -level 65%,75% $f $base.pbm
   name=`ocr "$base.pbm"`
   echo $name
   echo $base $name >> ocr.txt
 
   reencode "$f" "$base"
 done
-
-# fear cards
-for f in {base,branchclaw,promo}/fear-*.ppm; do
-  if [ ! -f $f ]; then
-    continue
-  fi
-  base="`dirname $f`/`basename $f .ppm`"
-
-  # ocr name
-  convert -crop 650x82+45+40 -level 65%,75% $f $base.pbm
-  name=`ocr "$base.pbm"`
-  echo $name
-  echo $base $name >> ocr.txt
-
-  reencode "$f" "$base"
-done
-# "Panic" is not ocr'd correctly
-echo branchclaw/fear-012 panic >> ocr.txt

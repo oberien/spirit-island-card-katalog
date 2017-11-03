@@ -1,4 +1,7 @@
 namespace Types {
+    import TokenEvent = DB.TokenEvent;
+    import DahanEvent = DB.DahanEvent;
+
     export enum Speed {
         Fast = "Fast",
         Slow = "Slow",
@@ -104,7 +107,36 @@ namespace Types {
         Expansion = "Expansion Fear",
     }
 
-    export type CardType = PowerType | FearType;
+    export enum EventType {
+        ChoiceEvent = "Choice Event",
+        StageEvent = "Stage Event",
+        TerrorLevelEvent = "Terror Level Event",
+        HealthyBlightedLandEvent = "Healthy Blighted Land Event",
+        AdversaryEvent = "Adversary Event",
+    }
+
+    export type CardType = PowerType | FearType | EventType | EventType[];
+
+    export enum Adversary {
+        KingdomOfFrance = "Kingdom of France",
+    }
+
+    export enum Stage {
+        Stage1,
+        Stage2,
+        Stage3,
+    }
+
+    export enum TerrorLevel {
+        TerrorLevel1,
+        TerrorLevel2,
+        TerrorLevel3,
+    }
+
+    export enum HealthyBlightedLand {
+        Healthy,
+        Blighted,
+    }
 
     function toColor(type: string) {
         switch (type) {
@@ -144,7 +176,13 @@ namespace Types {
             this.Container = null;
         }
 
-        abstract getSearchString(): string;
+        getSearchString(): string {
+            return Object.getOwnPropertyNames(this)
+                .filter((name) => name.toLowerCase() === name)
+                .map((name) => (this as any)[name])
+                .filter((prop) => prop !== null)
+                .join(" ");
+        }
         abstract getImageFolder(): string;
         abstract getBacksideText(): string;
         abstract getFrontOverlay(): Node | null;
@@ -279,7 +317,7 @@ namespace Types {
         getFrontOverlay(): Node | null {
             let overlay = <HTMLDivElement> document.createElement("div");
             overlay.style.position = "absolute";
-            overlay.style.backgroundColor = toColor(this.type);
+            overlay.style.backgroundColor = toColor(<PowerType>this.type);
             overlay.style.width = "67%";
             overlay.style.height = "10%";
             overlay.style.left = "27%";
@@ -310,7 +348,8 @@ namespace Types {
             text += "<b>Elements</b>: " + this.elements.join(", ") + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
             text += "<b>Artist</b>: " + this.artist + "<br/>";
-            const tag = this.type.startsWith("Unique") ? <string>this.name + " (" + this.type.substring(8) + ")" : <string>this.name;
+            let type = <PowerType>this.type;
+            const tag = type.startsWith("Unique") ? <string>this.name + " (" + type.substring(8) + ")" : <string>this.name;
             text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
                 + encodeURIComponent(tag) + "\" target='_blank'>FAQ</a><br/>";
             return text;
@@ -330,10 +369,6 @@ namespace Types {
             this.description = level1 + " " + level2 + " " + level3;
         }
 
-        getSearchString(): string {
-            return this.type + " " + this.name + " " + this.level1 + " " + this.level2 + " " + this.level3;
-        }
-
         getImageFolder(): string {
             return "imgs/fears/";
         }
@@ -350,6 +385,240 @@ namespace Types {
 
         getFrontOverlay(): Node | null {
             return null;
+        }
+    }
+
+    export abstract class EventCard extends Card {
+        constructor(type: EventType | EventType[], name: string | string[],
+                    public tokenevent: TokenEvent | null, public dahanevent: DahanEvent | null) {
+            super(type, name);
+        }
+
+        getImageFolder(): string {
+            return "imgs/events/";
+        }
+
+        getFrontOverlay(): Node | null {
+            return null;
+        }
+
+    }
+
+    export class ChoiceCost {
+        constructor(public energy: number, public per: string | null, public aidedBy: Elements | null) {}
+
+        toString(): string {
+            let text = "";
+            text += this.energy + " Energy";
+            if (this.per !== null) {
+                text += " per " + this.per + ".";
+            } else {
+                text += ".";
+            }
+            if (this.aidedBy !== null) {
+                text += " Aided by " + this.aidedBy + ".";
+            }
+            return text;
+        }
+    }
+
+    export class ChoiceDesc {
+        constructor(public name: string, public cost: ChoiceCost | null, public actions: string[]) {}
+
+        toString(): string {
+            let text = "";
+            text += this.name;
+            if (this.cost != null) {
+                text += "<br/>Cost: " + this.cost;
+            }
+            for (let action of this.actions) {
+                text += "<br/>• " + action;
+            }
+            return text;
+        }
+    }
+
+    export class ChoiceEventCard extends EventCard {
+        constructor(name: string, public description: string, public choices: ChoiceDesc[],
+                    tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
+            super(EventType.ChoiceEvent, name, tokenevent, dahanevent);
+        }
+
+        getBacksideText(): string {
+            let text = "";
+            text += "<b>Name</b>: " + this.name + "<br/>";
+            text += "<b>Description</b>: " + this.description + "<br/>";
+            for (let [i, choice] of this.choices.entries()) {
+                text += "<b>Choice" + i + "</b>: " + choice + "<br/>";
+            }
+            if (this.tokenevent !== null) {
+                text += "<b>Token Event</b>: " + this.tokenevent + "<br/>";
+            }
+            if (this.dahanevent !== null) {
+                text += "<b>Dahan Event</b>: " + this.dahanevent + "<br/>";
+            }
+            return text;
+        }
+    }
+
+    export class EventDescInternal<T> {
+        constructor(public name: string, public level: T | T[], public description: string) {}
+
+        contains(t: T): boolean {
+            return (Array.isArray(this.level) && this.level.indexOf(t) > -1)
+                || this.level === t;
+        }
+    }
+
+    export class EventDesc {
+        constructor(public name: string, public description: string) {}
+
+        toString(): string {
+            return this.name + ": " + this.description;
+        }
+    }
+
+    export class StageEventCard extends EventCard {
+        public level1: EventDesc;
+        public level2: EventDesc;
+        public level3: EventDesc;
+
+        constructor(stages: EventDescInternal<Stage>[],
+                    tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
+            let names = [];
+            for (const stage of stages) {
+                names.push(stage.name);
+            }
+            super(EventType.StageEvent, names, tokenevent, dahanevent);
+
+            for (const stage of stages) {
+                if (stage.contains(Stage.Stage1)) {
+                    this.level1 = new EventDesc(stage.name, stage.description);
+                }
+                if (stage.contains(Stage.Stage2)) {
+                    this.level2 = new EventDesc(stage.name, stage.description);
+                }
+                if (stage.contains(Stage.Stage3)) {
+                    this.level3 = new EventDesc(stage.name, stage.description);
+                }
+            }
+            if (this.level1 == undefined || this.level2 == undefined || this.level3 == undefined) {
+                throw new Error("Stage1 or Stage2 or Stage3 undefined " + this.getSearchString());
+            }
+        }
+
+        getBacksideText(): string {
+            let text = "";
+            if (this.name !== null) {
+                text += "<b>Name</b>: " + this.name + "<br/>";
+            }
+            text += "<b>Level1</b>: " + this.level1 + "<br/>";
+            text += "<b>Level2</b>: " + this.level2 + "<br/>";
+            text += "<b>Level3</b>: " + this.level3 + "<br/>";
+            if (this.tokenevent !== null) {
+                text += "<b>Token Event</b>: " + this.tokenevent + "<br/>";
+            }
+            if (this.dahanevent !== null) {
+                text += "<b>Dahan Event</b>: " + this.dahanevent + "<br/>";
+            }
+            return text;
+        }
+    }
+
+    export class TerrorLevelEventCard extends EventCard {
+        public level1: EventDesc;
+        public level2: EventDesc;
+        public level3: EventDesc;
+
+        constructor(terrorlevels: EventDescInternal<TerrorLevel>[],
+                    tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
+            let names = terrorlevels.map((terror) => terror.name);
+            super(EventType.TerrorLevelEvent, names, tokenevent, dahanevent);
+
+            for (const terror of terrorlevels) {
+                if (terror.contains(TerrorLevel.TerrorLevel1)) {
+                    this.level1 = new EventDesc(terror.name, terror.description);
+                }
+                if (terror.contains(TerrorLevel.TerrorLevel2)) {
+                    this.level2 = new EventDesc(terror.name, terror.description);
+                }
+                if (terror.contains(TerrorLevel.TerrorLevel3)) {
+                    this.level3 = new EventDesc(terror.name, terror.description);
+                }
+            }
+            if(this.level1 == undefined || this.level2 == undefined || this.level3 == undefined) {
+                throw new Error("TerrorLevel1 or TerrorLevel2 or TerrorLevel3 undefined " + this.getSearchString());
+            }
+        }
+
+        getBacksideText(): string {
+            let text = "";
+            text += "<b>Name</b>: " + this.name + "<br/>";
+            text += "<b>Level1</b>: " + this.level1 + "<br/>";
+            text += "<b>Level2</b>: " + this.level2 + "<br/>";
+            text += "<b>Level3</b>: " + this.level3 + "<br/>";
+            if (this.tokenevent !== null) {
+                text += "<b>Token Event</b>: " + this.tokenevent + "<br/>";
+            }
+            if (this.dahanevent !== null) {
+                text += "<b>Dahan Event</b>: " + this.dahanevent + "<br/>";
+            }
+            return text;
+        }
+    }
+
+    export class HealthyBlightedLandEventCard extends EventCard {
+        public healthy: EventDesc;
+        public blighted: EventDesc;
+
+        constructor(healthy: EventDesc, blighted: EventDesc,
+                    tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
+            let names = [healthy.name, blighted.name];
+            super(EventType.HealthyBlightedLandEvent, names, tokenevent, dahanevent);
+            this.healthy = healthy;
+            this.blighted = blighted;
+        }
+
+        getBacksideText(): string {
+            let text = "";
+            text += "<b>Name</b>: " + this.name + "<br/>";
+            text += "<b>Healthy</b>: " + this.healthy + "<br/>";
+            text += "<b>Blighted</b>: " + this.blighted + "<br/>";
+            if (this.tokenevent !== null) {
+                text += "<b>Token Event</b>: " + this.tokenevent + "<br/>";
+            }
+            if (this.dahanevent !== null) {
+                text += "<b>Dahan Event</b>: " + this.dahanevent + "<br/>";
+            }
+            return text;
+        }
+    }
+
+    export class AdversaryEvent extends EventCard {
+        private Inner: EventCard;
+        public adversary: Adversary;
+
+        constructor(name: string, adversary: Adversary, event: EventCard) {
+            let names = Array.isArray(event.name) ? [name].concat(event.name) : [name, event.name];
+            super([EventType.AdversaryEvent, <EventType>event.type], names, event.tokenevent, event.dahanevent);
+            this.Inner = event;
+            this.adversary = adversary;
+            let self = (this as any);
+            let old = Object.getOwnPropertyNames(new (EventCard as any)());
+            let neu = Object.getOwnPropertyNames(event)
+                .filter(prop => old.indexOf(prop) == -1);
+            for (const prop of neu) {
+                self[prop] = (event as any)[prop];
+            }
+        }
+
+        getBacksideText(): string {
+            let text = "";
+            text += "<b>Name</b>: " + this.name + "<br/>";
+            text += "(Adversary Event - include only if specified)<br/>";
+            text += "Discard and redraw if not playing against " + this.adversary + "<br/>";
+            text += this.Inner.getBacksideText();
+            return text;
         }
 
     }

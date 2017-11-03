@@ -10,10 +10,16 @@ powers = ["shatter_homesteads", "raging_storm", "lightnings_boon", "harbingers_o
 # "[" + CARDS.filter((c) => c instanceof Types.FearCard).map((c) => '"' + c.getImagePath().substring(11) + '"').join(", ") + "]"
 fears = ["fear_of_the_unseen", "scapegoats", "emigration_accelerates", "dahan_on_their_guard", "tall_tales_of_savagery", "retreat", "dahan_raid", "dahan_enheartened", "avoid_the_dahan", "seek_safety", "wary_of_the_interior", "belief_takes_root", "isolation", "overseas_trade_seems_safer", "trade_suffers", "demoralized", "plan_for_departure", "tread_carefully", "dahan_attack", "explorers_are_reluctant", "immigration_slows", "flee_the_pestilent_land", "quarantine", "too_many_monsters", "panicked_by_wild_beasts", "depart_the_dangerous_land", "unrest", "panic", "discord", "dahan_threaten"]
 
+# generated with:
+# "[" + CARDS.filter((c) => c instanceof Types.EventCard).map((c) => '"' + c.getImagePath().substring(12) + '"').join(", ") + "]"
+events = ["years_of_little_rain", "farmers_seek_the_dahan_for_aid", "new_species_spread", "war_touches_the_islands_shores", "sacred_sites_under_threat", "outpaced", "missionaries_arrive", "a_strange_madness_among_the_beasts", "seeking_the_interior", "wave_of_reconnaissance", "interesting_discoveries", "strange_tales_attract_explorers", "cultural_assimilation", "investigation_of_dangers", "distant_exploration", "rising_interest_in_the_island", "putting_down_roots", "search_for_new_lands", "invaders_surge_inland", "tightknit_communities", "wellprepared_explorers", "population_rises", "urban_development", "heavy_farming", "promising_farmland", "slave_rebellion"]
+
 if not os.path.isdir("powers/"):
     os.mkdir("powers/")
 if not os.path.isdir("fears/"):
     os.mkdir("fears/")
+if not os.path.isdir("events/"):
+    os.mkdir("events/")
 
 with open("ocr.txt") as f:
     content = f.readlines()
@@ -30,6 +36,10 @@ for card in content:
             (fear, fearrating) = ("EMPTY", 0)
         else:
             (fear, fearrating) = process.extractOne(ocr, fears)
+        if len(events) == 0:
+            (event, eventrating) = ("EMPTY", 0)
+        else:
+            (event, eventrating) = process.extractOne(ocr, events)
         if powerrating > 70:
             powers.remove(power)
             os.rename(file + ".webp", "powers/" + power + ".webp")
@@ -38,9 +48,15 @@ for card in content:
             fears.remove(fear)
             os.rename(file + ".webp", "fears/" + fear + ".webp")
             os.rename(file + ".jpg", "fears/" + fear + ".jpg")
+        elif eventrating > 70:
+            events.remove(event)
+            os.rename(file + ".webp", "events/" + event + ".webp")
+            os.rename(file + ".jpg", "events/" + event + ".jpg")
         else:
             print("NOT MATCHED: ", power, fear, ocr, file)
 if len(powers) > 0:
     print("POWERS NOT EMPTY: ", powers)
 if len(fears) > 0:
     print("FEARS NOT EMPTY: ", fears)
+if len(events) > 0:
+    print("EVENTS NOT EMPTY: ", events)
