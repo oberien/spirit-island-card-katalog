@@ -539,7 +539,6 @@ namespace Types {
         public adversary: Adversary;
 
         constructor(name: string, adversary: Adversary, event: EventCard) {
-            console.log(event);
             let names = Array.isArray(event.name) ? [name].concat(event.name) : [name, event.name];
             super([EventType.AdversaryEvent, <EventType>event.type], names, event.tokenevent, event.dahanevent);
             this.Inner = event;

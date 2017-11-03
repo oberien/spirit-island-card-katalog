@@ -232,7 +232,6 @@ namespace Filter {
 
     export function filterAll(cards: Card[], searchstring: string): Card[] {
         const filters = getAllFilters(searchstring);
-        console.log(filters + "");
         cards = cards.filter(c => Filter.all(...filters)(c));
         return cards;
     }
