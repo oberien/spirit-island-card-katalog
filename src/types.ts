@@ -461,15 +461,6 @@ namespace Types {
         }
     }
 
-    export class EventDescInternal<T> {
-        constructor(public name: string, public level: T | T[], public description: string) {}
-
-        contains(t: T): boolean {
-            return (Array.isArray(this.level) && this.level.indexOf(t) > -1)
-                || this.level === t;
-        }
-    }
-
     export class EventDesc {
         constructor(public name: string, public description: string) {}
 
@@ -479,39 +470,14 @@ namespace Types {
     }
 
     export class StageEventCard extends EventCard {
-        public level1: EventDesc;
-        public level2: EventDesc;
-        public level3: EventDesc;
-
-        constructor(stages: EventDescInternal<Stage>[],
+        constructor(public level1: EventDesc, public level2: EventDesc, public level3: EventDesc,
                     tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
-            let names = [];
-            for (const stage of stages) {
-                names.push(stage.name);
-            }
-            super(EventType.StageEvent, names, tokenevent, dahanevent);
-
-            for (const stage of stages) {
-                if (stage.contains(Stage.Stage1)) {
-                    this.level1 = new EventDesc(stage.name, stage.description);
-                }
-                if (stage.contains(Stage.Stage2)) {
-                    this.level2 = new EventDesc(stage.name, stage.description);
-                }
-                if (stage.contains(Stage.Stage3)) {
-                    this.level3 = new EventDesc(stage.name, stage.description);
-                }
-            }
-            if (this.level1 == undefined || this.level2 == undefined || this.level3 == undefined) {
-                throw new Error("Stage1 or Stage2 or Stage3 undefined " + this.getSearchString());
-            }
+            super(EventType.StageEvent, [...new Set([level1.name, level2.name, level3.name])], tokenevent, dahanevent);
         }
 
         getBacksideText(): string {
             let text = "";
-            if (this.name !== null) {
-                text += "<b>Name</b>: " + this.name + "<br/>";
-            }
+            text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Level1</b>: " + this.level1 + "<br/>";
             text += "<b>Level2</b>: " + this.level2 + "<br/>";
             text += "<b>Level3</b>: " + this.level3 + "<br/>";
@@ -526,29 +492,9 @@ namespace Types {
     }
 
     export class TerrorLevelEventCard extends EventCard {
-        public level1: EventDesc;
-        public level2: EventDesc;
-        public level3: EventDesc;
-
-        constructor(terrorlevels: EventDescInternal<TerrorLevel>[],
+        constructor(public level1: EventDesc, public level2: EventDesc, public level3: EventDesc,
                     tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
-            let names = terrorlevels.map((terror) => terror.name);
-            super(EventType.TerrorLevelEvent, names, tokenevent, dahanevent);
-
-            for (const terror of terrorlevels) {
-                if (terror.contains(TerrorLevel.TerrorLevel1)) {
-                    this.level1 = new EventDesc(terror.name, terror.description);
-                }
-                if (terror.contains(TerrorLevel.TerrorLevel2)) {
-                    this.level2 = new EventDesc(terror.name, terror.description);
-                }
-                if (terror.contains(TerrorLevel.TerrorLevel3)) {
-                    this.level3 = new EventDesc(terror.name, terror.description);
-                }
-            }
-            if(this.level1 == undefined || this.level2 == undefined || this.level3 == undefined) {
-                throw new Error("TerrorLevel1 or TerrorLevel2 or TerrorLevel3 undefined " + this.getSearchString());
-            }
+            super(EventType.TerrorLevelEvent, [...new Set([level1.name, level2.name, level3.name])], tokenevent, dahanevent);
         }
 
         getBacksideText(): string {
@@ -568,15 +514,9 @@ namespace Types {
     }
 
     export class HealthyBlightedLandEventCard extends EventCard {
-        public healthy: EventDesc;
-        public blighted: EventDesc;
-
-        constructor(healthy: EventDesc, blighted: EventDesc,
+        constructor(public healthy: EventDesc, public blighted: EventDesc,
                     tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
-            let names = [healthy.name, blighted.name];
-            super(EventType.HealthyBlightedLandEvent, names, tokenevent, dahanevent);
-            this.healthy = healthy;
-            this.blighted = blighted;
+            super(EventType.HealthyBlightedLandEvent, [healthy.name, blighted.name], tokenevent, dahanevent);
         }
 
         getBacksideText(): string {
@@ -599,6 +539,7 @@ namespace Types {
         public adversary: Adversary;
 
         constructor(name: string, adversary: Adversary, event: EventCard) {
+            console.log(event);
             let names = Array.isArray(event.name) ? [name].concat(event.name) : [name, event.name];
             super([EventType.AdversaryEvent, <EventType>event.type], names, event.tokenevent, event.dahanevent);
             this.Inner = event;

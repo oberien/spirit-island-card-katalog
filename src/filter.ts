@@ -3,6 +3,12 @@
 namespace Filter {
     import PowerCard = Types.PowerCard;
     import FearCard = Types.FearCard;
+    import ChoiceEventCard = Types.ChoiceEventCard;
+    import AdversaryEvent = Types.AdversaryEvent;
+    import StageEventCard = Types.StageEventCard;
+    import TerrorLevelEventCard = Types.TerrorLevelEventCard;
+    import HealthyBlightedLandEventCard = Types.HealthyBlightedLandEventCard;
+    import EventDesc = Types.EventDesc;
 
     class ExtensibleFunction extends Function {
         constructor(fn: (card: Card) => boolean) {
@@ -185,10 +191,21 @@ namespace Filter {
     function getAllFilters(searchstring: string): Filter[] {
         let filters: Filter[] = [];
         // property filters
+        const dummyEventDesc = new EventDesc("", "");
         const dummyPower = new (PowerCard as any)();
         const dummyFear = new (FearCard as any)();
+        const dummyChoiceEvent = new (ChoiceEventCard as any)();
+        const dummyStageEvent = new (StageEventCard as any)(dummyEventDesc, dummyEventDesc, dummyEventDesc);
+        const dummyTerrorLevelEvent = new (TerrorLevelEventCard as any)(dummyEventDesc, dummyEventDesc, dummyEventDesc);
+        const dummyHealthyBlightedLandEvent = new (HealthyBlightedLandEventCard as any)(dummyEventDesc, dummyEventDesc);
+        const dummyAdversaryEvent = new (AdversaryEvent as any)(null, null, dummyStageEvent);
         const props = Object.getOwnPropertyNames(dummyPower)
-            .concat(Object.getOwnPropertyNames(dummyFear));
+            .concat(Object.getOwnPropertyNames(dummyFear))
+            .concat(Object.getOwnPropertyNames(dummyChoiceEvent))
+            .concat(Object.getOwnPropertyNames(dummyStageEvent))
+            .concat(Object.getOwnPropertyNames(dummyTerrorLevelEvent))
+            .concat(Object.getOwnPropertyNames(dummyHealthyBlightedLandEvent))
+            .concat(Object.getOwnPropertyNames(dummyAdversaryEvent));
         for (const prop of props) {
             let fs;
             [fs, searchstring] = getPropertyFilters(searchstring, prop);
