@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     body.onkeypress = e => {
         if (e.key === 's' && !(e.target instanceof HTMLInputElement)) {
             search.focus();
+            e.preventDefault();
         }
     };
     search.oninput = _ => update();
