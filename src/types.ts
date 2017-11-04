@@ -79,25 +79,25 @@ namespace Types {
     }
 
     export enum Unique {
-        ASpreadOfRampantGreen = "Unique: A Spread of Rampant Green",
-        BringerOfDreamsAndNightmares = "Unique: Bringer of Dreams and Nightmares",
-        LightngingsSwiftStrike = "Unique: Lightning's Swift Strike",
-        OceansHungryGrasp = "Unique: Ocean's Hungry Grasp",
-        RiverSurgesInSunlight = "Unique: River Surges in Sunlight",
-        ShadowsFlickerLikeFlame = "Unique: Shadows Flicker Like Flame",
-        Thunderspeaker = "Unique: Thunderspeaker",
-        VitalStrengthOfTheEarth = "Unique: Vital Strength of the Earth",
-        SharpFangsBehindTheLeaves = "Unique: Sharp Fangs behind the Leaves",
-        KeeperOfTheForbiddenWilds = "Unique: Keeper of the Forbidden Wilds",
-        SerpentSlumberingBeneathTheIsland = "Unique: Serpent Slumbering Beneath the Island",
-        HeartOfTheWildfire = "Unique: Heart of the Wildfire",
+        ASpreadOfRampantGreen = "Unique Power: A Spread of Rampant Green",
+        BringerOfDreamsAndNightmares = "Unique Power: Bringer of Dreams and Nightmares",
+        LightngingsSwiftStrike = "Unique Power: Lightning's Swift Strike",
+        OceansHungryGrasp = "Unique Power: Ocean's Hungry Grasp",
+        RiverSurgesInSunlight = "Unique Power: River Surges in Sunlight",
+        ShadowsFlickerLikeFlame = "Unique Power: Shadows Flicker Like Flame",
+        Thunderspeaker = "Unique Power: Thunderspeaker",
+        VitalStrengthOfTheEarth = "Unique Power: Vital Strength of the Earth",
+        SharpFangsBehindTheLeaves = "Unique Power: Sharp Fangs behind the Leaves",
+        KeeperOfTheForbiddenWilds = "Unique Power: Keeper of the Forbidden Wilds",
+        SerpentSlumberingBeneathTheIsland = "Unique Power: Serpent Slumbering Beneath the Island",
+        HeartOfTheWildfire = "Unique Power: Heart of the Wildfire",
     }
 
     export enum PowerDeckType {
-        BasegameMinor = "Basegame Minor",
-        BasegameMajor = "Basegame Major",
-        ExpansionMinor = "Expansion Minor",
-        ExpansionMajor = "Expansion Major",
+        BasegameMinor = "Basegame Minor Power",
+        BasegameMajor = "Basegame Major Power",
+        ExpansionMinor = "Expansion Minor Power",
+        ExpansionMajor = "Expansion Major Power",
     }
 
     export type PowerType = Unique | PowerDeckType;
@@ -380,6 +380,8 @@ namespace Types {
             text += "<b>Level 1</b>: " + this.level1 + "<br/>";
             text += "<b>Level 2</b>: " + this.level2 + "<br/>";
             text += "<b>Level 3</b>: " + this.level3 + "<br/>";
+            text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
+                + encodeURIComponent(this.name) + "\" target='_blank'>FAQ</a><br/>";
             return text;
         }
 
@@ -446,6 +448,7 @@ namespace Types {
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
             for (let [i, choice] of this.choices.entries()) {
@@ -457,6 +460,8 @@ namespace Types {
             if (this.dahanevent !== null) {
                 text += "<b>Dahan Event</b>: " + this.dahanevent + "<br/>";
             }
+            text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
+                + encodeURIComponent(<string>this.name) + "\" target='_blank'>FAQ</a><br/>";
             return text;
         }
     }
@@ -477,6 +482,7 @@ namespace Types {
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Level1</b>: " + this.level1 + "<br/>";
             text += "<b>Level2</b>: " + this.level2 + "<br/>";
@@ -486,6 +492,10 @@ namespace Types {
             }
             if (this.dahanevent !== null) {
                 text += "<b>Dahan Event</b>: " + this.dahanevent + "<br/>";
+            }
+            for (const name of [...new Set([this.level1.name, this.level2.name, this.level3.name])]) {
+                text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
+                    + encodeURIComponent(name) + "\" target='_blank'>FAQ: " + name + "</a><br/>";
             }
             return text;
         }
@@ -499,6 +509,7 @@ namespace Types {
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Level1</b>: " + this.level1 + "<br/>";
             text += "<b>Level2</b>: " + this.level2 + "<br/>";
@@ -508,6 +519,10 @@ namespace Types {
             }
             if (this.dahanevent !== null) {
                 text += "<b>Dahan Event</b>: " + this.dahanevent + "<br/>";
+            }
+            for (const name of [...new Set([this.level1.name, this.level2.name, this.level3.name])]) {
+                text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
+                    + encodeURIComponent(name) + "\" target='_blank'>FAQ: " + name + "</a><br/>";
             }
             return text;
         }
@@ -521,6 +536,7 @@ namespace Types {
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Healthy</b>: " + this.healthy + "<br/>";
             text += "<b>Blighted</b>: " + this.blighted + "<br/>";
@@ -529,6 +545,10 @@ namespace Types {
             }
             if (this.dahanevent !== null) {
                 text += "<b>Dahan Event</b>: " + this.dahanevent + "<br/>";
+            }
+            for (const name of [this.healthy.name, this.blighted.name]) {
+                text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
+                    + encodeURIComponent(name) + "\" target='_blank'>FAQ: " + name + "</a><br/>";
             }
             return text;
         }
@@ -554,10 +574,13 @@ namespace Types {
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "(Adversary Event - include only if specified)<br/>";
             text += "Discard and redraw if not playing against " + this.adversary + "<br/>";
             text += this.Inner.getBacksideText();
+            text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
+                + encodeURIComponent(this.name[0]) + "\" target='_blank'>FAQ: " + this.name[0] + "</a><br/>";
             return text;
         }
 
