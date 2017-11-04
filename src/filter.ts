@@ -199,13 +199,15 @@ namespace Filter {
         const dummyTerrorLevelEvent = new (TerrorLevelEventCard as any)(dummyEventDesc, dummyEventDesc, dummyEventDesc);
         const dummyHealthyBlightedLandEvent = new (HealthyBlightedLandEventCard as any)(dummyEventDesc, dummyEventDesc);
         const dummyAdversaryEvent = new (AdversaryEvent as any)(null, null, dummyStageEvent);
-        const props = Object.getOwnPropertyNames(dummyPower)
+        let props = Object.getOwnPropertyNames(dummyPower)
             .concat(Object.getOwnPropertyNames(dummyFear))
             .concat(Object.getOwnPropertyNames(dummyChoiceEvent))
             .concat(Object.getOwnPropertyNames(dummyStageEvent))
             .concat(Object.getOwnPropertyNames(dummyTerrorLevelEvent))
             .concat(Object.getOwnPropertyNames(dummyHealthyBlightedLandEvent))
-            .concat(Object.getOwnPropertyNames(dummyAdversaryEvent));
+            .concat(Object.getOwnPropertyNames(dummyAdversaryEvent))
+            .filter((name) => name.toLowerCase() == name);
+        props = [...new Set(props)];
         for (const prop of props) {
             let fs;
             [fs, searchstring] = getPropertyFilters(searchstring, prop);
