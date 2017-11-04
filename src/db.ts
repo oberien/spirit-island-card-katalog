@@ -53,7 +53,6 @@ namespace DB {
         AidTheUprising = "Aid the Uprising: Invaders with Strife take 1 Damage per Dahan present. Add 1 Dahan per Town / City this destroys.",
     }
 
-    // TODO: Add all events here
     class Events {
         // Choice
         public static LetThePlantsDieAndTheLandWither = new ChoiceDesc("Let the Plants Die and the Land Wither", null,
