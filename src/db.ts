@@ -282,9 +282,9 @@ namespace DB {
             [Elements.Sun, Elements.Moon, Elements.Water], "Joshua Wright",
             "If Invaders are present, 1 Fear. If target land is S/W, remove 1 Blight"),
         // red corner
-        new PowerCard(PowerDeckType.BasegameMinor, "Shadows of the Burning Forest", 0, Speed.Slow, new Ranges(Source.Presence, 0), LandAny,
+        new PowerCard(PowerDeckType.BasegameMinor, "Shadows of the Burning Forest", 0, Speed.Slow, new Ranges(Source.Presence, 0), TargetProperty.Invaders,
             [Elements.Moon, Elements.Fire, Elements.Plant], "Nolan Nasser",
-            "If Invaders are present, 2 Fear. If target land is M/J, Push 1 Explorer and 1 Town."),
+            "2 Fear. If target land is M/J, Push 1 Explorer and 1 Town."),
 
         // Minors inside color cornered block
         new PowerCard(PowerDeckType.BasegameMinor, "Steam Vents", 1, Speed.Fast, new Ranges(Source.Presence, 0), LandAny,
@@ -441,7 +441,7 @@ namespace DB {
         new PowerCard(PowerDeckType.BasegameMajor, "Infinite Vitality", 3, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
             [Elements.Earth, Elements.Plant, Elements.Animal], "Joshua Wright",
             "Dahan have +4 Health while in target land. Whenever Blight would be added to target land, instead leave it on the card. -If you have- 4 Earth: Dahan ignore Damage and Destruction effects. Remove 1 Blight from target or adjacent land."),
-        new PowerCard(PowerDeckType.BasegameMajor, "Dissolve the bonds", 4, Speed.Slow, new Ranges(Source.Presence, 1), LandAny,
+        new PowerCard(PowerDeckType.BasegameMajor, "Dissolve the Bonds of Kinship", 4, Speed.Slow, new Ranges(Source.Presence, 1), LandAny,
             [Elements.Fire, Elements.Water, Elements.Animal], "Jorge Ramos",
             "Replace 1 City with 2 Explorer. Replace 1 Town with 1 Explorer. Replace 1 Dahan with 1 Explorer. Push all Explorer from target land to as many different lands as possible. -If you have- 2 Fire, 2 Water, 3 Animal: Before Pushing, Explorer and Town / City do Damage to each other."),
 
@@ -450,7 +450,7 @@ namespace DB {
         new PowerCard(PowerDeckType.ExpansionMajor, "Strangling Firevine", 4, Speed.Slow, new Ranges(Source.Presence, 1, [Land.Sand]), LandAny,
             [Elements.Fire, Elements.Plant], "Nolan Nasser",
             "Destroy all Explorer. Add 1 Wilds. Add 1 Wilds in the originating Sands. 1 Damage per Wilds in / adjacent to target land. -If you have- 2 Fire, 3 Plant: +1 Damage per Wilds in / adjacent to target land."),
-        new PowerCard(PowerDeckType.ExpansionMajor, "Bloodwrap Plague", 4, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
+        new PowerCard(PowerDeckType.ExpansionMajor, "Bloodwrack Plague", 4, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
             [Elements.Water, Elements.Earth, Elements.Animal], "Jorge Ramos",
             "Add 2 Disease. For each Disease in target land, Defend 1 in target and all adjacent lands. -If you have- 2 Earth, 4 Animal: 2 Fear. For each Disease in target land do 1 Damage in target or an adjacent land."),
         new PowerCard(PowerDeckType.ExpansionMajor, "Cast down into the Briny Deep", 9, Speed.Slow, new Ranges(Source.SacredSite, 1), [Land.Coastal],
