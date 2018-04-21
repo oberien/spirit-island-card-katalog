@@ -62,7 +62,7 @@ function update() {
         result.removeChild(result.firstChild);
     }
 
-    let searchstring = search.value.toLowerCase();
+    let searchstring = search.value.toLowerCase().replace("&", "and");
     let sortby = sort.value.toLowerCase();
     let ascending = !order.classList.contains("rotated");
     let cards: Card[] = CARDS;

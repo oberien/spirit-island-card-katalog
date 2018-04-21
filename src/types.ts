@@ -78,6 +78,12 @@ namespace Types {
         Animal = "Animal",
     }
 
+    export enum ProductSet {
+        Basegame = "Basegame",
+        BranchAndClaw = "Branch & Claw",
+        Promo = "Promo",
+    }
+
     export enum Unique {
         ASpreadOfRampantGreen = "Unique Power: A Spread of Rampant Green",
         BringerOfDreamsAndNightmares = "Unique Power: Bringer of Dreams and Nightmares",
@@ -94,17 +100,14 @@ namespace Types {
     }
 
     export enum PowerDeckType {
-        BasegameMinor = "Basegame Minor Power",
-        BasegameMajor = "Basegame Major Power",
-        ExpansionMinor = "Expansion Minor Power",
-        ExpansionMajor = "Expansion Major Power",
+        Minor = "Minor Power",
+        Major = "Major Power",
     }
 
     export type PowerType = Unique | PowerDeckType;
 
     export enum FearType {
-        Basegame = "Basegame Fear",
-        Expansion = "Expansion Fear",
+        Fear = "Fear",
     }
 
     export enum EventType {
@@ -140,11 +143,9 @@ namespace Types {
 
     function toColor(type: string) {
         switch (type) {
-            case PowerDeckType.BasegameMinor:
-            case PowerDeckType.ExpansionMinor:
+            case PowerDeckType.Minor:
                 return "rgba(50, 50, 50, 0.3)";
-            case PowerDeckType.BasegameMajor:
-            case PowerDeckType.ExpansionMajor:
+            case PowerDeckType.Major:
                 return "rgba(255, 255, 0, 0.25)";
             case Unique.ASpreadOfRampantGreen:
             case Unique.BringerOfDreamsAndNightmares:
@@ -170,7 +171,7 @@ namespace Types {
         private P: HTMLSpanElement | null;
         private Container: HTMLDivElement | null;
 
-        constructor(public type: CardType, public name: string | string[]) {
+        constructor(public set: ProductSet, public type: CardType, public name: string | string[]) {
             this.FontSize = null;
             this.P = null;
             this.Container = null;
@@ -181,6 +182,7 @@ namespace Types {
                 .filter((name) => name.toLowerCase() === name)
                 .map((name) => (this as any)[name])
                 .filter((prop) => prop !== null)
+                .map((prop) => prop.toString().toLowerCase().replace("&", "and"))
                 .join(" ");
         }
         abstract getImageFolder(): string;
@@ -291,14 +293,14 @@ namespace Types {
     }
 
     export class PowerCard extends Card {
-        constructor(type: PowerType, name: string, public cost: number, public speed: Speed,
+        constructor(set: ProductSet, type: PowerType, name: string, public cost: number, public speed: Speed,
                     public range: Ranges | null, public target: Target, public elements: Elements[],
                     public artist: string, public description: string) {
-            super(type, name);
+            super(set, type, name);
         }
 
         getSearchString(): string {
-            let s = this.type + " " + this.cost + " " + this.name + " " + this.speed;
+            let s = this.set.replace("&", "and") + " " + this.type + " " + this.cost + " " + this.name + " " + this.speed;
             if (this.range != null) {
                 s += " " + this.range.from + " " + this.range.range;
                 if (this.range.land != null) {
@@ -329,6 +331,7 @@ namespace Types {
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Set</b>: " + this.set + "<br/>";
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Cost</b>: " + this.cost + "<br/>";
@@ -363,8 +366,8 @@ namespace Types {
     export class FearCard extends Card {
         public description: string;
 
-        constructor(public type: FearType, public name: string, public level1: string, public level2: string, public level3: string) {
-            super(type, name);
+        constructor(set: ProductSet, type: FearType, public name: string, public level1: string, public level2: string, public level3: string) {
+            super(set, type, name);
             // set description for searching
             this.description = level1 + " " + level2 + " " + level3;
         }
@@ -375,6 +378,7 @@ namespace Types {
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Set</b>: " + this.set + "<br/>";
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Level 1</b>: " + this.level1 + "<br/>";
@@ -391,9 +395,9 @@ namespace Types {
     }
 
     export abstract class EventCard extends Card {
-        constructor(type: EventType | EventType[], name: string | string[],
+        constructor(set: ProductSet, type: EventType | EventType[], name: string | string[],
                     public tokenevent: TokenEvent | null, public dahanevent: DahanEvent | null) {
-            super(type, name);
+            super(set, type, name);
         }
 
         getImageFolder(): string {
@@ -441,13 +445,14 @@ namespace Types {
     }
 
     export class ChoiceEventCard extends EventCard {
-        constructor(name: string, public description: string, public choices: ChoiceDesc[],
+        constructor(set: ProductSet, name: string, public description: string, public choices: ChoiceDesc[],
                     tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
-            super(EventType.ChoiceEvent, name, tokenevent, dahanevent);
+            super(set, EventType.ChoiceEvent, name, tokenevent, dahanevent);
         }
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Set</b>: " + this.set + "<br/>";
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
@@ -475,13 +480,14 @@ namespace Types {
     }
 
     export class StageEventCard extends EventCard {
-        constructor(public level1: EventDesc, public level2: EventDesc, public level3: EventDesc,
+        constructor(set: ProductSet, public level1: EventDesc, public level2: EventDesc, public level3: EventDesc,
                     tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
-            super(EventType.StageEvent, [...new Set([level1.name, level2.name, level3.name])], tokenevent, dahanevent);
+            super(set, EventType.StageEvent, [...new Set([level1.name, level2.name, level3.name])], tokenevent, dahanevent);
         }
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Set</b>: " + this.set + "<br/>";
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Level1</b>: " + this.level1 + "<br/>";
@@ -502,13 +508,14 @@ namespace Types {
     }
 
     export class TerrorLevelEventCard extends EventCard {
-        constructor(public level1: EventDesc, public level2: EventDesc, public level3: EventDesc,
+        constructor(set: ProductSet, public level1: EventDesc, public level2: EventDesc, public level3: EventDesc,
                     tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
-            super(EventType.TerrorLevelEvent, [...new Set([level1.name, level2.name, level3.name])], tokenevent, dahanevent);
+            super(set, EventType.TerrorLevelEvent, [...new Set([level1.name, level2.name, level3.name])], tokenevent, dahanevent);
         }
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Set</b>: " + this.set + "<br/>";
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Level1</b>: " + this.level1 + "<br/>";
@@ -529,13 +536,14 @@ namespace Types {
     }
 
     export class HealthyBlightedLandEventCard extends EventCard {
-        constructor(public healthy: EventDesc, public blighted: EventDesc,
+        constructor(set: ProductSet, public healthy: EventDesc, public blighted: EventDesc,
                     tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
-            super(EventType.HealthyBlightedLandEvent, [healthy.name, blighted.name], tokenevent, dahanevent);
+            super(set, EventType.HealthyBlightedLandEvent, [healthy.name, blighted.name], tokenevent, dahanevent);
         }
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Set</b>: " + this.set + "<br/>";
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Healthy</b>: " + this.healthy + "<br/>";
@@ -558,9 +566,9 @@ namespace Types {
         private Inner: EventCard;
         public adversary: Adversary;
 
-        constructor(name: string, adversary: Adversary, event: EventCard) {
+        constructor(set: ProductSet, name: string, adversary: Adversary, event: EventCard) {
             let names = Array.isArray(event.name) ? [name].concat(event.name) : [name, event.name];
-            super([EventType.AdversaryEvent, <EventType>event.type], names, event.tokenevent, event.dahanevent);
+            super(set, [EventType.AdversaryEvent, <EventType>event.type], names, event.tokenevent, event.dahanevent);
             this.Inner = event;
             this.adversary = adversary;
             let self = (this as any);
@@ -574,6 +582,7 @@ namespace Types {
 
         getBacksideText(): string {
             let text = "";
+            text += "<b>Set</b>: " + this.set + "<br/>";
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "(Adversary Event - include only if specified)<br/>";

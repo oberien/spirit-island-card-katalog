@@ -147,7 +147,7 @@ namespace Filter {
         if (prop == LandAny) {
             return "Any";
         }
-        return prop.toString();
+        return prop.toString().replace("&", "and");
     }
 
     function stringToPropertyFilter(filterString: string, property: string): Filter {
@@ -195,10 +195,10 @@ namespace Filter {
         const dummyPower = new (PowerCard as any)();
         const dummyFear = new (FearCard as any)();
         const dummyChoiceEvent = new (ChoiceEventCard as any)();
-        const dummyStageEvent = new (StageEventCard as any)(dummyEventDesc, dummyEventDesc, dummyEventDesc);
-        const dummyTerrorLevelEvent = new (TerrorLevelEventCard as any)(dummyEventDesc, dummyEventDesc, dummyEventDesc);
-        const dummyHealthyBlightedLandEvent = new (HealthyBlightedLandEventCard as any)(dummyEventDesc, dummyEventDesc);
-        const dummyAdversaryEvent = new (AdversaryEvent as any)(null, null, dummyStageEvent);
+        const dummyStageEvent = new (StageEventCard as any)(null, dummyEventDesc, dummyEventDesc, dummyEventDesc);
+        const dummyTerrorLevelEvent = new (TerrorLevelEventCard as any)(null, dummyEventDesc, dummyEventDesc, dummyEventDesc);
+        const dummyHealthyBlightedLandEvent = new (HealthyBlightedLandEventCard as any)(null, dummyEventDesc, dummyEventDesc);
+        const dummyAdversaryEvent = new (AdversaryEvent as any)(null, null, null, dummyStageEvent);
         let props = Object.getOwnPropertyNames(dummyPower)
             .concat(Object.getOwnPropertyNames(dummyFear))
             .concat(Object.getOwnPropertyNames(dummyChoiceEvent))
@@ -233,6 +233,7 @@ namespace Filter {
     }
 
     export function filterAll(cards: Card[], searchstring: string): Card[] {
+        searchstring = searchstring.replace("&", "and");
         const filters = getAllFilters(searchstring);
         cards = cards.filter(c => Filter.all(...filters)(c));
         return cards;
