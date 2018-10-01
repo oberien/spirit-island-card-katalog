@@ -422,7 +422,7 @@ namespace DB {
             "2 Damage per Dahan in target land. -If you have- 3 Sun, 2 Animal: You may Push up to 2 Dahan. In lands you Pushed Dahan to, 2 Damage per Dahan."),
         new PowerCard(ProductSet.Basegame, PowerDeckType.Major, "Vengeance of the Dead", 3, Speed.Fast, new Ranges(Source.Presence, 3), LandAny,
             [Elements.Moon, Elements.Fire, Elements.Animal], "Kat Birmelin",
-            "3 Fear. During the rest of this turn, 1 Damage in target land for each Town / City / Dahan destroyed there. -If you have- 3 Animal: Damage from this Power may be dealt into adjacent lands."),
+            "3 Fear. After each effect that destroys Town / City / Dahan in target land, 1 Damage per Town / City / Dahan destroyed. -If you have- 3 Animal: Damage from this Power may be dealt into adjacent lands."),
         new PowerCard(ProductSet.Basegame, PowerDeckType.Major, "Wrap in Wings of Sunlight", 3, Speed.Fast, new Ranges(Source.Presence, 0), LandAny,
             [Elements.Sun, Elements.Air, Elements.Animal], "Loic Belliau",
             "Move up to 5 Dahan from target land to any land. Defend 5 in that land. -If you have- 2 Sun, 2 Air, 2 Animal: First, Gather up to 3 Dahan."),
