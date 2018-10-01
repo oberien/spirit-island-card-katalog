@@ -465,7 +465,7 @@ namespace DB {
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Grant Hatred a Ravenous Form", 4, Speed.Slow, new Ranges(Source.Presence, 1), LandAny,
             [Elements.Moon, Elements.Fire], "Nolan Nasser",
             "For each Strife / Blight in target land, 1 Fear and 2 Damage. If this destroys all invaders in target land, add 1 Beasts. -If you have- 4 Moon, 2 Fire: Add 1 Strife in up to 3 adjacent lands."),
-        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Insatiable Hinger of the Swarm", 4, Speed.Fast, new Ranges(Source.SacredSite, 2), LandAny,
+        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Insatiable Hunger of the Swarm", 4, Speed.Fast, new Ranges(Source.SacredSite, 2), LandAny,
             [Elements.Air, Elements.Plant, Elements.Animal], "Lucas Durham",
             "Add 1 Blight. Add 2 Beasts. Gather up to 2 Beasts. Each Beasts does 1 Fear, 2 Damage to Invaders and 2 Damage to Dahan. Destroy 1 Beasts. -If you have- 2 Air, 4 Animal: Repeat this Power on an adjacent land."),
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Instruments of their own Ruin", 4, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
