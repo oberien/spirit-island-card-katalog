@@ -48,6 +48,14 @@ document.addEventListener("DOMContentLoaded", () => {
     update();
 });
 
+const EXTRA_CARDS: HTMLDivElement[] = [];
+for (let i = 0; i < 10; i++) {
+    let flex = <HTMLDivElement> document.createElement("div");
+    flex.classList.add("flex-50", "xs-flex-33", "sm-flex-25", "md-flex-20", "l-flex-15", "xl-flex-12", "xxl-flex-10");
+    flex.style.height = "0px";
+    EXTRA_CARDS.push(flex);
+}
+
 function update() {
     const search = <HTMLInputElement> document.getElementById("search");
     const result = <HTMLParagraphElement> document.getElementById("result");
@@ -86,17 +94,11 @@ function update() {
     });
 
     for (const card of cards) {
-        let flex = <HTMLDivElement> document.createElement("div");
-        flex.classList.add("flex-50", "xs-flex-33", "sm-flex-25", "md-flex-20", "l-flex-15", "xl-flex-12", "xxl-flex-10");
-        flex.appendChild(card.getCard());
-        result.appendChild(flex);
+        result.appendChild(card.getCardFlexElement());
     }
 
     // add a few extra to make sure that the trailing line is full as well
-    for (let i = 0; i < 10; i++) {
-        let flex = <HTMLDivElement> document.createElement("div");
-        flex.classList.add("flex-50", "xs-flex-33", "sm-flex-25", "md-flex-20", "l-flex-15", "xl-flex-12", "xxl-flex-10");
-        flex.style.height = "0px";
+    for (let flex of EXTRA_CARDS) {
         result.appendChild(flex);
     }
 }

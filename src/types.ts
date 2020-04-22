@@ -167,15 +167,12 @@ namespace Types {
 
     export abstract class Card {
         // capital so they can not be searched with filters
-        private FontSize: number | null;
-        private P: HTMLSpanElement | null;
-        private Container: HTMLDivElement | null;
+        private FontSize: number | null = null;
+        private P: HTMLSpanElement | null = null;
+        private Container: HTMLDivElement | null = null;
+        private Flex: HTMLDivElement | null = null;
 
-        constructor(public set: ProductSet, public type: CardType, public name: string | string[]) {
-            this.FontSize = null;
-            this.P = null;
-            this.Container = null;
-        }
+        constructor(public set: ProductSet, public type: CardType, public name: string | string[]) {}
 
         getSearchString(): string {
             return Object.getOwnPropertyNames(this)
@@ -189,7 +186,14 @@ namespace Types {
         abstract getBacksideText(): string;
         abstract getFrontOverlay(): Node | null;
 
-        public getCard() {
+        public getCardFlexElement() {
+            if (this.Flex != null) {
+                return this.Flex;
+            }
+
+            let flex = <HTMLDivElement> document.createElement("div");
+            this.Flex = flex;
+            flex.classList.add("flex-50", "xs-flex-33", "sm-flex-25", "md-flex-20", "l-flex-15", "xl-flex-12", "xxl-flex-10");
             let container = document.createElement("div");
             this.Container = container;
             container.classList.add("flip-container");
@@ -231,6 +235,7 @@ namespace Types {
             flipper.appendChild(back);
             flipper.appendChild(front);
             container.appendChild(flipper);
+            flex.appendChild(container);
 
             let x: number, y: number;
             container.onmousedown = (e) => {
@@ -256,7 +261,7 @@ namespace Types {
                 container.classList.toggle("flipped");
             };
 
-            return container;
+            return flex;
         }
 
         private getImagePath() {
