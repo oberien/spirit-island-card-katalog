@@ -1,16 +1,23 @@
 /// <reference path="lexer.ts" />
 
 namespace Parser {
-    // Syntax
-    //                filters : '!'? (prop_filter | text) [('AND' | ' ' | ',' | 'OR' | '|') filters]
-    //            prop_filter : word ':' prop_filter_value_list
-    // prop_filter_value_list : '!'? (num_filter | text) [(',' | '|') prop_filter_value_list] // no spaces anywhere
-    //             num_filter : ('<' | '<=' | '=' | '>=' | '>')? number
-    //                   text : word | dqstring
-    //                   word : [a-zA-Z0-9<=>]*
-    //               dqstring : '"' [^"]* '"'
-    //                 number : [0-9]*
+    // Syntax:
+    //                 filters : filter ((' ' | ',' | '|') filter)*
+    //                  filter : prop_filter | text | not_filter | paren_filter
+    //            paren_filter : '(' filters ')'
+    //              not_filter : '!' filter
+    //             prop_filter : word ':' prop_filter_value_list
+    //  prop_filter_value_list : prop_filter_value ((',' | '|') prop_filter_value)* // no spaces anywhere
+    //       prop_filter_value : num_filter | text
+    // prop_filter_paren_value : '(' prop_filter_value_list ')'
+    //   prop_filter_not_value : '!' prop_filter_value
+    //              num_filter : ('<' | '<=' | '=' | '>=' | '>')? number
+    //                    text : word | dqstring
+    //                    word : [a-zA-Z0-9<=>]*
+    //                dqstring : // double quoted string possibly with escaped quotes
+    //                  number : [0-9]*
 
+    import Token = Lexer.Token;
     export type Filter = And | Or | Not | Text | PropFilter;
 
     export interface And {
@@ -73,7 +80,8 @@ namespace Parser {
     type ParseResult<T> = { index: number, result: T } | null;
 
     export function parseFilters(s: string): Filter | null {
-        return parseFiltersInternal(0, s);
+        const tokens = Lexer.lex(s);
+        return parseFiltersInternal(0, tokens);
     }
 
     function parseFiltersInternal(index: number, s: string): Filter | null {
@@ -291,80 +299,13 @@ namespace Parser {
         }
     }
 
-    /// Returns the new index in the string and the parsed number, or null if there is no number.
-    /// Returns null if the index is out of bounds of s.
-    function parseNumber(index: number, s: string): ParseResult<number> {
-        const res = matchRegex(index, s, /\d/);
-        if (res == null) {
-            return null;
-        }
-        const { index: newIndex, result: word } = res;
-        if (word.length == 0) {
-            return null;
-        }
-        const number = parseInt(word);
-        return { index: newIndex, result: number };
-    }
-
-    /// Returns the new index in the string and the number of whitespace consumed.
-    /// Returns null if the index is out of bounds of s.
-    function parseWhitespace(index: number, s: string): ParseResult<number> {
-        const res = matchRegex(index, s, /\s/);
-        if (res == null) {
-            return null;
-        }
-        const { index: newIndex, result: ws } = res;
-        return { index: newIndex, result: ws.length };
-    }
-
-
-    /// Match the regex at the given index of the string as often as possible.
-    /// This corresponds to matching `(regex)*`.
-    /// Returns the new index in the string and the matched string.
-    /// Returns null if the index is out of bounds of s.
-    function matchRegex(index: number, s: string, regex: RegExp): ParseResult<string> {
-        if (eof(index, s)) {
-            return null;
-        }
-        let consumed = 0;
-        while (regex.test(s[index])) {
-            index += 1;
-            consumed += 1;
-            if (eof(index, s)) {
-                break;
-            }
-        }
-        return { index, result: s.substring(index - consumed, index) };
-    }
-
-    /// Returns if end of the string is reached.
-    function eof(index: number, s: string): boolean {
-        return index >= s.length;
+    /** Returns if the index is out of bounds. **/
+    function eof(index: number, arr: Token[]): boolean {
+        return index >= arr.length;
     }
 
     type ParseFunction<T> = (index: number, s: string) => ParseResult<T>;
 
-    // // @ts-ignore
-    // function applyParseFunction<T1>(index: number, s: string, func1: ParseFunction<T1>): ParseResult<[T1]> {
-    //     return <ParseResult<[T1]>>applyParseFunctionsInternal(index, s, func1);
-    // }
-    // // @ts-ignore
-    // function applyParseFunction<T1, T2>(index: number, s: string, func1: ParseFunction<T1>, func2: ParseFunction<T2>): ParseResult<[T1, T2]> {
-    //     return <ParseResult<[T1, T2]>>applyParseFunctionsInternal(index, s, func1, func2);
-    // }
-    // // @ts-ignore
-    // function applyParseFunction<T1, T2, T3>(index: number, s: string, func1: ParseFunction<T1>, func2: ParseFunction<T2>, func3: ParseFunction<T3>): ParseResult<[T1, T2, T3]> {
-    //     return <ParseResult<[T1, T2, T3]>>applyParseFunctionsInternal(index, s, func1, func2, func3);
-    // }
-    // // @ts-ignore
-    // function applyParseFunction<T1, T2, T3, T4>(index: number, s: string, func1: ParseFunction<T1>, func2: ParseFunction<T2>, func3: ParseFunction<T3>, func4: ParseFunction<T4>): ParseResult<[T1, T2, T3, T4]> {
-    //     return <ParseResult<[T1, T2, T3, T4]>>applyParseFunctionsInternal(index, s, func1, func2, func3, func4);
-    // }
-    // // @ts-ignore
-    // function applyParseFunction<T1, T2, T3, T4, T5>(index: number, s: string, func1: ParseFunction<T1>, func2: ParseFunction<T2>, func3: ParseFunction<T3>, func4: ParseFunction<T4>, func5: ParseFunction<T5>): ParseResult<[T1, T2, T3, T4, T5]> {
-    //     return <ParseResult<[T1, T2, T3, T4, T5]>>applyParseFunctionsInternal(index, s, func1, func2, func3, func4, func5);
-    // }
-    // @ts-ignore
     function applyParseFunction<T1, T2 = never, T3 = never, T4 = never, T5 = never, T6 = never>(index: number, s: string, func1: ParseFunction<T1>, func2?: ParseFunction<T2>, func3?: ParseFunction<T3>, func4?: ParseFunction<T4>, func5?: ParseFunction<T5>, func6?: ParseFunction<T6>): ParseResult<[T1, T2, T3, T4, T5, T6]> {
         return <ParseResult<[T1, T2, T3, T4, T5, T6]>>applyParseFunctionsInternal(index, s, func1, func2, func3, func4, func5, func6);
     }
