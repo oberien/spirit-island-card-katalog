@@ -253,44 +253,6 @@ namespace Parser {
         return matchRegex(index, s, /[a-zA-Z0-9<=>]/);
     }
 
-    /// Returns the new index in the string and the content of the dqstring.
-    /// Returns null if the index is out of bounds or the string doesn't start with the double-quote character.
-    function parseDoubleQuotedString(index: number, s: string): ParseResult<string> {
-        if (eof(index, s)) { return null; }
-        if (s[index] != '"') {
-            return null;
-        }
-        index += 1;
-        let result = "";
-        while (index < s.length && s[index] != '"') {
-            const char = parsePossiblyEscapedChar(index, s);
-            if (char == null) {
-                return null;
-            }
-            const { index: newIndex, result: chr } = char;
-            index = newIndex;
-            result += chr;
-        }
-        index += 1;
-        return { index, result: result };
-    }
-
-    /// Returns the new index in the string and the parsed character.
-    /// Returns null if the index is out of bounds of s.
-    function parsePossiblyEscapedChar(index: number, s: string): ParseResult<string> {
-        if (eof(index, s)) {
-            return null;
-        }
-        if (s[index] == "\\") {
-            if (eof(index + 1, s)) {
-                return null;
-            }
-            return { index: index + 2, result: s[index + 1] };
-        } else {
-            return { index: index + 1, result: s[index] };
-        }
-    }
-
     function parseOptionalNot(index: number, s: string): ParseResult<boolean> {
         const notRes = checkOptionalChar('!', index, s);
         if (notRes == null) { return null; }
@@ -378,7 +340,6 @@ namespace Parser {
     /// Returns if end of the string is reached.
     function eof(index: number, s: string): boolean {
         return index >= s.length;
-
     }
 
     type ParseFunction<T> = (index: number, s: string) => ParseResult<T>;
