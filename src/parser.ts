@@ -274,6 +274,13 @@ namespace Parser {
     function parsePropertyFilterValueList(currentPrecedence: BinOpPrecedence, index: number, tokens: Token[]): ParseResult<NumFilter | Text | PropAnd | PropOr | PropNot> {
         let lhs: NumFilter | Text | PropAnd | PropOr | PropNot;
         if (eof(index, tokens)) { return null; }
+
+        const not = tokens[index].kind == "bang";
+        if (not) {
+            index++;
+            if (eof(index, tokens)) { return null; }
+        }
+
         const token = tokens[index];
         switch (token.kind) {
             case "openparen":
@@ -303,6 +310,10 @@ namespace Parser {
                     return null;
                 }
                 ({ index, result: lhs } = valueRes);
+        }
+
+        if (not) {
+            lhs = { kind: "propnot", filter: lhs };
         }
 
         // parse and merge while same precedence until higher precedence
