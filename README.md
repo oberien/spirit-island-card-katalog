@@ -1,18 +1,23 @@
 # SICK - Spirit Island Card Katalog
 
-This project provides a website containing (not yet) all cards of the board game *Spirit Island*.
+This project provides a website containing (pretty much) all cards of the board game *Spirit Island*.
 It is hosted on [https://sick.oberien.de](https://sick.oberien.de).
 
 ## Building
 
 You need to have `tsc` installed:
 ```sh
-npm install --global tsc
+npm install --global typescript
 ```
 
 With `tsc` you can build and watch for changes:
 ```sh
-tsc --pretty --watch
+tsc --pretty --watch --sourceMap
+```
+
+Then just open `index.html` with your browser, e.g.
+```sh
+firefox index.html
 ```
 
 
