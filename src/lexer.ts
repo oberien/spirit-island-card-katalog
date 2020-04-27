@@ -1,20 +1,24 @@
 namespace Lexer {
-    export type Token = Text | Integer | Comparison | Colon | Bang | Comma | Pipe | Whitespace | LeftParen | RightParen;
+    export type Token = Text | Integer | Comparison | Colon | Bang | Comma | Pipe | Whitespace | OpenParen | CloseParen;
     export type Text = DqString | Word;
     export interface DqString {
         kind: "dqstring";
+        span: [number, number];
         text: string;
     }
     export interface Word {
         kind: "word";
+        span: [number, number];
         text: string;
     }
     export interface Integer {
         kind: "int";
+        span: [number, number];
         number: number;
     }
     export interface Comparison {
         kind: "comparison";
+        span: [number, number];
         typ: ComparisonType;
     }
     export enum ComparisonType {
@@ -24,26 +28,44 @@ namespace Lexer {
         GreaterEquals,
         GreaterThan,
     }
+
+    export function comparisonTypeToString(c: ComparisonType): string {
+        switch (c) {
+            case ComparisonType.LessThan: return "<";
+            case ComparisonType.LessEquals: return "<=";
+            case ComparisonType.Equals: return "=";
+            case ComparisonType.GreaterEquals: return ">=";
+            case ComparisonType.GreaterThan: return ">";
+        }
+    }
+
     export interface Colon {
+        span: [number, number];
         kind: "colon";
     }
     export interface Bang {
         kind: "bang";
+        span: [number, number];
     }
     export interface Whitespace {
         kind: "whitespace";
+        span: [number, number];
     }
     export interface Comma {
         kind: "comma";
+        span: [number, number];
     }
     export interface Pipe {
         kind: "pipe";
+        span: [number, number];
     }
-    export interface LeftParen {
-        kind: "leftparen";
+    export interface OpenParen {
+        kind: "openparen";
+        span: [number, number];
     }
-    export interface RightParen {
-        kind: "rightparen";
+    export interface CloseParen {
+        kind: "closeparen";
+        span: [number, number];
     }
 
 
@@ -69,12 +91,12 @@ namespace Lexer {
     function lexToken(index: number, s: string): LexResult<Token> {
         switch (true) {
             case s[index] == '"': return lexDoubleQuotedString(index, s);
-            case s[index] == '!': return { index: index + 1, result: { kind: "bang" } };
-            case s[index] == ':': return { index: index + 1, result: { kind: "colon" } };
-            case s[index] == ',': return { index: index + 1, result: { kind: "comma" } };
-            case s[index] == "|": return { index: index + 1, result: { kind: "pipe" } };
-            case s[index] == "(": return { index: index + 1, result: { kind: "leftparen" } };
-            case s[index] == ")": return { index: index + 1, result: { kind: "rightparen" } };
+            case s[index] == '!': return { index: index + 1, result: { kind: "bang", span: [index, index + 1] } };
+            case s[index] == ':': return { index: index + 1, result: { kind: "colon", span: [index, index + 1] } };
+            case s[index] == ',': return { index: index + 1, result: { kind: "comma", span: [index, index + 1] } };
+            case s[index] == "|": return { index: index + 1, result: { kind: "pipe", span: [index, index + 1] } };
+            case s[index] == "(": return { index: index + 1, result: { kind: "openparen", span: [index, index + 1] } };
+            case s[index] == ")": return { index: index + 1, result: { kind: "closeparen", span: [index, index + 1] } };
             case /\s/.test(s[index]): return lexWhitespace(index, s);
             case /\d/.test(s[index]): return lexInteger(index, s);
             case /[<=>]/.test(s[index]): return lexComparison(index, s);
@@ -86,6 +108,7 @@ namespace Lexer {
         if (s[index] != '"') {
             throw new Error("lexDoubleQuotedString called without leading double-quote character");
         }
+        const dqStringStart = index;
         index += 1;
         const textStart = index;
         while (!eof(index, s) && s[index] != '"') {
@@ -93,7 +116,8 @@ namespace Lexer {
         }
         const textEnd = index;
         index += 1;
-        return { index, result: { kind: "dqstring", text: s.substring(textStart, textEnd) } };
+        const dqStringEnd = index;
+        return { index, result: { kind: "dqstring", span: [dqStringStart, dqStringEnd], text: s.substring(textStart, textEnd) } };
     }
 
     function consumePossiblyEscapedChar(index: number, s: string): LexResult<void> {
@@ -108,25 +132,26 @@ namespace Lexer {
     }
 
     function lexWord(index: number, s: string): LexResult<Word> {
+        const startIndex = index;
         let word;
-        ({ index, result: word } = matchRegex(index, s, /[^:,|]/));
-        return { index, result: { kind: "word", text: word } };
+        ({ index, result: word } = matchRegex(index, s, /[^:,|()\s]/));
+        return { index, result: { kind: "word", span: [startIndex, index], text: word } };
     }
 
     /** Parses a number comparison operator (must consume at least one character) **/
     function lexComparison(index: number, s: string): LexResult<Comparison> {
         if (s[index] == '<') {
             if (!eof(index + 1, s) && s[index + 1] == '=') {
-                return { index: index + 2, result: { kind: "comparison", typ: ComparisonType.LessEquals } };
+                return { index: index + 2, result: { kind: "comparison", span: [index, index + 2], typ: ComparisonType.LessEquals } };
             }
-            return { index: index + 1, result: { kind: "comparison", typ: ComparisonType.LessThan } };
+            return { index: index + 1, result: { kind: "comparison", span: [index, index + 1], typ: ComparisonType.LessThan } };
         } else if (s[index] == '=') {
-            return { index: index + 1, result: { kind: "comparison", typ: ComparisonType.Equals } };
+            return { index: index + 1, result: { kind: "comparison", span: [index, index + 1], typ: ComparisonType.Equals } };
         } else if (s[index] == '>') {
             if (!eof(index + 1, s) && s[index + 1] == '=') {
-                return { index: index + 2, result: { kind: "comparison", typ: ComparisonType.GreaterEquals } };
+                return { index: index + 2, result: { kind: "comparison", span: [index, index + 2], typ: ComparisonType.GreaterEquals } };
             }
-            return { index: index + 1, result: { kind: "comparison", typ: ComparisonType.GreaterThan } };
+            return { index: index + 1, result: { kind: "comparison", span: [index, index + 1], typ: ComparisonType.GreaterThan } };
         } else {
             throw new Error("lexComparison called without a comparison operator");
         }
@@ -134,21 +159,23 @@ namespace Lexer {
 
     /** Parses an integer number. Must consume at least one character. **/
     function lexInteger(index: number, s: string): LexResult<Integer> {
+        const startIndex = index;
         const res = matchRegex(index, s, /\d/);
         const { index: newIndex, result: word } = res;
         const number = parseInt(word);
-        return { index: newIndex, result: { kind: "int", number } };
+        return { index: newIndex, result: { kind: "int", span: [startIndex, newIndex], number } };
     }
 
     /** Consumes as much whitespace as possible (must consume at least one) **/
     function lexWhitespace(index: number, s: string): LexResult<Whitespace> {
+        const startIndex = index;
         const res = matchRegex(index, s, /\s/);
         let ws;
         ({ index, result: ws } = res);
         if (ws.length == 0) {
             throw new Error("lexWhitespace called without whitespace");
         }
-        return { index, result: { kind: "whitespace" } };
+        return { index, result: { kind: "whitespace", span: [startIndex, index] } };
     }
 
     /** Matches the given regex as often as possible from the given index in the string, returning the whole match. **/

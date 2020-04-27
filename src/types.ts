@@ -2,6 +2,27 @@ namespace Types {
     import TokenEvent = DB.TokenEvent;
     import DahanEvent = DB.DahanEvent;
 
+    export function getCardProperties(): string[] {
+        const dummyEventDesc = new EventDesc("", "");
+        const dummyPower = new (PowerCard as any)();
+        const dummyFear = new (FearCard as any)();
+        const dummyChoiceEvent = new (ChoiceEventCard as any)();
+        const dummyStageEvent = new (StageEventCard as any)(null, dummyEventDesc, dummyEventDesc, dummyEventDesc);
+        const dummyTerrorLevelEvent = new (TerrorLevelEventCard as any)(null, dummyEventDesc, dummyEventDesc, dummyEventDesc);
+        const dummyHealthyBlightedLandEvent = new (HealthyBlightedLandEventCard as any)(null, dummyEventDesc, dummyEventDesc);
+        const dummyAdversaryEvent = new (AdversaryEvent as any)(null, null, null, dummyStageEvent);
+        let props = Object.getOwnPropertyNames(dummyPower)
+            .concat(Object.getOwnPropertyNames(dummyFear))
+            .concat(Object.getOwnPropertyNames(dummyChoiceEvent))
+            .concat(Object.getOwnPropertyNames(dummyStageEvent))
+            .concat(Object.getOwnPropertyNames(dummyTerrorLevelEvent))
+            .concat(Object.getOwnPropertyNames(dummyHealthyBlightedLandEvent))
+            .concat(Object.getOwnPropertyNames(dummyAdversaryEvent))
+            .filter((name) => name.toLowerCase() == name);
+        props = [...new Set(props)];
+        return props;
+    }
+
     export enum Speed {
         Fast = "Fast",
         Slow = "Slow",
@@ -180,7 +201,8 @@ namespace Types {
                 .map((name) => (this as any)[name])
                 .filter((prop) => prop !== null)
                 .map((prop) => prop.toString().toLowerCase().replace("&", "and"))
-                .join(" ");
+                .join(" ")
+                .toLowerCase();
         }
         abstract getImageFolder(): string;
         abstract getBacksideText(): string;
@@ -318,7 +340,7 @@ namespace Types {
                 s += " " + this.target;
             }
             s += " " + this.elements + " " + this.artist + " " + this.description;
-            return s;
+            return s.toLowerCase();
         }
 
         getFrontOverlay(): Node | null {

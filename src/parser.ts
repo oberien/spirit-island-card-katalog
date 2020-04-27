@@ -1,4 +1,5 @@
 /// <reference path="lexer.ts" />
+/// <reference path="types.ts" />
 
 namespace Parser {
     // Syntax:
@@ -18,6 +19,8 @@ namespace Parser {
     //                  number : [0-9]*
 
     import Token = Lexer.Token;
+    import ComparisonType = Lexer.ComparisonType;
+    import comparisonTypeToString = Lexer.comparisonTypeToString;
     export type Filter = And | Or | Not | Text | PropFilter;
 
     export interface And {
@@ -50,16 +53,8 @@ namespace Parser {
 
     export interface NumFilter {
         kind: "numfilter";
-        typ: NumFilterType;
+        typ: ComparisonType;
         number: number;
-    }
-
-    export enum NumFilterType {
-        LessThan,
-        LessEquals,
-        Equals,
-        GreaterEquals,
-        GreaterThan
     }
 
     interface PropAnd {
@@ -77,52 +72,176 @@ namespace Parser {
         filter: NumFilter | Text | PropAnd | PropOr | PropNot;
     }
 
+    enum BinOpPrecedence {
+        // lowest = least precedence
+        Lowest = 0,
+        Paren = 1,
+        Or = 2,
+        And = 3,
+        Highest = 4,
+    }
+
     type ParseResult<T> = { index: number, result: T } | null;
+
+    export function toString(f: Filter): string {
+        switch (f.kind) {
+            case "text": return '"' + f.text + '"';
+            case "not": return "!" + toString(f.filter);
+            case "propfilter": return f.property + ":" + propFilterToString(f.filter);
+            case "and": return "(" + toString(f.a) + " AND " + toString(f.b) + ")";
+            case "or": return "(" + toString(f.a) + " OR " + toString(f.b) + ")";
+        }
+    }
+
+    function propFilterToString(f: Text | NumFilter): string {
+        switch (f.kind) {
+            case "text": return '"' + f.text + '"';
+            case "numfilter": return comparisonTypeToString(f.typ) + f.number;
+        }
+    }
 
     export function parseFilters(s: string): Filter | null {
         const tokens = Lexer.lex(s);
-        return parseFiltersInternal(0, tokens);
-    }
 
-    function parseFiltersInternal(index: number, s: string): Filter | null {
-        const wsRes = parseWhitespace(index, s);
-        if (wsRes == null) { throw new Error("this can't happen, we already did an eof-check?!"); }
-
-        const filterRes = parseFilter(index, s);
+        const filterRes = parseFiltersWithPrecedence(BinOpPrecedence.Lowest, 0, tokens);
         if (filterRes == null) { return null; }
-        let filter;
-        ({ index, result: filter } = filterRes);
-
-        // check for further
+        const { result: filter } = filterRes;
+        return filter;
     }
 
-    function parseFilter(index: number, s: string): ParseResult<Filter> {
-        const res = parsePropertyFilter(index, s);
+    function parseFiltersWithPrecedence(currentPrecedence: BinOpPrecedence, index: number, tokens: Token[]): ParseResult<Filter> {
+        const wsResult = consumeWhitespace(index, tokens);
+        if (wsResult == null) { return null; }
+        ({ index } = wsResult);
+
+        if (eof(index, tokens)) { return null; }
+
+        let lhs: Filter;
+        let token = tokens[index];
+        switch (token.kind) {
+            case "openparen":
+                const filterRes = parseFiltersWithPrecedence(BinOpPrecedence.Paren, index + 1, tokens);
+                if (filterRes == null) { return null; }
+                ({ index, result: lhs } = filterRes);
+                if (eof(index, tokens)) { return null; }
+                if (tokens[index].kind != "closeparen") {
+                    console.error("Unclosed parenthesis at " + token.span[0]);
+                } else {
+                    index++;
+                }
+                break;
+            case "closeparen":
+                // if we are somewhere within the parse tree, the closing paren could be handled by an upper recursion instance
+                if (currentPrecedence == BinOpPrecedence.Lowest) {
+                    console.error("Unmatched close parenthesis in filter list at " + token.span[0]);
+                }
+                return null;
+            default:
+                const filterResult = parseFilter(index, tokens);
+                if (filterResult == null) { return null; }
+                ({ index, result: lhs } = filterResult);
+        }
+
+        while (true) {
+            let rhs: Filter;
+            // test for following binops
+            if (eof(index, tokens)) { return { index, result: lhs }; }
+            const binOpToken = tokens[index];
+            switch (binOpToken.kind) {
+                case "whitespace":
+                    const ws2Result = consumeWhitespace(index, tokens);
+                    if (ws2Result == null) { throw new Error("this literally can't happen"); }
+                    ({ index } = ws2Result);
+                    const wsRhsResult = parseFiltersWithPrecedence(BinOpPrecedence.And, index, tokens);
+                    if (wsRhsResult == null) {
+                        // a different operator is following (or there is a syntax error), continue loop
+                        continue;
+                    }
+                    // we actually got whitespace as an AND, check precedence level
+                    if (currentPrecedence > BinOpPrecedence.And) {
+                        return { index, result: lhs };
+                    }
+                    ({ index, result: rhs } = wsRhsResult);
+                    lhs = { kind: "and", a: lhs, b: rhs};
+                    continue;
+                // binary operators
+                case "comma":
+                    if (currentPrecedence > BinOpPrecedence.And) {
+                        return { index, result: lhs };
+                    }
+                    const andRhsResult = parseFiltersWithPrecedence(BinOpPrecedence.And, index + 1, tokens);
+                    if (andRhsResult == null) {
+                        // whitespace could follow, indicating the comma was for filter-and and not prop-filter-value-and
+                        return { index, result: lhs };
+                    }
+                    ({ index, result: rhs } = andRhsResult);
+                    lhs = { kind: "and", a: lhs, b: rhs };
+                    continue;
+                case "pipe":
+                    if (currentPrecedence > BinOpPrecedence.Or) {
+                        return { index, result: lhs };
+                    }
+                    const orRhsResult = parseFiltersWithPrecedence(BinOpPrecedence.Or, index + 1, tokens);
+                    if (orRhsResult == null) {
+                        return { index, result: lhs };
+                    }
+                    ({ index, result: rhs } = orRhsResult);
+                    lhs = { kind: "or", a: lhs, b: rhs };
+                    continue;
+                case "closeparen":
+                    // if we are somewhere within the parse tree, the closing paren could be handled by an upper recursion instance
+                    if (currentPrecedence == BinOpPrecedence.Lowest) {
+                        console.error("Unmatched close parenthesis in filter list at " + token.span[0]);
+                    }
+                    return { index, result: lhs };
+                // invalid tokens
+                case "openparen":
+                case "int":
+                case "comparison":
+                case "word":
+                case "dqstring":
+                case "bang":
+                case "colon":
+                    console.error("invalid token '" + binOpToken.kind + "' at " + binOpToken.span[0]);
+                    return { index, result: lhs };
+            }
+        }
+    }
+
+    function parseFilter(index: number, tokens: Token[]): ParseResult<Filter> {
+        const wsRes = consumeWhitespace(index, tokens);
+        if (wsRes == null) { return null; }
+
+        const res = parsePropertyFilter(index, tokens);
         if (res != null) {
             return res;
         }
 
-        const res2 = parseText(index, s);
+        const res2 = parseText(index, tokens);
         if (res2 == null) { return null; }
         let { index: newIndex, result: text } = res2;
         return { index: newIndex, result: { kind: "text", text } }
     }
 
-    function parsePropertyFilter(index: number, s: string): ParseResult<PropFilter | Not | And | Or> {
-        const res = applyParseFunction(index, s,
+    function parsePropertyFilter(index: number, tokens: Token[]) {
+        const res = applyParseFunction(index, tokens,
             parseWord,
-            parseWhitespace,
-            checkChar.bind(null, ":"),
-            parseWhitespace,
-            parsePropertyFilterValueList,
+            consumeWhitespace,
+            checkTokenKind.bind(null, "colon"),
+            consumeWhitespace,
+            parsePropertyFilterValueList.bind(null, BinOpPrecedence.Lowest),
         );
         if (res == null) {
             return null;
         }
 
-        const { index: newIndex, result: [property, /*ws*/, /*:*/, /*ws*/, valueFilterList, foo] } = res;
+        const { index: newIndex, result: [property, /*ws*/, /*:*/, /*ws*/, valueFilterList] } = res;
+        const cardProperties = Types.getCardProperties();
+        if (cardProperties.indexOf(property) == -1) {
+            console.error("Unknown card property '" + property + "'\n" + "Allowed properties are: " + cardProperties);
+            // continue
+        }
         index = newIndex;
-        console.log("foo", foo);
 
         function convertPropertyFilter(property: string, filter: NumFilter | Text | PropAnd | PropOr | PropNot): PropFilter | Not | And | Or {
             switch (filter.kind) {
@@ -142,61 +261,113 @@ namespace Parser {
         return { index, result: convertPropertyFilter(property, valueFilterList) };
     }
 
-    function parsePropertyFilterValueList(index: number, s: string): ParseResult<NumFilter | Text | PropAnd | PropOr | PropNot> {
-        if (eof(index, s)) {
-            return null;
+    function parsePropertyFilterValueList(currentPrecedence: BinOpPrecedence, index: number, tokens: Token[]): ParseResult<NumFilter | Text | PropAnd | PropOr | PropNot> {
+        let lhs: NumFilter | Text | PropAnd | PropOr | PropNot;
+        if (eof(index, tokens)) { return null; }
+        const token = tokens[index];
+        switch (token.kind) {
+            case "openparen":
+                const filterRes = parsePropertyFilterValueList(BinOpPrecedence.Paren, index + 1, tokens);
+                if (filterRes == null) {
+                    return null;
+                }
+                ({ index, result: lhs } = filterRes);
+                if (eof(index, tokens)) {
+                    return null;
+                }
+                if (tokens[index].kind != "closeparen") {
+                    console.error("Unclosed parenthesis at " + token.span[0]);
+                } else {
+                    index++;
+                }
+                break;
+            case "closeparen":
+                // if we are somewhere within the parse tree, the closing paren could be handled by an upper recursion instance
+                if (currentPrecedence == BinOpPrecedence.Lowest) {
+                    console.error("Unmatched close parenthesis in property value list at " + token.span[0]);
+                }
+                return null;
+            default:
+                const valueRes = parsePropertyFilterValue(index, tokens);
+                if (valueRes == null) {
+                    return null;
+                }
+                ({ index, result: lhs } = valueRes);
         }
 
-        const valueRes = parsePropertyFilterValue(index, s);
-        if (valueRes == null) { return null; }
-        let filter: NumFilter | Text | PropAnd | PropOr | PropNot;
-        ({ index, result: filter } = valueRes);
-
-        // check for further values in the value_list
-        const commaRes = checkOptionalChar(",", index, s);
-        const pipeRes = checkOptionalChar("|", index, s);
-        if (commaRes == null || pipeRes == null) {
-            return { index, result: filter };
-        }
-        const { index: commaIndex, result: comma } = commaRes;
-        const { index: pipeIndex, result: pipe } = pipeRes;
-
-        if (comma) {
-            const propValueRes = parsePropertyFilterValueList(commaIndex, s);
-            if (propValueRes == null) {
-                return { index, result: filter };
+        // parse and merge while same precedence until higher precedence
+        while (true) {
+            // peek for operators with same or higher precedence
+            if (eof(index, tokens)) {
+                return { index, result: lhs };
             }
-            const { index: newIndex, result: filter2 } = propValueRes;
-            return { index: newIndex, result: { kind: "propand", a: filter, b: filter2 } };
-        }
 
-        if (pipe) {
-            const propValueRes = parsePropertyFilterValueList(pipeIndex, s);
-            if (propValueRes == null) {
-                return { index, result: filter };
+            let rhs: NumFilter | Text | PropAnd | PropOr | PropNot;
+            let binOpToken = tokens[index];
+            switch (binOpToken.kind) {
+                // binary operators
+                case "comma":
+                    if (currentPrecedence > BinOpPrecedence.And) {
+                        return { index, result: lhs };
+                    }
+                    const andRhsResult = parsePropertyFilterValueList(BinOpPrecedence.And, index + 1, tokens);
+                    if (andRhsResult == null) {
+                        // whitespace could follow, indicating the comma was for filter-and and not prop-filter-value-and
+                        return { index, result: lhs };
+                    }
+                    ({ index, result: rhs } = andRhsResult);
+                    lhs = { kind: "propand", a: lhs, b: rhs };
+                    continue;
+                case "pipe":
+                    if (currentPrecedence > BinOpPrecedence.Or) {
+                        return { index, result: lhs };
+                    }
+                    const orRhsResult = parsePropertyFilterValueList(BinOpPrecedence.Or, index + 1, tokens);
+                    if (orRhsResult == null) {
+                        return { index, result: lhs };
+                    }
+                    ({ index, result: rhs } = orRhsResult);
+                    lhs = { kind: "propor", a: lhs, b: rhs };
+                    continue;
+                // end of value list
+                case "whitespace":
+                    return { index, result: lhs };
+                case "closeparen":
+                    // if we are somewhere within the parse tree, the closing paren could be handled by an upper recursion instance
+                    if (currentPrecedence == BinOpPrecedence.Lowest) {
+                        console.error("Unmatched close parenthesis in property value list at " + token.span[0]);
+                    }
+                    return { index, result: lhs };
+                // invalid tokens
+                case "openparen":
+                case "int":
+                case "comparison":
+                case "word":
+                case "dqstring":
+                case "bang":
+                case "colon":
+                    console.error("invalid token '" + binOpToken.kind + "' at " + binOpToken.span[0]);
+                    return { index, result: lhs };
             }
-            const { index: newIndex, result: filter2 } = propValueRes;
-            return { index: newIndex, result: { kind: "propor", a: filter, b: filter2 } };
         }
-        return { index, result: filter };
     }
 
-    function parsePropertyFilterValue(index: number, s: string): ParseResult<NumFilter | Text | PropNot> {
-        const notRes = parseOptionalNot(index, s);
-        if (notRes == null) { return null; }
-        let not;
-        ({ index, result: not } = notRes);
+    function parsePropertyFilterValue(index: number, tokens: Token[]): ParseResult<NumFilter | Text | PropNot> {
+        if (eof(index, tokens)) { return null; }
+        const not = tokens[index].kind == "bang";
+        if (not) {
+            index++;
+            if (eof(index, tokens)) { return null; }
+        }
 
         let filter: NumFilter | Text | PropNot;
 
-        const numberFilterRes = parseNumberFilter(index, s);
+        const numberFilterRes = parseNumberFilter(index, tokens);
         if (numberFilterRes != null) {
-            ({index, result: filter } = numberFilterRes);
+            ({ index, result: filter } = numberFilterRes);
         } else {
-            const textRes = parseText(index, s);
-            if (textRes == null) {
-                return null;
-            }
+            const textRes = parseText(index, tokens);
+            if (textRes == null) { return null; }
             let text;
             ({ index, result: text } = textRes);
             filter = { kind: "text", text };
@@ -210,113 +381,83 @@ namespace Parser {
 
     /// Parses the number filter, returning the new index into the string and parsed NumFilter, or null if
     /// no NumFilter could be parsed.
-    function parseNumberFilter(index: number, s: string): ParseResult<NumFilter> {
-        const res = parseText(index, s);
-        if (res == null) {
+    function parseNumberFilter(index: number, tokens: Token[]): ParseResult<NumFilter> {
+        if (eof(index, tokens)) { return null; }
+
+        const token = tokens[index];
+        switch (token.kind) {
+            case "int":
+                return { index: index + 1, result: { kind: "numfilter", typ: ComparisonType.Equals, number: token.number} };
+            case "comparison":
+                if (eof(index + 1, tokens)) { return null; }
+                const numberToken = tokens[index + 1];
+
+                switch (numberToken.kind) {
+                    case "int": return { index: index + 2, result: { kind: "numfilter", typ: token.typ, number: numberToken.number } };
+                    default: return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    function parseText(index: number, tokens: Token[]): ParseResult<string> {
+        if (eof(index, tokens)) { return null; }
+        const text = tokens[index];
+        switch (text.kind) {
+            case "dqstring":
+            case "word":
+                return { index: index + 1, result: text.text };
+            default:
+                return null;
+        }
+    }
+
+    function parseWord(index: number, tokens: Token[]): ParseResult<string> {
+        if (eof(index, tokens)) { return null; }
+        const token = tokens[index];
+        switch (token.kind) {
+            case "word": return { index: index + 1, result: token.text };
+            default: return null;
+        }
+    }
+
+    /// Checks that the given token is at the given index of the token-array.
+    function checkTokenKind(expectedKind: string, index: number, tokens: Token[]): ParseResult<void> {
+        if (eof(index, tokens)) { return null; }
+        if (tokens[index].kind != expectedKind) {
             return null;
         }
-        const { index: newIndex, result: text } = res;
-
-        let typ: NumFilterType;
-        let consumed: number;
-        if (text.startsWith("<")) {
-            typ = NumFilterType.LessThan;
-            consumed = 1;
-        } else if (text.startsWith("<=")) {
-            typ = NumFilterType.LessEquals;
-            consumed = 2;
-        } else if (text.startsWith("=")) {
-            typ = NumFilterType.Equals;
-            consumed = 1;
-        } else if (text.startsWith(">=")) {
-            typ = NumFilterType.GreaterEquals;
-            consumed = 2;
-        } else if (text.startsWith(">")) {
-            typ = NumFilterType.GreaterThan;
-            consumed = 1;
-        } else {
-            typ = NumFilterType.Equals;
-            consumed = 0;
-        }
-
-        let number = parseNumber(consumed, text);
-        if (number == null) {
-            return null;
-        }
-        let { result: num } = number;
-        return { index: newIndex, result: { kind: "numfilter", typ, number: num } };
+        return { index: index + 1, result: undefined };
     }
 
-    /// Return the new index in the string and the content of the string.
-    function parseText(index: number, s: string): ParseResult<string> {
-        const dqstring = parseDoubleQuotedString(index, s);
-        if (dqstring != null) {
-            return dqstring;
+    function consumeWhitespace(index: number, tokens: Token[]): ParseResult<boolean> {
+        let hasWhitespace = false;
+        while (!eof(index, tokens) && tokens[index].kind == "whitespace") {
+            hasWhitespace = true;
+            index++;
         }
-        return parseWord(index, s);
+        return { index, result: hasWhitespace };
     }
 
-    /// Return the new index in the string and the parsed word.
-    function parseWord(index: number, s: string): ParseResult<string> {
-        return matchRegex(index, s, /[a-zA-Z0-9<=>]/);
-    }
-
-    function parseOptionalNot(index: number, s: string): ParseResult<boolean> {
-        const notRes = checkOptionalChar('!', index, s);
-        if (notRes == null) { return null; }
-        let not;
-        ({ index, result: not } = notRes);
-        if (not) {
-            const wsRes = parseWhitespace(index, s);
-            if (wsRes == null) { return null; }
-            index = wsRes.index;
-        }
-        return { index, result: not };
-    }
-
-    /// Checks that the given character is at the given index of the string.
-    /// Returns the new index if it was found, and null otherwise.
-    function checkChar(char: string, index: number, s: string): ParseResult<void> {
-        if (eof(index, s)) {
-            return null;
-        }
-        if (s[index] != char) {
-            return null;
-        }
-        return { index: index + char.length, result: undefined };
-    }
-
-    /// Tests if the given character is at the given index of the string.
-    /// Returns the new index and a boolean indicating if it was there, or null if eof is reached.
-    function checkOptionalChar(char: string, index: number, s: string): ParseResult<boolean> {
-        if (eof(index, s)) {
-            return null;
-        }
-        if (s[index] == char) {
-            return { index: index + char.length, result: true };
-        } else {
-            return { index, result: false };
-        }
-    }
-
-    /** Returns if the index is out of bounds. **/
+    /** Returns if the index is larger than the array length. **/
     function eof(index: number, arr: Token[]): boolean {
         return index >= arr.length;
     }
 
-    type ParseFunction<T> = (index: number, s: string) => ParseResult<T>;
+    type ParseFunction<T> = (index: number, tokens: Token[]) => ParseResult<T>;
 
-    function applyParseFunction<T1, T2 = never, T3 = never, T4 = never, T5 = never, T6 = never>(index: number, s: string, func1: ParseFunction<T1>, func2?: ParseFunction<T2>, func3?: ParseFunction<T3>, func4?: ParseFunction<T4>, func5?: ParseFunction<T5>, func6?: ParseFunction<T6>): ParseResult<[T1, T2, T3, T4, T5, T6]> {
-        return <ParseResult<[T1, T2, T3, T4, T5, T6]>>applyParseFunctionsInternal(index, s, func1, func2, func3, func4, func5, func6);
+    function applyParseFunction<T1, T2 = never, T3 = never, T4 = never, T5 = never, T6 = never>(index: number, tokens: Token[], func1: ParseFunction<T1>, func2?: ParseFunction<T2>, func3?: ParseFunction<T3>, func4?: ParseFunction<T4>, func5?: ParseFunction<T5>, func6?: ParseFunction<T6>): ParseResult<[T1, T2, T3, T4, T5, T6]> {
+        return <ParseResult<[T1, T2, T3, T4, T5, T6]>>applyParseFunctionsInternal(index, tokens, func1, func2, func3, func4, func5, func6);
     }
 
-    function applyParseFunctionsInternal(index: number, s: string, ...funcs: (((index: number, s: string) => ParseResult<any>) | undefined)[]): ParseResult<any[]> {
+    function applyParseFunctionsInternal(index: number, tokens: Token[], ...funcs: ((ParseFunction<any>) | undefined)[]): ParseResult<any[]> {
         const returnValues = [];
         for (const func of funcs) {
             if (!func) {
                 break;
             }
-            const res = func(index, s);
+            const res = func(index, tokens);
             if (res == null) {
                 return null;
             }

@@ -2,12 +2,13 @@
 /// <reference path="types.ts" />
 /// <reference path="filter.ts" />
 
+import FilterType = Filter.FilterType;
+
 const LandAny = Types.LandAny;
 type Card = Types.Card;
 const Card = Types.Card;
 
 const CARDS = DB.CARDS;
-const filterAll = Filter.filterAll;
 
 function getParameterByName(name: string) {
     let url = window.location.href;
@@ -70,12 +71,12 @@ function update() {
         result.removeChild(result.firstChild);
     }
 
-    let searchstring = search.value.toLowerCase().replace("&", "and");
+    let searchstring = search.value.toLowerCase().replace(/&/g, "and");
     let sortby = sort.value.toLowerCase();
     let ascending = !order.classList.contains("rotated");
     let cards: Card[] = CARDS;
 
-    cards = filterAll(cards, searchstring);
+    cards = Filter.filterAll(cards, searchstring, FilterType.Compiled);
 
     numResults.innerText = "Results: " + cards.length;
 
