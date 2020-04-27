@@ -116,6 +116,12 @@ namespace Parser {
 
         if (eof(index, tokens)) { return null; }
 
+        const not = tokens[index].kind == "bang";
+        if (not) {
+            index++;
+            if (eof(index, tokens)) { return null; }
+        }
+
         let lhs: Filter;
         let token = tokens[index];
         switch (token.kind) {
@@ -140,6 +146,10 @@ namespace Parser {
                 const filterResult = parseFilter(index, tokens);
                 if (filterResult == null) { return null; }
                 ({ index, result: lhs } = filterResult);
+        }
+
+        if (not) {
+            lhs = { kind: "not", filter: lhs };
         }
 
         while (true) {
