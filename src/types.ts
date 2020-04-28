@@ -68,10 +68,11 @@ namespace Types {
         }
 
         toString() {
-            let res = this.from + " ";
+            let res = this.from + "";
             if (this.land) {
-                res += "on" + this.land + ", ";
+                res += " on " + this.land;
             }
+            res += ": ";
             if (Array.isArray(this.range)) {
                 res += this.range.join(" & ");
             } else {
@@ -330,12 +331,9 @@ namespace Types {
         }
 
         getSearchString(): string {
-            let s = this.set.replace("&", "and") + " " + this.type + " " + this.cost + " " + this.name + " " + this.speed;
+            let s = this.set.replace(/&/g, "and") + " " + this.type + " " + this.cost + " " + this.name + " " + this.speed;
             if (this.range != null) {
-                s += " " + this.range.from + " " + this.range.range;
-                if (this.range.land != null) {
-                    s += " " + this.range.land;
-                }
+                s += " " + this.range.toString().replace(/&/g, "and");
             }
             if (this.target == LandAny) {
                 s += " Any";
@@ -366,7 +364,9 @@ namespace Types {
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Cost</b>: " + this.cost + "<br/>";
             text += "<b>Speed</b>: " + this.speed + "<br/>";
-            text += "<b>Range</b>: " + this.range + "<br/>";
+            if (this.range != null) {
+                text += "<b>Range</b>: " + this.range.toString() + "<br/>";
+            }
             let target = "";
             if (Array.isArray(this.target)) {
                 if (this.target == LandAny) {

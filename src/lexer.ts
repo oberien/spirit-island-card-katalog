@@ -38,7 +38,7 @@ namespace Lexer {
         switch (c) {
             case ComparisonType.LessThan: return "<";
             case ComparisonType.LessEquals: return "<=";
-            case ComparisonType.Equals: return "=";
+            case ComparisonType.Equals: return "==";
             case ComparisonType.GreaterEquals: return ">=";
             case ComparisonType.GreaterThan: return ">";
         }
