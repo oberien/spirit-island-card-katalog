@@ -21,7 +21,7 @@ namespace Parser {
     import Token = Lexer.Token;
     import ComparisonType = Lexer.ComparisonType;
     import comparisonTypeToString = Lexer.comparisonTypeToString;
-    export type Filter = And | Or | Not | Text | PropFilter;
+    export type Filter = And | Or | Not | Text | Regex | PropFilter;
 
     export interface And {
         kind: "and";
@@ -45,10 +45,15 @@ namespace Parser {
         text: string;
     }
 
+    export interface Regex {
+        kind: "regex";
+        regex: string;
+    }
+
     export interface PropFilter {
         kind: "propfilter";
         property: string;
-        filter: Text | NumFilter;
+        filter: Text | Regex | NumFilter;
     }
 
     export interface NumFilter {
@@ -59,17 +64,17 @@ namespace Parser {
 
     interface PropAnd {
         kind: "propand";
-        a: NumFilter | Text | PropAnd | PropOr | PropNot;
-        b: NumFilter | Text | PropAnd | PropOr | PropNot;
+        a: NumFilter | Text | Regex | PropAnd | PropOr | PropNot;
+        b: NumFilter | Text | Regex | PropAnd | PropOr | PropNot;
     }
     interface PropOr {
         kind: "propor";
-        a: NumFilter | Text | PropAnd | PropOr | PropNot;
-        b: NumFilter | Text | PropAnd | PropOr | PropNot;
+        a: NumFilter | Text | Regex | PropAnd | PropOr | PropNot;
+        b: NumFilter | Text | Regex | PropAnd | PropOr | PropNot;
     }
     interface PropNot {
         kind: "propnot";
-        filter: NumFilter | Text | PropAnd | PropOr | PropNot;
+        filter: NumFilter | Text | Regex | PropAnd | PropOr | PropNot;
     }
 
     enum BinOpPrecedence {
@@ -86,17 +91,21 @@ namespace Parser {
     export function toString(f: Filter): string {
         switch (f.kind) {
             case "text": return '"' + f.text + '"';
+            case "regex": return "/" + f.regex + "/";
             case "not": return "!" + toString(f.filter);
             case "propfilter": return f.property + ":" + propFilterToString(f.filter);
             case "and": return "(" + toString(f.a) + " AND " + toString(f.b) + ")";
             case "or": return "(" + toString(f.a) + " OR " + toString(f.b) + ")";
+            default: assertNever(f);
         }
     }
 
-    function propFilterToString(f: Text | NumFilter): string {
+    function propFilterToString(f: Text | Regex | NumFilter): string {
         switch (f.kind) {
             case "text": return '"' + f.text + '"';
+            case "regex": return "/" + f.regex + "/";
             case "numfilter": return comparisonTypeToString(f.typ) + f.number;
+            default: assertNever(f);
         }
     }
 
@@ -212,8 +221,10 @@ namespace Parser {
                 case "dqstring":
                 case "bang":
                 case "colon":
+                case "regex":
                     console.error("invalid token '" + binOpToken.kind + "' at " + binOpToken.span[0]);
-                    return { index, result: lhs };
+                    return {index, result: lhs};
+                default: assertNever(binOpToken);
             }
         }
     }
@@ -222,15 +233,21 @@ namespace Parser {
         const wsRes = consumeWhitespace(index, tokens);
         if (wsRes == null) { return null; }
 
-        const res = parsePropertyFilter(index, tokens);
-        if (res != null) {
-            return res;
+        const propRes = parsePropertyFilter(index, tokens);
+        if (propRes != null) {
+            return propRes;
         }
 
-        const res2 = parseText(index, tokens);
-        if (res2 == null) { return null; }
-        let { index: newIndex, result: text } = res2;
-        return { index: newIndex, result: { kind: "text", text } }
+        const textResult = parseText(index, tokens);
+        if (textResult != null) {
+            let { index: newIndex, result: text } = textResult;
+            return { index: newIndex, result: { kind: "text", text } };
+        }
+
+        const regexResult = parseRegex(index, tokens);
+        if (regexResult == null) { return null; }
+        let { index: newIndex, result: regex } = regexResult;
+        return { index: newIndex, result: { kind: "regex", regex } };
     }
 
     function parsePropertyFilter(index: number, tokens: Token[]) {
@@ -253,11 +270,13 @@ namespace Parser {
         }
         index = newIndex;
 
-        function convertPropertyFilter(property: string, filter: NumFilter | Text | PropAnd | PropOr | PropNot): PropFilter | Not | And | Or {
+        function convertPropertyFilter(property: string, filter: NumFilter | Text | Regex | PropAnd | PropOr | PropNot): PropFilter | Not | And | Or {
             switch (filter.kind) {
                 case "numfilter":
                     return { kind: "propfilter", property, filter };
                 case "text":
+                    return { kind: "propfilter", property, filter };
+                case "regex":
                     return { kind: "propfilter", property, filter };
                 case "propand":
                     return { kind: "and", a: convertPropertyFilter(property, filter.a), b: convertPropertyFilter(property, filter.b) };
@@ -265,14 +284,15 @@ namespace Parser {
                     return { kind: "or", a: convertPropertyFilter(property, filter.a), b: convertPropertyFilter(property, filter.b) };
                 case "propnot":
                     return { kind: "not", filter: convertPropertyFilter(property, filter.filter) };
+                default: assertNever(filter);
             }
         }
 
         return { index, result: convertPropertyFilter(property, valueFilterList) };
     }
 
-    function parsePropertyFilterValueList(currentPrecedence: BinOpPrecedence, index: number, tokens: Token[]): ParseResult<NumFilter | Text | PropAnd | PropOr | PropNot> {
-        let lhs: NumFilter | Text | PropAnd | PropOr | PropNot;
+    function parsePropertyFilterValueList(currentPrecedence: BinOpPrecedence, index: number, tokens: Token[]): ParseResult<NumFilter | Text | Regex | PropAnd | PropOr | PropNot> {
+        let lhs: NumFilter | Text | Regex | PropAnd | PropOr | PropNot;
         if (eof(index, tokens)) { return null; }
 
         const not = tokens[index].kind == "bang";
@@ -306,9 +326,7 @@ namespace Parser {
                 return null;
             default:
                 const valueRes = parsePropertyFilterValue(index, tokens);
-                if (valueRes == null) {
-                    return null;
-                }
+                if (valueRes == null) { return null; }
                 ({ index, result: lhs } = valueRes);
         }
 
@@ -323,7 +341,7 @@ namespace Parser {
                 return { index, result: lhs };
             }
 
-            let rhs: NumFilter | Text | PropAnd | PropOr | PropNot;
+            let rhs: NumFilter | Text | Regex | PropAnd | PropOr | PropNot;
             let binOpToken = tokens[index];
             switch (binOpToken.kind) {
                 // binary operators
@@ -367,13 +385,15 @@ namespace Parser {
                 case "dqstring":
                 case "bang":
                 case "colon":
+                case "regex":
                     console.error("invalid token '" + binOpToken.kind + "' at " + binOpToken.span[0]);
                     return { index, result: lhs };
+                default: assertNever(binOpToken);
             }
         }
     }
 
-    function parsePropertyFilterValue(index: number, tokens: Token[]): ParseResult<NumFilter | Text | PropNot> {
+    function parsePropertyFilterValue(index: number, tokens: Token[]): ParseResult<NumFilter | Text | Regex | PropNot> {
         if (eof(index, tokens)) { return null; }
         const not = tokens[index].kind == "bang";
         if (not) {
@@ -381,17 +401,24 @@ namespace Parser {
             if (eof(index, tokens)) { return null; }
         }
 
-        let filter: NumFilter | Text | PropNot;
+        let filter: NumFilter | Text | Regex | PropNot;
 
         const numberFilterRes = parseNumberFilter(index, tokens);
         if (numberFilterRes != null) {
             ({ index, result: filter } = numberFilterRes);
         } else {
             const textRes = parseText(index, tokens);
-            if (textRes == null) { return null; }
-            let text;
-            ({ index, result: text } = textRes);
-            filter = { kind: "text", text };
+            if (textRes != null) {
+                let text;
+                ({ index, result: text } = textRes);
+                filter = { kind: "text", text };
+            } else {
+                const regexRes = parseRegex(index, tokens);
+                if (regexRes == null) { return null; }
+                let regex;
+                ({ index, result: regex } = regexRes);
+                filter = { kind: "regex", regex };
+            }
         }
 
         if (not) {
@@ -443,6 +470,15 @@ namespace Parser {
         }
     }
 
+    function parseRegex(index: number, tokens: Token[]): ParseResult<string> {
+        if (eof(index, tokens)) { return null; }
+        const token = tokens[index];
+        switch (token.kind) {
+            case "regex": return { index: index + 1, result: token.regex };
+            default: return null;
+        }
+    }
+
     /// Checks that the given token is at the given index of the token-array.
     function checkTokenKind(expectedKind: string, index: number, tokens: Token[]): ParseResult<void> {
         if (eof(index, tokens)) { return null; }
@@ -487,5 +523,9 @@ namespace Parser {
             returnValues.push(result);
         }
         return { index, result: returnValues };
+    }
+
+    function assertNever(x: never): never {
+        throw new Error("Unexpected Object: " + x);
     }
 }

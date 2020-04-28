@@ -224,6 +224,7 @@ namespace Types {
 
             let front = document.createElement("div");
             front.classList.add("front");
+            front.style.cursor = "pointer";
             // image with webp by default and jpg as fallback
             let picture = document.createElement("picture");
             let webp = document.createElement("source");
@@ -245,11 +246,13 @@ namespace Types {
 
             let back = document.createElement("div");
             back.classList.add("back");
+            back.style.cursor = "pointer";
             let backdiv = document.createElement("div");
             backdiv.style.paddingLeft = "10px";
             backdiv.style.paddingRight = "10px";
             let p = document.createElement("span");
             this.P = p;
+            p.style.cursor = "auto";
             p.innerHTML = this.getBacksideText();
             backdiv.appendChild(p);
             back.appendChild(backdiv);

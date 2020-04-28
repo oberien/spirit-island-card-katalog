@@ -1,5 +1,5 @@
 namespace Lexer {
-    export type Token = Text | Integer | Comparison | Colon | Bang | Comma | Pipe | Whitespace | OpenParen | CloseParen;
+    export type Token = Text | Regex | Integer | Comparison | Colon | Bang | Comma | Pipe | Whitespace | OpenParen | CloseParen;
     export type Text = DqString | Word;
     export interface DqString {
         kind: "dqstring";
@@ -10,6 +10,11 @@ namespace Lexer {
         kind: "word";
         span: [number, number];
         text: string;
+    }
+    export interface Regex {
+        kind: "regex";
+        span: [number, number];
+        regex: string;
     }
     export interface Integer {
         kind: "int";
@@ -97,11 +102,33 @@ namespace Lexer {
             case s[index] == "|": return { index: index + 1, result: { kind: "pipe", span: [index, index + 1] } };
             case s[index] == "(": return { index: index + 1, result: { kind: "openparen", span: [index, index + 1] } };
             case s[index] == ")": return { index: index + 1, result: { kind: "closeparen", span: [index, index + 1] } };
+            case s[index] == "/":
+                const regex = lexRegex(index, s);
+                if (regex == null) {
+                    return lexWord(index, s);
+                } else {
+                    return regex
+                }
             case /\s/.test(s[index]): return lexWhitespace(index, s);
             case /\d/.test(s[index]): return lexInteger(index, s);
             case /[<=>]/.test(s[index]): return lexComparison(index, s);
             default: return lexWord(index, s);
         }
+    }
+
+    function lexRegex(index: number, s: string): LexResult<Regex> | null {
+        if (s[index] != "/") {
+            throw new Error("lexRegExp called without leading slash character");
+        }
+        const start = index;
+        index += 1;
+        while (!eof(index, s) && s[index] != "/") {
+            ({ index } = consumePossiblyEscapedChar(index, s));
+        }
+        // While dqstrings could not be closed yet, we should accept plain slashes as text
+        if (s[index] != "/") { return null; }
+        index++;
+        return { index, result: { kind: "regex", span: [start, index], regex: s.substring(start + 1, index - 1) } }
     }
 
     function lexDoubleQuotedString(index: number, s: string): LexResult<DqString> {
