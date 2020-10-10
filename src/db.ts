@@ -146,7 +146,7 @@ namespace DB {
         public static PopulationRises = new EventDesc("Population Rises",
             "On Each Board: Add 1 Town to a land with Explorer / Town.");
         public static PowerFades = new EventDesc("Power Fades",
-            "Eac Spirit chooses independently to: Destroy 2 of their Presence, -or- Forget 2 of their Powers, -or- Take 1 Blight from the Blight Card and remove it from the game.");
+            "Each Spirit chooses independently to: Destroy 2 of their Presence, -or- Forget 2 of their Powers, -or- Take 1 Blight from the Blight Card and remove it from the game.");
         public static UrbanDevelopment = new EventDesc("Urban Development",
             "During the next normal Ravage, each City does +2 Damage. (If there is no Ravage this phase, leave this card by the Ravage space until one happens.)");
         public static FesteringPitsOfBlight = new EventDesc("Festering Pits of Blight",
@@ -691,7 +691,7 @@ namespace DB {
             "Each player chooses a different land with Dahan. 2 Damage per Dahan there."),
         new FearCard(ProductSet.Basegame, FearType.Fear, "Dahan Enheartened",
             "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders.",
-            "Eac hplayer chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present.",
+            "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present.",
             "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage per Dahan present."),
         new FearCard(ProductSet.Basegame, FearType.Fear, "Avoid the Dahan",
             "Invaders do not Explore into lands with at least 2 Dahan.",
