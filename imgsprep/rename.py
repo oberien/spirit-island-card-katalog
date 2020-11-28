@@ -26,34 +26,35 @@ with open("ocr.txt") as f:
 
 content = [line.split()[0:2] for line in content]
 for card in content:
-    if len(card) == 2:
-        [file, ocr] = card
-        if len(powers) == 0:
-            (power, powerrating) = ("EMPTY", 0)
-        else:
-            (power, powerrating) = process.extractOne(ocr, powers)
-        if len(fears) == 0:
-            (fear, fearrating) = ("EMPTY", 0)
-        else:
-            (fear, fearrating) = process.extractOne(ocr, fears)
-        if len(events) == 0:
-            (event, eventrating) = ("EMPTY", 0)
-        else:
-            (event, eventrating) = process.extractOne(ocr, events)
-        if powerrating > 70:
-            powers.remove(power)
-            os.rename(file + ".webp", "powers/" + power + ".webp")
-            os.rename(file + ".jpg", "powers/" + power + ".jpg")
-        elif fearrating > 70:
-            fears.remove(fear)
-            os.rename(file + ".webp", "fears/" + fear + ".webp")
-            os.rename(file + ".jpg", "fears/" + fear + ".jpg")
-        elif eventrating > 70:
-            events.remove(event)
-            os.rename(file + ".webp", "events/" + event + ".webp")
-            os.rename(file + ".jpg", "events/" + event + ".jpg")
-        else:
-            print("NOT MATCHED: ", power, fear, ocr, file)
+    if len(card) != 2:
+        continue
+    [file, ocr] = card
+    if len(powers) == 0:
+        (power, powerrating) = ("EMPTY", 0)
+    else:
+        (power, powerrating) = process.extractOne(ocr, powers)
+    if len(fears) == 0:
+        (fear, fearrating) = ("EMPTY", 0)
+    else:
+        (fear, fearrating) = process.extractOne(ocr, fears)
+    if len(events) == 0:
+        (event, eventrating) = ("EMPTY", 0)
+    else:
+        (event, eventrating) = process.extractOne(ocr, events)
+    if powerrating > 70:
+        powers.remove(power)
+        os.rename(file + ".webp", "powers/" + power + ".webp")
+        os.rename(file + ".jpg", "powers/" + power + ".jpg")
+    elif fearrating > 70:
+        fears.remove(fear)
+        os.rename(file + ".webp", "fears/" + fear + ".webp")
+        os.rename(file + ".jpg", "fears/" + fear + ".jpg")
+    elif eventrating > 70:
+        events.remove(event)
+        os.rename(file + ".webp", "events/" + event + ".webp")
+        os.rename(file + ".jpg", "events/" + event + ".jpg")
+    else:
+        print("NOT MATCHED: ", power, fear, ocr, file)
 if len(powers) > 0:
     print("POWERS NOT EMPTY: ", powers)
 if len(fears) > 0:

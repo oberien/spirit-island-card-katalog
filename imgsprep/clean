@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -e
 
-for f in {base,branchclaw,promo}/*.{ppm,pbm,gif,jpg,webp} ocr.txt powers fears; do
-  if [ -f $f ]; then
-    rm $f
-  elif [ -d $f ]; then
-    rm -r $f
+for f in {base,branchclaw,jagged-earth,promo,promo2}/*.{ppm,pbm,gif,jpg,webp} ocr.txt powers fears; do
+  if [ -f "$f" ]; then
+    rm "$f"
+  elif [ -d "$f" ]; then
+    rm -r "$f"
   fi
 done
 
