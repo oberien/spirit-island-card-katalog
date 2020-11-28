@@ -16,6 +16,7 @@ namespace DB {
 
     export enum TokenEvent {
         // Beasts
+        // Branch & Claw
         BeastsAttack = "Beasts Attack: Each Beasts deals 2 Damage. Remove any token that destroys Town / City.",
         BeastsFindNewHomes = "Beasts Find New Homes: On Each Board: Push 1 Beasts to an adjacent land without Blight. 1 Fear if Invaders are present there.",
         BeastsProwl = "Beasts Prowl: Each Beasts generates 1 Fear if Invaders are present, and moves to an adjacent land if not.",
@@ -24,7 +25,7 @@ namespace DB {
         BeastsOfTheJungle = "Beasts of the Jungle: On Each Board: Add 1 Beasts to a Jungle without Blight. 1 Fear if Invaders are present.",
         DistantHunt = "Distant Hunt: On Each Board: Push 1 Beasts to an adjacent land with no Blight. It deals 1 Damage there.",
         BeastsProvoked = "Beasts Provoked: On Each Board: Add 1 Beasts to a land without Blight that has Town.",
-        
+        // Jagged Earth
         BeastsMultiply = "Beasts Multiply: On Each Board: Add 1 Beasts to a land adjacent to Beasts, then Destroy 1 Dahan in a land with Beasts.",
         CasualtiesOfFangAndSting = "Casualties of Fang and Sting: On Each Board: Destroy 1 Explorer / Town in a land with Beasts.",
         QuitTheFarmedLands = "Quit the Farmed Lands: On Each Board: Push 1 Beasts to a land without Town / City. 1 Fear if Explorer are present there.",
@@ -35,27 +36,29 @@ namespace DB {
         TerrifyingBeasts = "Terrifying Beasts: 2 Fear per board with 2 or more Beasts.",
         LairInUntamedLands = "Lair in Untamed Lands: On Each Board: Add 1 Beasts to a land without Town / City / Blight.",
         BeastsPreyOnTheInjured = "Beasts Prey on the Injured: This turn, Beasts also count as Badlands. On Each Board: Destroy a Damaged Invader in a land with Beasts.",
-        
+
         // Disease
+        // Branch & Claw
         NewDiseases = "New Diseases: On half of the boards (rounding up) add 1 Disease to a land with both Dahan and Invaders. Do 2 Damage to Dahan there.",
         LingeringPlagues = "Lingering Plagues: On Each Board: Add 1 Disease. Ignore Disease during Builds this Invader Phase.",
         WheezelungOutbreak = "Wheezelung Outbreak: On Each Board: Add Disease to the Jungle / Wetland with the most Town / City (minimum 1).",
         GrimToll = "Grim Toll: On Each Board: Choose a land with Disease. In that land, do 2 Damage to Invaders and 2 Damage to Dahan.",
         SandfeverOutbreak = "Sandfever Outbreak: On Each Board: Add 1 Disease to the Sands or Mountains with the most Town / City (minimum 1).",
         ForeignDiseases = "Foreign Diseases: On Each Board, in the land with the most combined Invaders + Dahan (min. 1 of each): Add 1 Disease. 2 Damage to Dahan.",
-        
+        // Jagged Earth
         IrregularOutbreaks = "Irregular Outbreaks: Ignore Disease during Builds this Invader Phase. 1 Fear per board with Disease.",
         FatalitiesRise = "FatalitiesRise: In each land with Disease, 1 Damage to each Invader and 1 Damage to each Dahan. Remove 1 Disease from each land where this Destroys any Town / City.",
         PlaguesBringFearAndDeath = "Plagues Bring Fear and Death: 1 Fear per board with Disease. On Each Board: 2 Damage to Dahan in a land with Disease.",
         OutbreaksShift = "Outbreaks Shift: On Each Board: Push 1 Disease to the adjacent land with the most Invaders (min. 1).",
         VirulenceAmongClosePackedHomes = "Virulence Among Close-Packed Homes: On Each Board, Add 1 Disease to the Inland land with the most Town / City (min. 1).",
         PestilenceArrivesOnCanvasSails = "Pestilence Arrives on Canvas Sails: On Each Board, Add 1 Disease to the Coastal land with the most Town / City (min. 1). In that land, 3 Damage to Dahan.",
-        
+
         // Disease / Strife
         Stricken = "Stricken: Invaders do not Ravage in lands with Disease or Strife.",
     }
 
     export enum DahanEvent {
+        // Branch & Claw
         CannyDefense = "Canny Defense: During Ravage, in every land, Defend 1 per Dahan in the land.",
         OfferingsOfPatternAndDance = "Offerings of Pattern and Dance: Each Spirit with at least 2 Dahan among all its lands gains 1 Energy.",
         ReclaimTerritory = "Reclaim Territory: Each player may Push 1 Dahan to an adjacent land, doing 1 Damage there.",
@@ -72,7 +75,7 @@ namespace DB {
         TrapsAndSnares = "Traps and Snares: On Each Board: Add 1 Wilds to a land with Dahan.",
         DriveOffTheInterlopers = "Drife off the Interlopers: Each player may Push 1 Explorer / Town from a land with Dahan.",
         AidTheUprising = "Aid the Uprising: Invaders with Strife take 1 Damage per Dahan present. Add 1 Dahan per Town / City this destroys.",
-        
+        // Jagged Earth
         CoordinatedDefense = "Coordinated Defense: When Invaders Ravage, if the land has both Dahan and Presence, Defend 5.",
         EngageOnTheirOwnTerms = "Engage on Their Own Terms: During Ravage, Dahan only do 1 Damage, but deal Damage before Invaders.",
         CleverCooperation = "Clever Cooperation: Each Spirit may Push 1 of their Presence from a land with Dahan. 2 Damage in the land Pushed to.",
@@ -96,6 +99,7 @@ namespace DB {
 
     class Events {
         // Choice
+        // Branch & Claw
         public static LetThePlantsDieAndTheLandWither = new ChoiceDesc("Let the Plants Die and the Land Wither", null,
             ["For each board, discard the top Minor Power. If it lacks Water, add 1 Blight to a sands.",
                 "Town, City and Dahan have -1 Health (minimum 1) until the end of the turn."]);
@@ -137,34 +141,34 @@ namespace DB {
             ["Return the top card of the Invader Deck to the box. (Skip cards specially placed during Setup.)", "On Each Board: Add 1 Town to a land without one."]);
         public static WeaveLiesInTheMindsOfTheirObservers = new ChoiceDesc("Weave Lies in the Minds of their Observers", new ChoiceCost(4, "player", Elements.Air),
             ["Return the top Fear Card to the Box.", "During the next normal Ravage, each Town / City does +1 Damage."]);
-
-		public static LeaveItsStrengthWithTheDahan = new ChoiceDesc("Leave Its Strength With the Dahan", null, 
-			["Dahan have +10 Health this turn.", "In lands with Dahan, Invaders have +1 Health this turn."]); 
-		public static WithPatientFocusCraftAGreatWarding = new ChoiceDesc("With Patient Focus Craft a Great Warding", new ChoiceCost(4, "player", Elements.Earth), 
+        // Jagged Earth
+		public static LeaveItsStrengthWithTheDahan = new ChoiceDesc("Leave Its Strength With the Dahan", null,
+			["Dahan have +10 Health this turn.", "In lands with Dahan, Invaders have +1 Health this turn."]);
+		public static WithPatientFocusCraftAGreatWarding = new ChoiceDesc("With Patient Focus Craft a Great Warding", new ChoiceCost(4, "player", Elements.Earth),
 			["Defend from Spirits is 4 lower per land this turn (min. 0).", "During on future Spirit Phase, players may jointly decide to grant Defend 4 to all lands that turn. (There is a Reminder Card for this.)"]);
-		public static TendToYourOwnStrength = new ChoiceDesc("Tend to Your Own Strength", null, 
+		public static TendToYourOwnStrength = new ChoiceDesc("Tend to Your Own Strength", null,
 			["Each Spirit gains 1 Energy.", "Discard 1 Minor Power per player from the deck. For each with Plant, Remove 1 Blight from the Blight Card, returning it to the box. For each with Animal, Destroy 1 Dahan in a land with Blight."]);
-		public static ForgeAWebOfMutualSupport = new ChoiceDesc("Forge a Web of Mutual Support", new ChoiceCost(4, "player", Elements.Plant), 
+		public static ForgeAWebOfMutualSupport = new ChoiceDesc("Forge a Web of Mutual Support", new ChoiceCost(4, "player", Elements.Plant),
 			["Each Spirit Destroys 1 of their Presence.", "Each Spirit gains 1 permanent Element for the rest of the game. (Choose separately, now.)"]);
-		public static LetDestructionHaveItsDay = new ChoiceDesc("Let Destruction Have Its Day", null, 
+		public static LetDestructionHaveItsDay = new ChoiceDesc("Let Destruction Have Its Day", null,
 			["On Each Board: Remove 1 Beasts. Add 1 Disease.", "For Each Board: Discard the top Minor Power. If it is Fast, add 1 Blight.", "Invaders and Dahan have -1 Health (min. 1) this turn."]);
-		public static FortifyTheResilienceOfLife = new ChoiceDesc("Fortify the Resilience of Life", new ChoiceCost(4, "Player", Elements.Animal), 
+		public static FortifyTheResilienceOfLife = new ChoiceDesc("Fortify the Resilience of Life", new ChoiceCost(4, "Player", Elements.Animal),
 			["On Each Board: Add 1 Beasts. Remove 1 Disease.", "For Each Board: Discard the top Minor Power. If it is Slow, Remove 1 Blight.", "Invaders and Dahan have +1 Health this turn."]);
-		public static IgnoreTheirInterest = new ChoiceDesc("Ignore Their Interest", null, 
+		public static IgnoreTheirInterest = new ChoiceDesc("Ignore Their Interest", null,
 			["Dahan do not participate in Ravages this turn."]);
-		public static DisplayYourWrathAtThisBetrayal = new ChoiceDesc("Display Your Wrath at This Betrayal", new ChoiceCost(2, "player", Elements.Fire), 
+		public static DisplayYourWrathAtThisBetrayal = new ChoiceDesc("Display Your Wrath at This Betrayal", new ChoiceCost(2, "player", Elements.Fire),
 			["Each Spirit with Dahan in their lands Destroys 1 of them and generates 1 Fear."]);
-		public static ChangeAndHelpThemLearnFromTheEnemy = new ChoiceDesc("Change and Help Them Learn From the Enemy", new ChoiceCost(6, "player", Elements.Air), 
+		public static ChangeAndHelpThemLearnFromTheEnemy = new ChoiceDesc("Change and Help Them Learn From the Enemy", new ChoiceCost(6, "player", Elements.Air),
 			["Dahan do not participate in Ravages this turn.", "Each Spirit Forgets a Power Card.", "From next turn on, each Dahan provides Defend 1 in its land. (There is a Reminder Card for this.)"]);
-		public static ActCautiouslyInTheBackground = new ChoiceDesc("Act Cautiously in the Background", null, 
+		public static ActCautiouslyInTheBackground = new ChoiceDesc("Act Cautiously in the Background", null,
 			["On Each Board: Push up to 2 Dahan.", "On Each Board: Add 1 Town to a land without Town.", "On Each Board: Immediately Ravage in the land with the most Invaders that matches a Ravage Card."]);
-		public static CreateUnnervingDistractions = new ChoiceDesc("Create Unnerving Distractions", null, 
+		public static CreateUnnervingDistractions = new ChoiceDesc("Create Unnerving Distractions", null,
 			["Ravage Cards skip up to one matching land on each board. (Players choose which.)", "1 Fear per player.", "Remove the bottommost Stage II and Stage III Cards in the Invader Deck from the game."]);
-		public static DrawStrengthFromItWhileYouCan = new ChoiceDesc("Draw Strength From It While You Can", null, 
+		public static DrawStrengthFromItWhileYouCan = new ChoiceDesc("Draw Strength From It While You Can", null,
 			["Remove 1 Blight per player from the Blight Card. Then, if the Blight Card has not flipped, keep Removing Blight until it flips. Gain 3 Energy per Blight Removed, divided as evenly as possible among all Spirits."]);
-		public static PourYourStrengthIntoTheIsland = new ChoiceDesc("Pour Your Strength Into the Island", null, 
+		public static PourYourStrengthIntoTheIsland = new ChoiceDesc("Pour Your Strength Into the Island", null,
 			["Each Spirit either pays 3 Energy, Forgets 2 Power Cards, or returns 1 Presence to their Presence tracks.", "Add 1 Blight per Spirit to the Blight Card (From the box)."]);
-			
+
         // Stage Events
         public static SeekingTheInterior = new EventDesc("Seeking the Interior", "In each Coastal land, Push 1 Explorer one land Inland.");
         public static LocalDiaspora = new EventDesc("Local Diaspora", "In the single land with the most Invaders, Push 1 Explorer / Town to each adjacent land.");
@@ -915,7 +919,6 @@ namespace DB {
         new AdversaryEvent(ProductSet.BranchAndClaw, "Slave Rebellion", Adversary.KingdomOfFrance,
             new StageEventCard(ProductSet.BranchAndClaw, Events.SmallUprising, Events.SmallUprising, Events.Rebellion,
                 null, DahanEvent.AidTheUprising)),
-        
         // Jagged Earth
         new ChoiceEventCard(ProductSet.JaggedEarth, "Remnants of a Spirit's Heart", "A group of Dahan find a stony ridge with lingering blessings from an ancient mountain-Spirit. You may:",
             [Events.LeaveItsStrengthWithTheDahan, Events.WithPatientFocusCraftAGreatWarding],
@@ -931,11 +934,11 @@ namespace DB {
             TokenEvent.OutbreaksShift, null),
         new ChoiceEventCard(ProductSet.JaggedEarth, "Hard-Working Settlers", "The latest round of settlers are regrettably diligent, focused and curious. You may:",
             [Events.ActCautiouslyInTheBackground, Events.CreateUnnervingDistractions],
-            TokenEvent.BeastsPreyOnTheInjured, none),
+            TokenEvent.BeastsPreyOnTheInjured, null),
         new ChoiceEventCard(ProductSet.JaggedEarth, "Numinous Crisis", "The spiritual energy of the island weakens as life's connections grow ever more tattered. You may:",
             [Events.DrawStrengthFromItWhileYouCan, Events.PourYourStrengthIntoTheIsland],
             TokenEvent.PlaguesBringFearAndDeath, DahanEvent.CarefulDefense),
-        
-            
+
+
     ];
 }

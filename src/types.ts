@@ -103,7 +103,9 @@ namespace Types {
     export enum ProductSet {
         Basegame = "Basegame",
         BranchAndClaw = "Branch & Claw",
+        JaggedEarth = "Jagged Earth",
         Promo = "Promo",
+        Promo2 = "Promo2",
     }
 
     export enum Unique {

@@ -58,7 +58,10 @@ Within the `imgsprep` folder, run the following commands:
 ./clean #deletes all old image files, making sure the environment is clean
 ./extract #extracts the images from the pdfs
 ./convert #converts images to webp/jpg and OCRs the names
-./rename.py #fixes names and moves images into the imgs/ folder; make sure you have generated the name-arrays
+./rename.py #fixes names; make sure you have generated the name-arrays
+cp events/* ../imgs/events
+cp fears/* ../imgs/fears
+cp powers/* ../imgs/powers
 ```
 
 ### Open
