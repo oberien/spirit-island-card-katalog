@@ -43,20 +43,27 @@ namespace Types {
     export enum TargetSpirit {
         Any = "Any Spirit",
         Another = "Another Spirit",
+        Yourself = "Yourself",
     }
 
     export enum TargetProperty {
         Dahan = "Dahan",
         Invaders = "Invaders",
+        Town = "Town",
         City = "City",
         Blight = "Blight",
         NoBlight = "No Blight",
         NoInvaders = "No Invaders",
+        NoWetland = "No Wetland",
+        Beasts = "Beasts",
+        TwoBeasts = "2 Beasts",
+        Inland = "Inland",
+        Disease = "Disease",
     }
 
     export type TargetType = Land | TargetSpirit | TargetProperty;
 
-    export type Target = TargetType | TargetType[];
+    export type Target = TargetType | TargetType[] | null;
 
     export enum Source {
         Presence = "Presence",
@@ -121,6 +128,18 @@ namespace Types {
         KeeperOfTheForbiddenWilds = "Unique Power: Keeper of the Forbidden Wilds",
         SerpentSlumberingBeneathTheIsland = "Unique Power: Serpent Slumbering Beneath the Island",
         HeartOfTheWildfire = "Unique Power: Heart of the Wildfire",
+        FinderOfPathsUnseen = "Unique Power: Finder of Paths Unseen",
+        FracturedDaysSplitTheSky = "Unique Power: Fractured Days Split the Sky",
+        GrinningTricksterStirsUpTrouble = "Unique Power: Grinning Trickster Stirs Up Trouble",
+        LureOfTheDeepWilderness = "Unique Power: Lure of the Deep Wilderness",
+        ManyMindsMoveAsOne = "Unique Power: Many Minds Move as One",
+        ShiftingMemoryOfAges = "Unique Power: Shifting Memory of Ages",
+        ShroudOfSilentMist = "Unique Power: Shroud of Silent Mist",
+        StarlightSeeksItsForm = "Unique Power: Starlight Seeks its Form",
+        StonesUnyieldingDefiance = "Unique Power: Stone's Unyielding Defiance",
+        VengeanceAsABurningPlague = "Unique Power: Vengeance as a Burning Plague",
+        VolcanoLoomingHigh = "Unique Power: Volcano Looming High",
+        DownpourDrenchesTheWorld = "Unique Power: Downpour Drenches the World",
     }
 
     export enum PowerDeckType {
@@ -183,6 +202,18 @@ namespace Types {
             case Unique.KeeperOfTheForbiddenWilds:
             case Unique.HeartOfTheWildfire:
             case Unique.SerpentSlumberingBeneathTheIsland:
+            case Unique.FinderOfPathsUnseen:
+            case Unique.FracturedDaysSplitTheSky:
+            case Unique.GrinningTricksterStirsUpTrouble:
+            case Unique.LureOfTheDeepWilderness:
+            case Unique.ManyMindsMoveAsOne:
+            case Unique.ShiftingMemoryOfAges:
+            case Unique.ShroudOfSilentMist:
+            case Unique.StarlightSeeksItsForm:
+            case Unique.StonesUnyieldingDefiance:
+            case Unique.VengeanceAsABurningPlague:
+            case Unique.VolcanoLoomingHigh:
+            case Unique.DownpourDrenchesTheWorld:
                 return "rgba(0, 128, 0, 0.25)";
             default:
                 throw new Error();
@@ -376,6 +407,8 @@ namespace Types {
                 } else {
                     target = (this.target as TargetType[]).join(", ");
                 }
+            } else if (this.target == null) {
+                target = "";
             } else {
                 target = this.target;
             }
