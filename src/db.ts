@@ -107,7 +107,7 @@ namespace DB {
         // Choice
         // Branch & Claw
         public static LetThePlantsDieAndTheLandWither = new ChoiceDesc("Let the Plants Die and the Land Wither", null,
-            ["For each board, discard the top Minor Power. If it lacks Water, add 1 Blight to a sands.",
+            ["For each board, discard the top Minor Power. If it lacks Water, add 1 Blight to a Sands.",
                 "Town, City and Dahan have -1 Health (minimum 1) until the end of the turn."]);
         public static ActToEaseTheDrought = new ChoiceDesc("Act to ease the Drought", new ChoiceCost(4, "player", Elements.Water),
             ["Each Spirit may add 1 Presence to one of their lands with Dahan."]);
@@ -554,7 +554,7 @@ namespace DB {
 
         // Branch & Claw
         // Majors
-        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Strangling Firevine", 4, Speed.Slow, new Ranges(Source.Presence, 1, [Land.Sand]), LandAny,
+        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Strangling Firevine", 4, Speed.Slow, new Ranges(Source.Presence, 1, [Land.Sands]), LandAny,
             [Elements.Fire, Elements.Plant], "Nolan Nasser",
             "Destroy all Explorer. Add 1 Wilds. Add 1 Wilds in the originating Sands. 1 Damage per Wilds in / adjacent to target land. -If you have- 2 Fire, 3 Plant: +1 Damage per Wilds in / adjacent to target land."),
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Bloodwrack Plague", 4, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
@@ -563,7 +563,7 @@ namespace DB {
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Cast down into the Briny Deep", 9, Speed.Slow, new Ranges(Source.SacredSite, 1), [Land.Coastal],
             [Elements.Sun, Elements.Moon, Elements.Water, Elements.Earth], "Jason Behnke",
             "6 Fear. Destroy all Invaders. -If you have- 2 Sun, 2 Moon, 4 Water, 4 Earth: Destroy the board containing target land and everything on that board. All destroyed Blight is removed from the game instead of being returned to the Blight Card."),
-        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Death Falls Gently from Open Blossoms", 4, Speed.Slow, new Ranges(Source.Presence, 3), [Land.Jungle, Land.Sand],
+        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Death Falls Gently from Open Blossoms", 4, Speed.Slow, new Ranges(Source.Presence, 3), [Land.Jungle, Land.Sands],
             [Elements.Moon, Elements.Air, Elements.Plant], "Graham Stermberg",
             "4 Damage. If any Invaders remain, add 1 Disease. -If you have- 3 Air, 3 Plant: 3 Fear. Add 1 Disease to 2 adjacent lands with Invaders."),
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Fire and Flood", 7, Speed.Slow, new Ranges(Source.SacredSite, [1, 2]), LandAny,
@@ -624,7 +624,7 @@ namespace DB {
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Fire in the Sky", 1, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
             [Elements.Sun, Elements.Fire, Elements.Air], "Moro Rogers",
             "2 Fear. Add 1 Strife"),
-        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Fleshrot Fever", 1, Speed.Slow, new Ranges(Source.Presence, 1), [Land.Jungle, Land.Sand],
+        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Fleshrot Fever", 1, Speed.Slow, new Ranges(Source.Presence, 1), [Land.Jungle, Land.Sands],
             [Elements.Fire, Elements.Air, Elements.Water, Elements.Animal], "Joshua Wright",
             "1 Fear. Add 1 Disease."),
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Gold's Allure", 0, Speed.Slow, new Ranges(Source.Presence, 1), [Land.Mountain],
@@ -699,7 +699,7 @@ namespace DB {
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Elusive Ambushes", 1, Speed.Fast, new Ranges(Source.Presence, 1), TargetProperty.Dahan,
             [Elements.Sun, Elements.Fire, Elements.Water], "Nolan Nasser",
             "1 Damage. -or- Defend 4."),
-        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Tormenting Rotflies", 1, Speed.Slow, new Ranges(Source.Presence, 2), [Land.Sand, Land.Wetland],
+        new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Tormenting Rotflies", 1, Speed.Slow, new Ranges(Source.Presence, 2), [Land.Sands, Land.Wetland],
             [Elements.Air, Elements.Plant, Elements.Animal], "Kat Birmelin",
             "Add 1 Disease. -or- If target land has Invaders, 2 Fear. If Disease is present, +1 Fear. If Blight is present, +1 Fear."),
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Twilight Fog brings Madness", 0, Speed.Slow, new Ranges(Source.Presence, 1), LandAny,
@@ -820,7 +820,7 @@ namespace DB {
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Utter a Curse of Dread and Bone", 4, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,
             [Elements.Moon, Elements.Animal], "Joshua Wright",
             "For each Blight in / adjacent to target land, add 1 Badlands, 1 Disease, or 1 Strife. (Max +3 of each.) Then: 2 Fear. 1 Damage. -If you have- 3 Moon, 2 Animal: For each type of token you added, add 1 more within 1 Range. 1 Damage in an adjacent land."),
-        new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Sleep and Never Waken", 3, Speed.Fast, new Ranges(Source.Presence, 2, [Land.Sand]), LandAny,
+        new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Sleep and Never Waken", 3, Speed.Fast, new Ranges(Source.Presence, 2, [Land.Sands]), LandAny,
             [Elements.Moon, Elements.Air, Elements.Earth, Elements.Animal], "Joshua Wright",
             "Invaders skip all Actions in target land. 1 Fear per 2 Explorer this Power removes. Remove up to 2 Explorer. -If you have- 3 Moon, 2 Air, 2 Animal: Remove up to 6 Explorer from among your lands."),
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Weave Together the Fabric of Place", 4, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
@@ -832,7 +832,7 @@ namespace DB {
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Thickets Erupt with Every Touch of Breeze", 3, Speed.Fast, new Ranges(Source.SacredSite, 2), TargetProperty.Inland,
             [Elements.Air, Elements.Plant], "Jorge Ramos",
             "2 Damage. Then either: Add 3 Wilds. -or- Remove 1 Blight. -If you have- 3 Plant: 1 Fear. +2 Damage."),
-        new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Melt Earth into Quicksand", 4, Speed.Fast, new Ranges(Source.Presence, 1), [Land.Sand, Land.Wetland],
+        new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Melt Earth into Quicksand", 4, Speed.Fast, new Ranges(Source.Presence, 1), [Land.Sands, Land.Wetland],
             [Elements.Moon, Elements.Water, Elements.Earth], "Lucas Durham",
             "1 Fear. 2 Damage. Isolate target land. After Invaders / Dahan are Moved into target land, Destroy them.  -If you have- 2 Moon, 4 Water, 2 Earth: +4 Damage. Add 1 Badlands. Add 1 Wilds."),
         // Minor
@@ -854,7 +854,7 @@ namespace DB {
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Minor, "Call To Guard", 0, Speed.Fast, new Ranges(Source.Presence, 1), LandAny,
             [Elements.Sun, Elements.Air, Elements.Earth], "Kat Guevara",
             "Gather up to 1 Dahan. Then, if Dahan are present, either: Defend 1 per Dahan. -or- After Invaders are added or moved to target land, 1 Damage to each added or moved Invader."),
-        new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Minor, "Desiccating Winds", 1, Speed.Slow, new Ranges(Source.SacredSite, 1), [Land.Mountain, Land.Sand],
+        new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Minor, "Desiccating Winds", 1, Speed.Slow, new Ranges(Source.SacredSite, 1), [Land.Mountain, Land.Sands],
             [Elements.Fire, Elements.Air, Elements.Earth], "Shawn Daley",
             "If target land has Badlands, 1 Damage. Add 1 Badlands."),
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Minor, "Dry Wood Explodes In Smoldering Splinters", 1, Speed.Slow, new Ranges(Source.Presence, 0), TargetProperty.NoWetland,
@@ -908,7 +908,7 @@ namespace DB {
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Minor, "Strong And Constant Currents", 0, Speed.Fast, new Ranges(Source.Presence, 0), Land.Coastal,
             [Elements.Sun, Elements.Water, Elements.Earth], "Jorge Ramos",
             "Push 1 Explorer / Town to an adjacent Coastal land. -or- Move up to 2 Dahan between target land and one other Coastal land. -If you have- 2 Water: You may do both."),
-        new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Minor, "Sucking Ooze", 0, Speed.Fast, new Ranges(Source.Presence, 1), [Land.Sand, Land.Wetland],
+        new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Minor, "Sucking Ooze", 0, Speed.Fast, new Ranges(Source.Presence, 1), [Land.Sands, Land.Wetland],
             [Elements.Moon, Elements.Water, Elements.Earth], "Moro Rogers",
             "2 Fear if Invaders are present. Isolate target land."),
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Minor, "Sunset's Fire Flows Across The Land", 1, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,

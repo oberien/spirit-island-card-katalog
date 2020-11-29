@@ -33,12 +33,12 @@ namespace Types {
         Jungle = "Jungle",
         Wetland = "Wetland",
         Mountain = "Mountain",
-        Sand = "Sand",
+        Sands = "Sands",
         Coastal = "Coastal",
         Inland = "Inland",
     }
 
-    export const LandAny = [Land.Ocean, Land.Jungle, Land.Wetland, Land.Mountain, Land.Sand, Land.Coastal];
+    export const LandAny = [Land.Ocean, Land.Jungle, Land.Wetland, Land.Mountain, Land.Sands, Land.Coastal];
 
     export enum TargetSpirit {
         Any = "Any Spirit",
