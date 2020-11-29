@@ -5,7 +5,7 @@ truncate -s 0 ocr.txt
 
 function ocr {
   name=$(tesseract --oem 0 -l eng "$1" stdout 2>/dev/null)
-  name=$(echo -n "$name")
+  name=$(tr '\n' ' ' <<< "$name")
   name=$(tr '[:upper:]' '[:lower:]' <<< "$name")
   name=$(sed s/0/o/g <<< "$name")
   name=$(sed 's/[^a-z]/ /g' <<< "$name")
@@ -53,11 +53,8 @@ done
 for f in {base,branchclaw,jagged-earth,promo,promo2}/fear-*.ppm; do
   handle_image "$f" "650x82+45+40"
 done
-# "Panic" is not ocr'd correctly
-echo branchclaw/fear-012 panic >> ocr.txt
 
 # event cards
 for f in {base,branchclaw,jagged-earth,promo,promo2}/event-*.ppm; do
   handle_image "$f" "530x75+130+40"
-
 done
