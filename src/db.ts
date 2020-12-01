@@ -792,7 +792,7 @@ namespace DB {
             "Remove 1 of your Presence on the island from the game, setting it on the Reminder Card. From now on: each Dahan within 1 Range of your Presence provides Defend 1 in its land, and you gain 1 less Energy each turn. (This effect stacks if used multiple times) -If you have- 3 Sun, 2 Water, 2 Earth: The Presence instead comes from your Presence track."),
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Transform to a Murderous Darkness", 6, Speed.Slow, null, TargetSpirit.Any,
             [Elements.Moon, Elements.Fire, Elements.Air, Elements.Water, Elements.Plant], "Moro Rogers",
-            "Target Spirit may choose one of their Sacred Sites. In that land: Replace all their Presence with Badlands; the replaced Presence leave the game. Push any number of those Badlands. 3 Fear. 3 Damage per Presence replaced. -If you have- 3 Moon, 2 Fire, 2 Air: 1 Damage in and adjacent land. 1 Damage in and adjacent land."),
+            "Target Spirit may choose one of their Sacred Sites. In that land: Replace all their Presence with Badlands; the replaced Presence leave the game. Push any number of those Badlands. 3 Fear. 3 Damage per Presence replaced. -If you have- 3 Moon, 2 Fire, 2 Air: 1 Damage in an adjacent land. 1 Damage in an adjacent land."),
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Settle Into Hunting-Grounds", 3, Speed.Fast, null, TargetSpirit.Yourself,
             [Elements.Moon, Elements.Fire, Elements.Plant, Elements.Animal], "Moro Rogers",
             "Your Presence may count as Badlands and Beasts. (Decide per Presence, per action.) Your Presence cannot move. -If you have- 2 Plant, 3 Animal: 2 Fear and 2 Damage in one of your lands."),
