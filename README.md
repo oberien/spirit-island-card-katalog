@@ -16,8 +16,32 @@ Use `tsc` to build and watch for changes:
 ```sh
 tsc --pretty --watch --sourceMap
 ```
+### Downloading The Resources
 
-### Resources
+Install git-lfs https://git-lfs.github.com/
+
+From the root of the repository run `git lfs fetch` and then `git lfs checkout`
+
+### Open
+
+After building everything and downloading the resources, open `index.html` in your browser, e.g.
+```sh
+firefox index.html
+```
+
+### Deploy
+
+After building everything, the following files and folders can be copied to a static
+website file hoster, e.g. with scp:
+```sh
+scp -r imgs res index.html cards.js <server>:<folder>
+```
+
+### Building The Resources
+
+Install git-lfs https://git-lfs.github.com/
+
+From the root of the repository run `git lfs fetch`
 
 Download the pdfs containing the images of all images from dropbox (provided by Dylan Thurston)
 into the respective folders in `imgsprep`.
@@ -62,21 +86,6 @@ Within the `imgsprep` folder, run the following commands:
 cp events/* ../imgs/events
 cp fears/* ../imgs/fears
 cp powers/* ../imgs/powers
-```
-
-### Open
-
-After building everything and generating the resources, open `index.html` in your browser, e.g.
-```sh
-firefox index.html
-```
-
-### Deploy
-
-After building everything, the following files and folders can be copied to a static
-website file hoster, e.g. with scp:
-```sh
-scp -r imgs res index.html cards.js <server>:<folder>
 ```
 
 # License
