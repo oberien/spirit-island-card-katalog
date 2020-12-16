@@ -9,6 +9,7 @@ type Card = Types.Card;
 const Card = Types.Card;
 
 const CARDS = DB.CARDS;
+const EXTRA_CARDS: HTMLDivElement[] = [];
 
 function getParameterByName(name: string) {
     let url = window.location.href;
@@ -25,6 +26,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const search = <HTMLInputElement> document.getElementById("search");
     const sort = <HTMLSelectElement> document.getElementById("sort");
     const order = <HTMLDivElement> document.getElementById("arrow");
+
+    for (let i = 0; i < 10; i++) {
+        let flex = <HTMLDivElement> document.createElement("div");
+        flex.classList.add("flex-50", "xs-flex-33", "sm-flex-25", "md-flex-20", "l-flex-15", "xl-flex-12", "xxl-flex-10");
+        flex.style.height = "0px";
+        EXTRA_CARDS.push(flex);
+    }
+
 
     body.onresize = () => CARDS.forEach(c => c.onresize());
     body.onkeypress = e => {
@@ -48,14 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     update();
 });
-
-const EXTRA_CARDS: HTMLDivElement[] = [];
-for (let i = 0; i < 10; i++) {
-    let flex = <HTMLDivElement> document.createElement("div");
-    flex.classList.add("flex-50", "xs-flex-33", "sm-flex-25", "md-flex-20", "l-flex-15", "xl-flex-12", "xxl-flex-10");
-    flex.style.height = "0px";
-    EXTRA_CARDS.push(flex);
-}
 
 function update() {
     const search = <HTMLInputElement> document.getElementById("search");

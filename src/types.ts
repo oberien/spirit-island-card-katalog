@@ -230,7 +230,7 @@ namespace Types {
         constructor(public set: ProductSet, public type: CardType, public name: string | string[]) {}
 
         getSearchString(): string {
-            return Object.getOwnPropertyNames(this)
+            return Object.keys(this)
                 .filter((name) => name.toLowerCase() === name)
                 .map((name) => (this as any)[name])
                 .filter((prop) => prop !== null)
@@ -373,7 +373,7 @@ namespace Types {
             } else {
                 s += " " + this.target;
             }
-            s += " " + this.elements + " " + this.artist + " " + this.description;
+            s += " " + this.elements + " " + this.description + " " + this.artist;
             return s.toLowerCase();
         }
 

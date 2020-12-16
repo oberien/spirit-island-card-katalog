@@ -37,6 +37,12 @@ website file hoster, e.g. with scp:
 scp -r imgs res index.html cards.js <server>:<folder>
 ```
 
+### Compare Card Texts with Card PDF-Dump
+
+GtG can pdf-dump the card-pdfs, getting a not-perfect representation of the cards.
+It doesn't contain any images, symbols or alt-names, so it not really useful for transcribing new cards.
+However, it can be used to detect if card text changed.
+
 ### Building The Resources
 
 Install git-lfs https://git-lfs.github.com/
