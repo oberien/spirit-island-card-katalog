@@ -51,8 +51,8 @@ namespace DB {
         FatalitiesRise = "Fatalities Rise: In each land with Disease, 1 Damage to each Invader and 1 Damage to each Dahan. Remove 1 Disease from each land where this Destroys any Town / City.",
         PlaguesBringFearAndDeath = "Plagues Bring Fear and Death: 1 Fear per board with Disease. On Each Board: 2 Damage to Dahan in a land with Disease.",
         OutbreaksShift = "Outbreaks Shift: On Each Board: Push 1 Disease to the adjacent land with the most Invaders (min. 1).",
-        VirulenceAmongClosePackedHomes = "Virulence Among Close-Packed Homes: On Each Board, Add 1 Disease to the Inland land with the most Town / City (min. 1).",
-        PestilenceArrivesOnCanvasSails = "Pestilence Arrives on Canvas Sails: On Each Board, Add 1 Disease to the Coastal land with the most Town / City (min. 1). In that land, 3 Damage to Dahan.",
+        VirulenceAmongClosePackedHomes = "Virulence Among Close-Packed Homes: On Each Board: Add 1 Disease to the Inland land with the most Town / City (min. 1).",
+        PestilenceArrivesOnCanvasSails = "Pestilence Arrives on Canvas Sails: On Each Board: Add 1 Disease to the Coastal land with the most Town / City (min. 1). In that land, 3 Damage to Dahan.",
 
         // Disease / Strife
         // Stricken is different on all 3 cards
@@ -93,7 +93,7 @@ namespace DB {
         AThousandSmallStruggles = "A Thousand Small Struggles: On Each Board with 4 or more Town / City and 4 or fewer Dahan: Add 1 Blight to a land without Dahan.",
         SeekOutNewGrounds = "Seek Out New Grounds: On Each Board: Gather 1 or 2 Dahan into a land without Dahan Setup symbols.",
         CarefulDefense = "Careful Defense: When Invaders Ravage, if the land has Dahan, Defend 2.",
-        SettlersEncroachTooFar = "Settlers Encroach Too Far: On Each Board, Choose a land with Town and Dahan. Push 1 Town per 2 Dahan there.",
+        SettlersEncroachTooFar = "Settlers Encroach Too Far: On Each Board: Choose a land with Town and Dahan. Push 1 Town per 2 Dahan there.",
         AtTheirGatesDemandingRedress = "At Their Gates Demanding Redress: 2 Fear per land with Dahan and City.",
         LeaveTheHostileLand = "Leave The Hostile Land: In each land, Push 1 Dahan per Badlands / Disease to lands without Badlands / Disease.",
         SpeakOfTheSpiritsAnger = "Speak of the Spirits' Anger: For each board, 1 Fear if any Dahan are in lands with Town / City.",
@@ -223,7 +223,7 @@ namespace DB {
         public static CulturesMixAndClash = new EventDesc("Cultures Mix and Clash", "On Each Board: If Dahan outnumber Town / City by 2 or more, Replace 1 Town with 1 Dahan. If Town / City outnumber Dahan by 2 or more, Replace 1 Dahan with 1 Town.");
         public static Overconfidence = new EventDesc("Overconfidence", "If you have any Earned Fear Cards, discard 2 of them now (so you don't get their text benefits). Otherwise, move 2 Earned Fear Markers per player to the top of the Fear pool.");
         public static TerrorBreedsAggression = new EventDesc("Terror Breeds Aggression", "For every 2 Fear Cards currently in the Earned Fear Cards pile, Invaders do +1 Damage (per land) when Ravaging.");
-        public static BureaucratsAdjustFunding = new EventDesc("Bureaucrats Adjust Funding", "On each Board with 9 or more Town / City: Build Cards skip the highest-numbered matching land. On Each Board with 3 or fewer Town / City: Build Cards cause 1 extra Build Action in the highest-numbered matching land. (This can affect a land without Invaders.)");
+        public static BureaucratsAdjustFunding = new EventDesc("Bureaucrats Adjust Funding", "On Each Board with 9 or more Town / City: Build Cards skip the highest-numbered matching land. On Each Board with 3 or fewer Town / City: Build Cards cause 1 extra Build Action in the highest-numbered matching land. (This can affect a land without Invaders.)");
         public static RansackAndRun = new EventDesc("Ransack and Run", "After the Ravage Step, On Each Board: In the land with the most City (min 1), Ravage, then remove 1 City.");
 
         // Healthy / Blighted Land
@@ -960,7 +960,7 @@ namespace DB {
             "Add 1 Badlands and 1 Wilds. -or- 1 Damage."),
         new PowerCard(ProductSet.JaggedEarth, Unique.VolcanoLoomingHigh, "Exaltation of Molten Stone", 1, Speed.Fast, null, TargetSpirit.Another,
             [Elements.Moon, Elements.Fire, Elements.Earth], "Moro Rogers",
-            "Split 1 Energy per Fire you have between yourself and target Spirit, as evenly as possible. Target Spirit gains +1 Range with their powers that originate from a Mountains."),
+            "Split 1 Energy per Fire you have between yourself and target Spirit, as evenly as possible. Target Spirit gains +1 Range with their powers that originate from a Mountain."),
         new PowerCard(ProductSet.JaggedEarth, Unique.VolcanoLoomingHigh, "Pyroclastic Bombardment", 3, Speed.Fast, new Ranges(Source.SacredSite, 2), LandAny,
             [Elements.Fire, Elements.Air, Elements.Earth], "Moro Rogers",
             "1 Damage to each Town / City / Dahan. 1 Damage. 1 Damage to Dahan."),
