@@ -157,7 +157,7 @@ namespace Types {
         ChoiceEvent = "Choice Event",
         StageEvent = "Stage Event",
         TerrorLevelEvent = "Terror Level Event",
-        HealthyBlightedLandEvent = "Healthy Blighted Land Event",
+        HealthyBlightedLandEvent = "Healthy Blighted Island Event",
         AdversaryEvent = "Adversary Event",
     }
 
