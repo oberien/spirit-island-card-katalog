@@ -1023,7 +1023,7 @@ namespace DB {
             "Gain a Minor Power. You may Forget this Power Card to gain 3 Energy.  -If you have- 4 Moon: You may gain a Major Power instead of a Minor Power."),
         new PowerCard(ProductSet.JaggedEarth, Unique.StarlightSeeksItsForm, "Peace of the Nighttime Sky", 1, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
             [Elements.Moon], "Emily Hancock",
-            "if the Terror Level is 1, Invaders to not Ravage in target land this turn. You may Repeat this Power. If you do, Forget this Power Card and Gain 1 Moon."),
+            "If the Terror Level is 1, Invaders do not Ravage in target land this turn. You may Repeat this Power. If you do, Forget this Power Card and Gain 1 Moon."),
         new PowerCard(ProductSet.JaggedEarth, Unique.StonesUnyieldingDefiance, "Scarred and Stony Land", 2, Speed.Slow, new Ranges(Source.SacredSite, 1), TargetProperty.Blight,
             [Elements.Moon, Elements.Earth], "Moro Rogers",
             "2 Damage. Add 1 Badlands. Remove 1 Blight in target land from the game. (It goes to the box, not the Blight Card.)"),
