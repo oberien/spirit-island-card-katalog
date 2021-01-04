@@ -213,7 +213,7 @@ namespace DB {
         // Jagged Earth
         public static TemporaryTruce = new EventDesc("Temporary Truce", "In lands with Dahan: 1 Dahan and 1 Town / City do not participate in Ravages. (They neither take nor deal Damage.)");
         public static TemporaryCaution = new EventDesc("Temporary Caution", "During the Ravage Step, On Each Board: Skip 1 Ravage Action in a land where Dahan outnumber Town / City.");
-        public static ResourcefulPopulace = new EventDesc("Resourceful Populace", "For the rest of this turn, after an Action Destroys 1 or more Town / City, add 1 Town to an adjacent land. (If there are no adjacent lands -- e.g., due to Isolate -- don't add anything.)");
+        public static ResourcefulPopulace = new EventDesc("Resourceful Populace", "For the rest of this turn, after an Action Destroys 1 or more Town / City, add 1 Town to an adjacent land. (If there are no adjacent lands - e.g., due to Isolate - don't add anything.)");
         public static StripTheLandBare = new EventDesc("Strip the Land Bare", "Town each do +1 Damage when Ravaging. After a Ravage Action adds Blight, Remove 1 Explorer and 1 Town from the Ravaged land.");
         public static PullTogetherInAdversity = new EventDesc("Pull Together in Adversity", "For the rest of this turn, ignore 1 Strife on each Invader. (This includes not removing that Strife.)");
         public static PurgeTheLandWithSaltAndFire = new EventDesc("Purge the Land with Salt and Fire", "On Each Board in a land with 2 or more Town: Add 1 Blight without cascading. Add 2 Badlands. Remove all Town.");
@@ -1344,7 +1344,7 @@ namespace DB {
         new ChoiceEventCard(ProductSet.JaggedEarth, "Hard-Working Settlers", "The latest round of settlers are regrettably diligent, focused and curious. You may:",
             [Events.ActCautiouslyInTheBackground, Events.CreateUnnervingDistractions],
             TokenEvent.BeastsPreyOnTheInjured, null),
-        new ChoiceEventCard(ProductSet.JaggedEarth, "Dahan Trade with the Invaders", "Some seek knowledge, others are interested in tools and trade goods, still others simply curious. All hope to avoid violence, and the Invaders seem amenable -- at least for now. You may:",
+        new ChoiceEventCard(ProductSet.JaggedEarth, "Dahan Trade with the Invaders", "Some seek knowledge, others are interested in tools and trade goods, still others simply curious. All hope to avoid violence, and the Invaders seem amenable - at least for now. You may:",
             [Events.IgnoreTheirInterest, Events.DisplayYourWrathAtThisBetrayal, Events.ChangeAndHelpThemLearnFromTheEnemy],
             TokenEvent.OutbreaksShift, null),
        	new ChoiceEventCard(ProductSet.JaggedEarth, "Life's Balance Tilts", "The energies of life shift towards destruction, bringing wasting and disease to the animals of the island. Death is a part of life, but does this go too far? You may:",
