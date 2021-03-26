@@ -18,7 +18,9 @@
         </div>
     </header>
     <div class="flex row">
-        <input class="flex-70" type="text" id="search" placeholder="Search here..." autofocus />
+        <form action="/" method="GET" role="search" class="flex-70 flex row">
+            <input class="flex-100" type="search" id="search" name="query" placeholder="Search here..." autofocus />
+        </form>
         <div class="flex flex-5 middle" id="num-results"></div>
         <div class="flex flex-15 middle flex-start">
             <label class="select">
