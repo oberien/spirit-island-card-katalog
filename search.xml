@@ -1,0 +1,11 @@
+<!--- https://developer.mozilla.org/en-US/docs/Web/OpenSearch -->
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+    <ShortName>SICK</ShortName>
+    <Description>Spirit Island Card Katalock</Description>
+    <InputEncoding>UTF-8</InputEncoding>
+    <OutputEncoding>UTF-8</OutputEncoding>
+    <Url type="text/html" template="https://sick.oberien.de/?query={searchTerms}"/>
+    <Url type="application/opensearchdescription+xml" rel="self" template="https://sick.oberien.de/search.xml"/>
+    <moz:SearchForm>https://sick.oberien.de/</moz:SearchForm>
+</OpenSearchDescription>
