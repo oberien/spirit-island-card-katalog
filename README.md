@@ -34,7 +34,7 @@ firefox index.html
 After building everything, the following files and folders can be copied to a static
 website file hoster, e.g. with scp:
 ```sh
-scp -r imgs res index.html cards.js <server>:<folder>
+scp -r imgs res index.html cards.js search.xml <server>:<folder>
 ```
 
 ### Compare Card Texts with Card PDF-Dump
