@@ -1179,7 +1179,7 @@ namespace DB {
         new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Explorers are Reluctant",
             "During the next normal Explore, skip the lowest-numbered land matching the Invader Card on each board.",
             "Skip the next normal Explore. During the next invader Phase, draw an additional Explore card.",
-            "Skip the next normal Explore, but still reveal a card. (Perform the Stage II Escalation if relevant.) Cards shift left as usual."),
+            "Skip the next normal Explore, but still reveal a card. (Perform the Escalation if relevant.) Cards shift left as usual."),
         new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Immigration Slows",
             "During the next normal Build, skip the lowest-numbered land matching the Invader Card on each board.",
             "Skip the next normal Build. The Build Card remains in place instead of shifting left.",
