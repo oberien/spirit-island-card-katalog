@@ -417,7 +417,7 @@ namespace Types {
             text += "<b>Description</b>: " + this.description + "<br/>";
             text += "<b>Artist</b>: " + this.artist + "<br/>";
             let type = <PowerType>this.type;
-            const tag = type.startsWith("Unique") ? <string>this.name + " (" + type.substring(8) + ")" : <string>this.name;
+            const tag = type.startsWith("Unique") ? <string>this.name + " (" + type.substring(14) + ")" : <string>this.name;
             text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
                 + encodeURIComponent(tag) + "\" target='_blank'>FAQ</a><br/>";
             return text;
