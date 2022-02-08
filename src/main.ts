@@ -42,7 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
         }
     };
-    search.oninput = _ => update();
+    let timeout: ReturnType<typeof setTimeout>;
+    search.oninput = _ => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => update(), 300);
+    };
     sort.onchange = _ => update();
     order.onclick = _ => {
         order.classList.toggle("rotated");
