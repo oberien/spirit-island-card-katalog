@@ -947,7 +947,7 @@ namespace DB {
             [Elements.Sun, Elements.Air, Elements.Animal], "Joshua Wright",
             "Add 1 Strife."),
         new PowerCard(ProductSet.JaggedEarth, Unique.GrinningTricksterStirsUpTrouble, "Incite the Mob", 1, Speed.Slow, new Ranges(Source.Presence, 1), TargetProperty.Invaders,
-            [Elements.Moon, Elements.Fire, Elements.Air], "Joshua Wright",
+            [Elements.Moon, Elements.Fire, Elements.Air, Elements.Animal], "Joshua Wright",
             "1 Invader with Strife deals Damage to other Invaders (not to each Invader). 1 Fear per Invader this Power Destroyed."),
         new PowerCard(ProductSet.JaggedEarth, Unique.GrinningTricksterStirsUpTrouble, "Overenthusiastic Arson", 1, Speed.Fast, new Ranges(Source.Presence, 1), LandAny,
             [Elements.Fire, Elements.Air], "Joshua Wright",
