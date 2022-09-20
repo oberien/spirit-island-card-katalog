@@ -274,16 +274,16 @@ namespace DB {
 
     export const CARDS = [
         // Spirit Cards
-        new PowerCard(ProductSet.Basegame, Unique.LightngingsSwiftStrike, "Shatter Homesteads", 2, Speed.Slow, new Ranges(Source.SacredSite, 2), LandAny,
+        new PowerCard(ProductSet.Basegame, Unique.LightningsSwiftStrike, "Shatter Homesteads", 2, Speed.Slow, new Ranges(Source.SacredSite, 2), LandAny,
             [Elements.Fire, Elements.Air], "Rocky Hammer",
             "1 Fear. Destroy 1 Town."),
-        new PowerCard(ProductSet.Basegame, Unique.LightngingsSwiftStrike, "Raging Storm", 3, Speed.Slow, new Ranges(Source.Presence, 1), LandAny,
+        new PowerCard(ProductSet.Basegame, Unique.LightningsSwiftStrike, "Raging Storm", 3, Speed.Slow, new Ranges(Source.Presence, 1), LandAny,
             [Elements.Fire, Elements.Air, Elements.Water], "Rocky Hammer",
             "1 Damage to each Invader."),
-        new PowerCard(ProductSet.Basegame, Unique.LightngingsSwiftStrike, "Lightning's Boon", 1, Speed.Fast, null, TargetSpirit.Any,
+        new PowerCard(ProductSet.Basegame, Unique.LightningsSwiftStrike, "Lightning's Boon", 1, Speed.Fast, null, TargetSpirit.Any,
             [Elements.Fire, Elements.Air], "Rocky Hammer",
             "Target Spirit may use up to 2 Slow Powers as if they were Fast Powers this turn"),
-        new PowerCard(ProductSet.Basegame, Unique.LightngingsSwiftStrike, "Harbingers of the Lightning", 0, Speed.Slow, new Ranges(Source.Presence, 1), LandAny,
+        new PowerCard(ProductSet.Basegame, Unique.LightningsSwiftStrike, "Harbingers of the Lightning", 0, Speed.Slow, new Ranges(Source.Presence, 1), LandAny,
             [Elements.Fire, Elements.Air], "Rocky Hammer",
             "Push up to 2 Dahan. 1 Fear if you pushed any Dahan into a land with Town / City"),
         new PowerCard(ProductSet.Basegame, Unique.RiverSurgesInSunlight, "Flash Floods", 2, Speed.Fast, new Ranges(Source.Presence, 1), LandAny,

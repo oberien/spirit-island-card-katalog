@@ -118,7 +118,7 @@ namespace Types {
     export enum Unique {
         ASpreadOfRampantGreen = "Unique Power: A Spread of Rampant Green",
         BringerOfDreamsAndNightmares = "Unique Power: Bringer of Dreams and Nightmares",
-        LightngingsSwiftStrike = "Unique Power: Lightning's Swift Strike",
+        LightningsSwiftStrike = "Unique Power: Lightning's Swift Strike",
         OceansHungryGrasp = "Unique Power: Ocean's Hungry Grasp",
         RiverSurgesInSunlight = "Unique Power: River Surges in Sunlight",
         ShadowsFlickerLikeFlame = "Unique Power: Shadows Flicker Like Flame",
@@ -192,7 +192,7 @@ namespace Types {
                 return "rgba(255, 255, 0, 0.25)";
             case Unique.ASpreadOfRampantGreen:
             case Unique.BringerOfDreamsAndNightmares:
-            case Unique.LightngingsSwiftStrike:
+            case Unique.LightningsSwiftStrike:
             case Unique.OceansHungryGrasp:
             case Unique.RiverSurgesInSunlight:
             case Unique.ShadowsFlickerLikeFlame:
