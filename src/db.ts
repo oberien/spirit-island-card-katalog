@@ -722,7 +722,7 @@ namespace DB {
         new PowerCard(ProductSet.BranchAndClaw, Unique.SharpFangsBehindTheLeaves, "Teeth Gleam from Darkness", 1, Speed.Slow, new Ranges(Source.Presence, 1, [Land.Jungle]), TargetProperty.NoBlight,
             [Elements.Moon, Elements.Plant, Elements.Animal], "Moro Rogers",
             "1 Fear. Add 1 Beasts. -or- If target land has both Beasts and Invaders: 3 Fear."),
-        new PowerCard(ProductSet.BranchAndClaw, Unique.SharpFangsBehindTheLeaves, "Too near the Jungle", 0, Speed.Slow, new Ranges(Source.Presence, 1, [Land.Jungle]), LandAny,
+        new PowerCard(ProductSet.BranchAndClaw, Unique.SharpFangsBehindTheLeaves, "Too Near the Jungle", 0, Speed.Slow, new Ranges(Source.Presence, 1, [Land.Jungle]), LandAny,
             [Elements.Plant, Elements.Animal], "Moro Rogers",
             "1 Fear. Destroy 1 Explorer."),
         new PowerCard(ProductSet.BranchAndClaw, Unique.SharpFangsBehindTheLeaves, "Terrifying Chase", 1, Speed.Slow, new Ranges(Source.Presence, 0), LandAny,
