@@ -113,6 +113,7 @@ namespace Types {
         JaggedEarth = "Jagged Earth",
         Promo = "Promo",
         Promo2 = "Promo2",
+        HorizonsOfSpiritIsland = "Horizons of Spirit Island",
     }
 
     export enum Unique {
@@ -140,6 +141,12 @@ namespace Types {
         VengeanceAsABurningPlague = "Unique Power: Vengeance as a Burning Plague",
         VolcanoLoomingHigh = "Unique Power: Volcano Looming High",
         DownpourDrenchesTheWorld = "Unique Power: Downpour Drenches the World",
+        // Horizons
+        DevouringTeethLurkUnderfoot = "Unique Power: Devouring Teeth Lurk Underfoot",
+        EyesWatchFromTheTrees = "Unique Power: Eyes Watch From the Trees",
+        FathomlessMudOfTheSwamp = "Unique Power: Fathomless Mud of the Swamp",
+        RisingHEatOfStoneAndSand = "Unique Power: Rising Heat of Stone and Sand",
+        SunBrightWhirlwind = "Unique Power: Sun-Bright Whirlwind",
     }
 
     export enum PowerDeckType {
