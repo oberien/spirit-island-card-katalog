@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+set -e
+
+# clean
+truncate -s 0 ocr.txt
+for dir in out powers fears events; do
+    if [ -d $dir ]; then
+        rm -r $dir
+    fi
+done
+mkdir out
+
+
+function ocr {
+  name=$(tesseract --oem 0 -l eng "$1" stdout 2>/dev/null)
+  name=$(tr '\n' ' ' <<< "$name")
+  name=$(tr '[:upper:]' '[:lower:]' <<< "$name")
+  name=$(sed s/0/o/g <<< "$name")
+  name=$(sed s/ij/d/g <<< "$name")
+  name=$(sed s/uu/oo/g <<< "$name")
+  name=$(sed 's/[^a-z]/ /g' <<< "$name")
+  name=$(sed 's/\s\+/_/g' <<< "$name")
+  echo "$name"
+}
+
+# 1st arg: webp image to reencode
+# 2nd arg: file basename of output webp and jpg file without file ending
+function reencode {
+  # webp is already there
+  cp $1 "$2.webp"
+  # jpg
+  convert -background white -alpha remove -strip -interlace Plane -quality 80 -resize 300 "$2.webp" "$2.jpg"
+}
+
+# 1st arg: image to handle
+# 2nd arg: crop-parameter of the title of the card in the image
+# 3rd arg: "negate" if the image for OCR should be negated
+function handle_image {
+  image="$1"
+  crop="$2"
+
+  if [[ "$image" = *"/*.webp" ]]; then
+    echo -e "\u001b[33mskipping $f\u001b[0m"
+    return
+  fi
+
+  if [ ! -f "$image" ]; then
+    echo -e "\u001b[31mimage $image doesn't exist\u001b[0m"
+    return
+  fi
+  base="$(dirname "$image")/$(basename "$image" .webp)"
+  outbase="out/${base//\//_}"
+
+  # ocr name
+  convert -crop "$crop" -level 60%,65% "$image" "$outbase.pbm"
+  if [ "$3" = "negate" ]; then
+    convert -negate "$outbase.pbm" "$outbase.pbm"
+  fi
+  name=$(ocr "$outbase.pbm")
+  echo $name
+  echo $outbase $name >> ocr.txt
+
+  # encode image
+  reencode "$image" "$outbase"
+}
+
+FOLDERS="ressources/{base,branch-claw,feather-flame,horizons,jagged-earth}/"
+POWERS="${FOLDERS}{cards-major-webp,cards-minor-webp,cards-unique-webp}/*.webp"
+FEARS="${FOLDERS}cards-fear-webp/*.webp"
+EVENTS="${FOLDERS}cards-event-webp/*.webp"
+
+# power cards
+for f in `eval echo $POWERS`; do
+  handle_image "$f" "400x80+160+35" "negate"
+done
+
+# fear cards
+for f in `eval echo $FEARS`; do
+  handle_image "$f" "510x69+45+30" "negate"
+done
+
+# event cards
+for f in `eval echo $EVENTS`; do
+  handle_image "$f" "431x55+96+37"
+done
+
+# Horions contains duplicate cards of some basegame minors, majors and fears
+rm out/ressources_horizons_cards-{minor,major,fear}-webp*
+sed -i '/ressources_horizons_cards-minor-webp_/d' ocr.txt
+sed -i '/ressources_horizons_cards-major-webp_/d' ocr.txt
+sed -i '/ressources_horizons_cards-fear-webp_/d' ocr.txt

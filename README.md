@@ -61,14 +61,51 @@ In the past there have been different ways to acquire the images.
 
 #### Third Version - Scaled-Down Webps
 
+This is the current way to get the images.
+Scaled-down webp images are generated and provided by Dylan Thurston.
+
+Download the whole dropbox as zip file and extract it to the `imgsprep/ressources` folder.
+The structure should contain:
+```
+imgsprep/ressources
+├── {base,branch-claw,feater-flame,horizons,jagged-earth}
+│   ├── cards-blight-webp
+│   │   ├── 00.webp
+│   │   └── ...
+│   ├── cards-event-webp
+│   │   ├── 00.webp
+│   │   └── ...
+│   ├── cards-fear-webp
+│   │   ├── 00.webp
+│   │   └── ...
+│   ├── cards-major-webp
+│   │   ├── 00.webp
+│   │   └── ...
+│   ├── cards-minor-webp
+│   │   ├── 00.webp
+│   │   └── ...
+│   ├── cards-unique-webp
+│   │   ├── 00.webp
+│   │   └── ...
+```
+
+From within `imgsprep` run
+
+```bash
+# convert images to jpg and OCRs the names
+./convert
+# rename files using the OCR results; make sure you have generated the name-arrays
+./rename.py
+cp powers/* ../imgs/powers/
+cp fears/* ../imgs/fears/
+cp events/* ../imgs/events/
+```
+
 #### Second Version - PDFs
 
-This method was used until the release of Horizons.
+This method was used until before the release of Horizons.
 It supports powers, fear cards and event cards of the
 basegame, Branch & Claw, Jagged Earth and Feather & Flame (promo & promo2).
-
-Install git-lfs <https://git-lfs.github.com/>.
-From the root of the repository run `git lfs fetch`
 
 Download the pdfs containing the images of all images from dropbox (provided by Dylan Thurston)
 into the respective folders in `imgsprep/old-versions/pdfs`.
@@ -76,27 +113,27 @@ The pdfs should follow this structure within the `imgsprep/old-versions/pdfs` fo
 ```
 .
 ├── base
-│   ├── cards-fear.pdf
-│   ├── cards-major.pdf
-│   ├── cards-minor.pdf
-│   └── cards-spirit.pdf
+│   ├── cards-fear.pdf
+│   ├── cards-major.pdf
+│   ├── cards-minor.pdf
+│   └── cards-spirit.pdf
 ├── branchclaw
-│   ├── cards-event.pdf
-│   ├── cards-fear.pdf
-│   ├── cards-major.pdf
-│   ├── cards-minor.pdf
-│   └── cards-spirit.pdf
+│   ├── cards-event.pdf
+│   ├── cards-fear.pdf
+│   ├── cards-major.pdf
+│   ├── cards-minor.pdf
+│   └── cards-spirit.pdf
 ├── jagged-earth
-│   ├── cards-event.pdf
-│   ├── cards-fear.pdf
-│   ├── cards-major.pdf
-│   ├── cards-minor.pdf
-│   └── cards-spirit.pdf
+│   ├── cards-event.pdf
+│   ├── cards-fear.pdf
+│   ├── cards-major.pdf
+│   ├── cards-minor.pdf
+│   └── cards-spirit.pdf
 ├── promo
-│   └── cards-spirit.pdf
+│   └── cards-spirit.pdf
 ├── promo2
-│   ├── cards-fear.pdf
-│   └── cards-spirit.pdf
+│   ├── cards-fear.pdf
+│   └── cards-spirit.pdf
 ```
 
 In the file `imgsprep/old-versions/pdfs/rename.py` execute the commands to generate the names of cards in SICK
@@ -112,7 +149,7 @@ Within the `imgsprep/old-versions/pdfs` folder, run the following commands:
 ./extract
 # convert images to webp/jpg and OCRs the names
 ./convert
-# fixe names; make sure you have generated the name-arrays
+# rename files using the OCR results; make sure you have generated the name-arrays
 ./rename.py
 cp events/* ../../../imgs/events
 cp fears/* ../../../imgs/fears

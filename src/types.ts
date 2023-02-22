@@ -221,6 +221,11 @@ namespace Types {
             case Unique.VengeanceAsABurningPlague:
             case Unique.VolcanoLoomingHigh:
             case Unique.DownpourDrenchesTheWorld:
+            case Unique.DevouringTeethLurkUnderfoot:
+            case Unique.EyesWatchFromTheTrees:
+            case Unique.FathomlessMudOfTheSwamp:
+            case Unique.RisingHEatOfStoneAndSand:
+            case Unique.SunBrightWhirlwind:
                 return "rgba(0, 128, 0, 0.25)";
             default:
                 throw new Error();
