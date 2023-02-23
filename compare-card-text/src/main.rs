@@ -19,7 +19,7 @@ fn main() {
         let card_js: &str = &match cards_js.remove(&name) {
             Some(card) => card,
             None => {
-                println!("NOT FOUND: {}", name);
+                println!("\x1B[31mNOT FOUND: {}\x1B[0m", name);
                 print("PDF-DUMP", &content);
                 not_found += 1;
                 continue;
@@ -69,7 +69,7 @@ fn print(typ: &str, content: &str) {
 }
 fn print_error(typ: &str, content: &str, error_word: &str) {
     println!("    {}:", typ);
-    for mut line in content.lines() {
+    for line in content.lines() {
         print!("        ");
         for word in line.split_word_bounds() {
             if word == error_word {
@@ -97,9 +97,10 @@ fn get_cards() -> BTreeMap<String, String> {
         document = {
             addEventListener: () => {},
         };
+        navigator = { userAgent: "" };
     "#).unwrap();
     // execute cards.js
-    runtime.execute("cards.js", &cardsjs).unwrap();
+    runtime.execute("../cards.js", &cardsjs).unwrap();
 
     // create function to set outer rust-cards from within JS
     let cards = Rc::new(RefCell::new(BTreeMap::new()));
@@ -125,13 +126,18 @@ fn get_cards() -> BTreeMap<String, String> {
 }
 
 fn get_card_texts() -> BTreeMap<String, String> {
-    let walkdir = WalkDir::new("card-texts").into_iter()
+    let walkdir = WalkDir::new("../imgsprep/ressources").into_iter()
         .filter_map(|e| e.ok())
         .filter(|e| e.file_type().is_file())
         // .filter(|e| e.path().extension().map(|ext| ext == "txt").unwrap_or(false))
         .filter(|e| {
-            for file in &["cards-minor.txt", "cards-major.txt", "cards-spirit.txt", "cards-event.txt", "cards-fear.txt"] {
+            for file in ["cards-minor.txt", "cards-major.txt", "cards-unique.txt", "cards-event.txt", "cards-fear.txt"] {
                 if e.path().to_str().unwrap().contains(file) {
+                    // horizon cards apart from uniques are slightly reworded basegame cards
+                    // ignore them here as we only use the basegame images
+                    if e.path().to_str().unwrap().contains("horizon") && file != "cards-unique.txt" {
+                        return false
+                    }
                     return true;
                 }
             }
@@ -173,7 +179,7 @@ fn get_card_texts() -> BTreeMap<String, String> {
                 .replace('’', "'")
                 .replace("”", "\"")
                 .replace("“", "\"")
-                .replace("–", "--")
+                .replace("–", "-")
                 .replace("…", "...")
                 ;
             for fp in &false_positives {
