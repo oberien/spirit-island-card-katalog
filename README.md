@@ -42,7 +42,7 @@ scp -r imgs res index.html cards.js search.xml <server>:<folder>
 GtG can pdf-dump the card-pdfs, getting a not-perfect representation of the cards.
 It doesn't contain any images, symbols or alt-names, so it not really useful for transcribing new cards.
 However, it can be used to detect if card text changed.
-You need to have downloaded the ressource files (can be provided by Dylan Thurston) to `imgsprep/ressources`.
+You need to have downloaded the resource files (can be provided by Dylan Thurston) to `imgsprep/resources`.
 You also need to have compiled the `cards.js` file using `tsx` as described above.
 Then, having rust installed (e.g. via <https://rustup.rs/>), within `compare-card-text` run `cargo run --release`.
 
@@ -65,10 +65,10 @@ In the past there have been different ways to acquire the images.
 This is the current way to get the images.
 Scaled-down webp images are generated and provided by Dylan Thurston.
 
-Download the whole dropbox as zip file and extract it to the `imgsprep/ressources` folder.
+Download the whole dropbox as zip file and extract it to the `imgsprep/resources` folder.
 The structure should contain:
 ```
-imgsprep/ressources
+imgsprep/resources
 ├── {base,branch-claw,feater-flame,horizons,jagged-earth}
 │   ├── cards-blight-webp
 │   │   ├── 00.webp
@@ -100,6 +100,7 @@ From within `imgsprep` run
 cp powers/* ../imgs/powers/
 cp fears/* ../imgs/fears/
 cp events/* ../imgs/events/
+cp blights/* ../imgs/blights/
 ```
 
 #### Second Version - PDFs

@@ -12,12 +12,18 @@ fears = ["spreading_timidity", "communities_in_disarray", "depopulation", "mimic
 # generated with:
 # console.log("[" + CARDS.filter((c) => c instanceof Types.EventCard).map((c) => '"' + c.getImagePath().substring(12) + '"').join(", ") + "]")
 events = ["overconfidence", "temporary_truce", "pull_together_in_adversity", "relentless_optimism", "resourceful_populace", "bureaucrats_adjust_funding", "eager_explorers", "the_struggles_of_growth", "sprawl_contained_by_the_wilds", "civic_engagement", "coastal_towns_multiply", "wounded_lands_attract_explorers", "thriving_trade", "cities_rise", "provincial_seat", "fortuneseekers", "gradual_corruption", "seek_new_farmland", "the_frontier_calls", "smaller_ports_spring_up", "no_bravery_without_numbers", "mapmakers_chart_the_wild", "invested_aristocracy", "harvest_bounty_harvest_dust", "lifes_balance_tilts", "dahan_trade_with_the_invaders", "hardworking_settlers", "numinous_crisis", "remnants_of_a_spirits_heart", "lesser_spirits_imperiled", "slave_rebellion", "promising_farmland", "heavy_farming", "urban_development", "population_rises", "wellprepared_explorers", "tightknit_communities", "invaders_surge_inland", "search_for_new_lands", "putting_down_roots", "rising_interest_in_the_island", "distant_exploration", "investigation_of_dangers", "cultural_assimilation", "strange_tales_attract_explorers", "interesting_discoveries", "wave_of_reconnaissance", "seeking_the_interior", "a_strange_madness_among_the_beasts", "missionaries_arrive", "outpaced", "sacred_sites_under_threat", "war_touches_the_islands_shores", "new_species_spread", "farmers_seek_the_dahan_for_aid", "years_of_little_rain"]
+# generated with:
+# console.log("[" + CARDS.filter((c) => c instanceof Types.BlightCard).map((c) => '"' + c.getImagePath().substring(13) + '"').join(", ") + "]")
+blights = ["downward_spiral", "memory_fades_to_dust", "back_against_the_wall", "promising_farmlands", "disintegrating_ecosystem", "aid_from_lesser_spirits", "tipping_point", "erosion_of_will", "a_pall_upon_the_land", "unnatural_proliferation", "all_things_weaken", "thriving_communities", "power_corrodes_the_spirit", "untended_land_crumbles", "invaders_find_the_land_to_their_liking", "strong_earth_shatters_slowly"]
+
 if not os.path.isdir("powers/"):
     os.mkdir("powers/")
 if not os.path.isdir("fears/"):
     os.mkdir("fears/")
 if not os.path.isdir("events/"):
     os.mkdir("events/")
+if not os.path.isdir("blights/"):
+    os.mkdir("blights/")
 
 with open("ocr.txt") as f:
     content = f.readlines()
@@ -27,6 +33,8 @@ content = [line.split()[0:2] for line in content]
 # process ocr'd data for edge-cases
 # Sea Monsters exists once in its old for in B&C and once in its new form in JE
 content = [line for line in content if not ("branch-claw" in line[0] and "sea_monsters" in line[1])]
+# unnatural proliferation is OCR'd horribly
+content = [line if not ("jagged-earth" in line[0] and "eemtural_frulifeehun_" in line[1]) else [line[0], "unnatural_proliferation"] for line in content ]
 
 for card in content:
     if len(card) != 2:
@@ -59,6 +67,15 @@ for card in content:
             print("MATCHED: {:45} {:45} ({})".format(ocr, event, eventrating))
         else:
             print("NOT MATCHED (event): {:40} {:>30}({})".format(ocr, event, eventrating))
+    elif len(blights) > 0 and "blight" in file:
+        (blight, blightrating) = process.extractOne(ocr, blights)
+        if blightrating >= 69:
+            blights.remove(blight)
+            shutil.copy(file + ".webp", "blights/" + blight + ".webp")
+            shutil.copy(file + ".jpg", "blights/" + blight + ".jpg")
+            print("MATCHED: {:45} {:45} ({})".format(ocr, blight, blightrating))
+        else:
+            print("NOT MATCHED (blight): {:40} {:>30}({})".format(ocr, blight, blightrating))
     else:
 
         print("NOT MATCHED (any): {:40}".format(ocr))
@@ -68,4 +85,6 @@ if len(fears) > 0:
     print("FEARS NOT EMPTY: ", fears)
 if len(events) > 0:
     print("EVENTS NOT EMPTY: ", events)
+if len(blights) > 0:
+    print("BLIGHTS NOT EMPTY: ", blights)
 

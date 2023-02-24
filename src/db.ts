@@ -12,6 +12,8 @@ namespace DB {
     import EventDesc = Types.EventDesc;
     import AdversaryEvent = Types.AdversaryEvent;
     import Adversary = Types.Adversary;
+    import BlightCard = Types.BlightCard;
+    import BlightType = Types.BlightType;
     const { PowerCard, ProductSet, Unique, Speed, Ranges, Source, LandAny, Elements, TargetSpirit, TargetProperty, Land, PowerDeckType, FearCard, FearType } = Types;
 
     export enum TokenEvent {
@@ -1432,5 +1434,24 @@ namespace DB {
         new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.PullTogetherInAdversity, Events.PullTogetherInAdversity, Events.PurgeTheLandWithSaltAndFire, TokenEvent.ExplorersBlunder, DahanEvent.CarefulDefense),
         new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.TemporaryTruce, Events.TemporaryCaution, Events.TemporaryCaution, TokenEvent.PreyOnTheHeedless, DahanEvent.SpeakOfTheSpiritsAnger),
         new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.Overconfidence, Events.TerrorBreedsAggression, Events.TerrorBreedsAggression, TokenEvent.BeastsMultiply, DahanEvent.CoordinatedDefense),
+
+        // Blight
+        // Basegame
+        new BlightCard(ProductSet.Basegame, BlightType.BlightedIsland, "Downward Spiral", 5, "At the start of each Invader Phase each Spirit destroys 1 of their Presence."),
+        new BlightCard(ProductSet.Basegame, BlightType.BlightedIsland, "Memory Fades to Dust", 4, "At the start of each Invader Phase each Spirit Forgets a Power or destroys 1 of their Presence."),
+        new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Back Against the Wall", 2, "Every Spirit Phase each Spirit gains +1 Energy and +1 Card Play."),
+        new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Promising Farmlands", 4, "Immediately, on each board: Add 1 Town and 1 City to an Inland land with no Town / City."),
+        new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Disintegrating Ecosystem", 5, "Immediately, on each board: Destroy 1 Beasts, then add 1Blight to a land with Town / City."),
+        new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Aid from Lesser Spirits", 2, "Immediately, draw 1 Minor Power Card per player plus 1 more. Give 1 to each Spirit. They may be used every turn as if played, but cost no Card Plays / Energy. Place unselected card in Minor Powers discard pile."),
+        new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Tipping Point", 5, "Immediately, destroy 3 resence from each Spirit."),
+        new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Erosion of Will", 3, "Immediately, 2 Fear per player. Each Spirit destroys 1 of their Presence and loses 1 Energy."),
+        new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "A Pall upon the Land", 3, "Immediately, on each board: destroy 1 Presence and remove 1 Town."),
+        new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "Unnatural Proliferation", 3, "Immediately: Each Spirit adds 1 Presence to a land with their Presence. On Each Board: Add 1 Dahan to a land with Dahan, and 2 City to the land with fewest Town / City (min. 1)."),
+        new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "All Things Weaken", 3, "Ongoing, starting next turn: Invaders and Dahan have -1 Health (min. 1). The land takes Blight on 1 less Damage (normally 1). When you add Blight, it Destroys all Presence / Beasts in that land and 1 Presence (total) in an adjacent land."),
+        new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "Thriving Communities", 4, "Immediately, on each board: In 4 different lands with Explorer / Town, Replace 1 Town with1 City or Replace 1 Explorer with 1 Town."),
+        new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "Power Corrodes the Spirit", 4, "At the start of each Invader Phase each Spirit Destroys 1 of their Presence if they have 3 or more Power Cards in play, or have a Power Card in play costing 4 or more (printed) Energy."),
+        new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "Untended Land Crumbles", 4, "At the start of each Invader Phase, On Each Board: Add 1 Blight to a land adjacent to Blight. Spirits may prevent this on any / all boards; each board to be protected requires jointly paying 3 Energy or Destroying 1 Presence from that board."),
+        new BlightCard(ProductSet.JaggedEarth, BlightType.StillHealthyIsland, "Invaders find the Land to their Liking", 2, "Immediately: If the Terror Level is I / II / III, add 1 / 1.5 / 2 Fear Markers per player to the Fear pool. (Round down at Terror Level II.)"),
+        new BlightCard(ProductSet.JaggedEarth, BlightType.StillHealthyIsland, "Strong Earth Shatters Slowly", 2, "Immediately: Each player adds 1 Blight (from this card) to a land adjacentto Blight."),
     ];
 }

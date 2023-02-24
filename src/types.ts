@@ -168,7 +168,12 @@ namespace Types {
         AdversaryEvent = "Adversary Event",
     }
 
-    export type CardType = PowerType | FearType | EventType | EventType[];
+    export enum BlightType {
+        BlightedIsland = "Blighted Island",
+        StillHealthyIsland = "Still-Healthy Island (for now)",
+    }
+
+    export type CardType = PowerType | FearType | EventType | EventType[] | BlightType;
 
     export enum Adversary {
         KingdomOfFrance = "Kingdom of France",
@@ -191,7 +196,7 @@ namespace Types {
         Blighted,
     }
 
-    function toColor(type: string) {
+    function powerToColor(type: string) {
         switch (type) {
             case PowerDeckType.Minor:
                 return "rgba(50, 50, 50, 0.3)";
@@ -392,7 +397,7 @@ namespace Types {
         getFrontOverlay(): Node | null {
             let overlay = <HTMLDivElement> document.createElement("div");
             overlay.style.position = "absolute";
-            overlay.style.backgroundColor = toColor(<PowerType>this.type);
+            overlay.style.backgroundColor = powerToColor(<PowerType>this.type);
             overlay.style.width = "67%";
             overlay.style.height = "10%";
             overlay.style.left = "27%";
@@ -671,5 +676,45 @@ namespace Types {
         }
 
     }
+
+    export class BlightCard extends Card {
+        public description: string;
+
+        constructor(set: ProductSet, type: BlightType, public name: string, public blightPerPlayer: number, public effect: string) {
+            super(set, type, name);
+            // set description for searching
+            let condition;
+            switch (type) {
+                case BlightType.BlightedIsland:
+                    condition = "If there is ever NO Blight here, players lose.";
+                    break;
+                case BlightType.StillHealthyIsland:
+                    condition = "If there is ever NO Blight here, draw a new Blight Card. If comes into play already flipped.";
+                    break;
+            }
+            this.description = effect + " " + blightPerPlayer + " Blight per player. Any Blight removed from the board returns here. " + condition;
+        }
+
+        getImageFolder(): string {
+            return "imgs/blights/";
+        }
+
+        getBacksideText(): string {
+            let text = "";
+            text += "<b>Set</b>: " + this.set + "<br/>";
+            text += "<b>Type</b>: " + this.type + "<br/>";
+            text += "<b>Name</b>: " + this.name + "<br/>";
+            text += "<b>Effect</b>: " + this.effect + "<br/>";
+            text += "<b>Blight per player</b>: " + this.blightPerPlayer + "<br/>";
+            text += "<a href=\"https://querki.net/u/darker/spirit-island-faq/#!"
+                + encodeURIComponent(this.name) + "\" target='_blank'>FAQ</a><br/>";
+            return text;
+        }
+
+        getFrontOverlay(): Node | null {
+            return null;
+        }
+    }
+
 }
 

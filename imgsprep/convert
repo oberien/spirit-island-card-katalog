@@ -3,7 +3,7 @@ set -e
 
 # clean
 truncate -s 0 ocr.txt
-for dir in out powers fears events; do
+for dir in out powers fears events blights; do
     if [ -d $dir ]; then
         rm -r $dir
     fi
@@ -64,10 +64,11 @@ function handle_image {
   reencode "$image" "$outbase"
 }
 
-FOLDERS="ressources/{base,branch-claw,feather-flame,horizons,jagged-earth}/"
+FOLDERS="resources/{base,branch-claw,feather-flame,horizons,jagged-earth}/"
 POWERS="${FOLDERS}{cards-major-webp,cards-minor-webp,cards-unique-webp}/*.webp"
 FEARS="${FOLDERS}cards-fear-webp/*.webp"
 EVENTS="${FOLDERS}cards-event-webp/*.webp"
+BLIGHTS="${FOLDERS}cards-blight-webp/*.webp"
 
 # power cards
 for f in `eval echo $POWERS`; do
@@ -84,8 +85,14 @@ for f in `eval echo $EVENTS`; do
   handle_image "$f" "431x55+96+37"
 done
 
-# Horions contains duplicate cards of some basegame minors, majors and fears
-rm out/ressources_horizons_cards-{minor,major,fear}-webp*
-sed -i '/ressources_horizons_cards-minor-webp_/d' ocr.txt
-sed -i '/ressources_horizons_cards-major-webp_/d' ocr.txt
-sed -i '/ressources_horizons_cards-fear-webp_/d' ocr.txt
+# blight cards
+for f in `eval echo $BLIGHTS`; do
+  handle_image "$f" "538x40+32+160"
+done
+
+# Horions contains duplicate cards of some basegame minors, majors, fears and blights
+rm out/resources_horizons_cards-{minor,major,fear}-webp*
+sed -i '/resources_horizons_cards-minor-webp_/d' ocr.txt
+sed -i '/resources_horizons_cards-major-webp_/d' ocr.txt
+sed -i '/resources_horizons_cards-fear-webp_/d' ocr.txt
+sed -i '/resources_horizons_cards-blight-webp_/d' ocr.txt

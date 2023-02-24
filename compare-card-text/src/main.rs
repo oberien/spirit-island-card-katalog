@@ -126,12 +126,12 @@ fn get_cards() -> BTreeMap<String, String> {
 }
 
 fn get_card_texts() -> BTreeMap<String, String> {
-    let walkdir = WalkDir::new("../imgsprep/ressources").into_iter()
+    let walkdir = WalkDir::new("../imgsprep/resources").into_iter()
         .filter_map(|e| e.ok())
         .filter(|e| e.file_type().is_file())
         // .filter(|e| e.path().extension().map(|ext| ext == "txt").unwrap_or(false))
         .filter(|e| {
-            for file in ["cards-minor.txt", "cards-major.txt", "cards-unique.txt", "cards-event.txt", "cards-fear.txt"] {
+            for file in ["cards-minor.txt", "cards-major.txt", "cards-unique.txt", "cards-event.txt", "cards-fear.txt", "cards-blight.txt"] {
                 if e.path().to_str().unwrap().contains(file) {
                     // horizon cards apart from uniques are slightly reworded basegame cards
                     // ignore them here as we only use the basegame images
@@ -151,22 +151,17 @@ fn get_card_texts() -> BTreeMap<String, String> {
         let content = std::fs::read_to_string(entry.path()).unwrap();
         for card in content.split('\u{c}') {
             let false_positives = [
-                "STAGES I + II", "STAGES II + III", "STAGE III", "STAGE I",
+                "STAGE I", "STAGES I + II", "STAGES II + III", "STAGE III",
                 "HEALTHY ISLAND", "HEALTHY LAND", "BLIGHTED ISLAND", "BLIGHTED LAND",
+                "STILL-HEALTHY ISLAND", "(FOR NOW)",
             ];
             let mut description = card;
-            let mut name = false_positives[0];
-            while false_positives.iter().any(|fp| name.contains(fp)) {
-                name = match description.split("\n\n").next() {
-                    Some(name) => name,
-                    // files end with FF
-                    None => continue,
-                };
-                description = description[name.len()..].trim();
+            while false_positives.iter().any(|fp| description.trim().starts_with(fp)) {
+                description = description.split_once("\n").unwrap().1.trim();
             }
             // names can span over multiple lines
             // js names are snake case
-            let name = name.replace("\n", " ")
+            let name = description.split("\n\n").next().unwrap().replace("\n", " ")
                 .to_lowercase()
                 .replace(char::is_whitespace, "_");
             let name = non_letter.replace(&name, "");
