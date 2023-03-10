@@ -1099,7 +1099,7 @@ namespace DB {
         new PowerCard(ProductSet.HorizonsOfSpiritIsland, Unique.DevouringTeethLurkUnderfoot, "Ferocious Rampage", 2, Speed.Slow, new Ranges(Source.Presence, 0), LandAny,
             [Elements.Fire, Elements.Animal], "Moro Rogers",
             "1 Fear. 3 Damage to Explorer / Town only. (+1 Damage to Explorer / Town from your \"Territorial Aggression\" Special Rule.)"),
-        new PowerCard(ProductSet.HorizonsOfSpiritIsland, Unique.DevouringTeethLurkUnderfoot, "Gift of Furious Might", 0, Speed.Fast, null, TargetSpirit.Another,
+        new PowerCard(ProductSet.HorizonsOfSpiritIsland, Unique.DevouringTeethLurkUnderfoot, "Gift of Furious Might", 1, Speed.Fast, null, TargetSpirit.Another,
             [Elements.Moon, Elements.Fire, Elements.Animal], "Moro Rogers",
             "Once this turn, Target Spirit may deal +3 Damage when using a Damage-dealing Power. (This adds +3 Damage total, even for a Power that Damages multiple Invaders or \"each Invader\".)"),
         new PowerCard(ProductSet.HorizonsOfSpiritIsland, Unique.DevouringTeethLurkUnderfoot, "Herd Towards the Lurking Maw", 1, Speed.Slow, new Ranges(Source.Presence, 0), LandAny,
