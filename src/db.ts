@@ -1198,7 +1198,7 @@ namespace DB {
         new FearCard(ProductSet.Basegame, FearType.Fear, "Seek Safety",
             "Each player may Push 1 Explorer into a land with more Town / City than the land it came from.",
             "Each player may Gather 1 Explorer into a land with Town / City, or Gather 1 Town into a land with City.",
-            "Each player may remove up to 3 Health worth of Invaders from a land without Town."),
+            "Each player may remove up to 3 Health worth of Invaders from a land without City."),
         new FearCard(ProductSet.Basegame, FearType.Fear, "Wary of the Interior",
             "Each player removes 1 Explorer from an Inland land.",
             "Each player removes 1 Explorer / Town from an Inland land.",
