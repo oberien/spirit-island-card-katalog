@@ -64,7 +64,7 @@ function handle_image {
   reencode "$image" "$outbase"
 }
 
-FOLDERS="resources/{base,branch-claw,feather-flame,horizons,jagged-earth}/"
+FOLDERS="resources/{base,branch-claw,feather-flame,horizons,jagged-earth,nature-incarnate}/"
 POWERS="${FOLDERS}{cards-major-webp,cards-minor-webp,cards-unique-webp}/*.webp"
 FEARS="${FOLDERS}cards-fear-webp/*.webp"
 EVENTS="${FOLDERS}cards-event-webp/*.webp"

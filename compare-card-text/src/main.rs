@@ -1,9 +1,7 @@
-use std::cell::RefCell;
-use std::rc::Rc;
 use std::collections::BTreeMap;
 
 use walkdir::WalkDir;
-use deno_core::{JsRuntime, json_op_sync, serde_json::Value};
+use deno_core::{JsRuntime, v8};
 use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
@@ -21,6 +19,7 @@ fn main() {
             None => {
                 println!("\x1B[31mNOT FOUND: {}\x1B[0m", name);
                 print("PDF-DUMP", &content);
+                println!("\n---------------------\n");
                 not_found += 1;
                 continue;
             }
@@ -33,6 +32,7 @@ fn main() {
                 println!("CARD DOESN'T MATCH: {} (word {:?} pdf {} vs js {:?})", name, word, count, js_count);
                 print_error("PDF-DUMP", &content, word);
                 print_error("JS", &card_js, word);
+                println!("\n---------------------\n");
                 not_matched += 1;
                 break;
             }
@@ -93,36 +93,33 @@ fn get_cards() -> BTreeMap<String, String> {
     let mut runtime = JsRuntime::new(Default::default());
     let cardsjs = std::fs::read_to_string("../cards.js").unwrap();
     // stub document
-    runtime.execute("<init>", r#"
+    runtime.execute_script("<init>", r#"
         document = {
             addEventListener: () => {},
         };
         navigator = { userAgent: "" };
     "#).unwrap();
     // execute cards.js
-    runtime.execute("../cards.js", &cardsjs).unwrap();
+    runtime.execute_script("../cards.js", cardsjs).unwrap();
 
-    // create function to set outer rust-cards from within JS
-    let cards = Rc::new(RefCell::new(BTreeMap::new()));
-    let cards2 = Rc::clone(&cards);
-    runtime.register_op("op_set_cards", json_op_sync(move |_state, json, _zero_copy| {
-        *cards2.borrow_mut() = serde_json::from_value(json).unwrap();
-        Ok(Value::Null)
-    }));
-    runtime.execute("<extract-cards>", r#"
+    // eval code to give us the card texts
+    let mut scope = runtime.handle_scope();
+    let scope = &mut v8::EscapableHandleScope::new(&mut scope);
+    let source = v8::String::new(scope, r#"
         const map = {};
         for (card of CARDS) {
             const name = card.getImagePath().slice(card.getImageFolder().length);
             map[name] = card.getSearchString().toLowerCase();
             // map[name] = card.getBacksideText().toLowerCase();
         }
-        Deno.core.ops();
-        Deno.core.jsonOpSync("op_set_cards", map);
+        JSON.stringify(map)
     "#).unwrap();
+    let script = v8::Script::compile(scope, source, None).unwrap();
+    let v = script.run(scope).unwrap();
+    scope.escape(v);
+    let json = v.to_rust_string_lossy(scope);
 
-    // extract BTreeMap from Rc<RefCell<_>>
-    drop(runtime);
-    Rc::try_unwrap(cards).unwrap().into_inner()
+    serde_json::from_str(&json).unwrap()
 }
 
 fn get_card_texts() -> BTreeMap<String, String> {

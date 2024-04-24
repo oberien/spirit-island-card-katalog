@@ -48,6 +48,7 @@ namespace Types {
 
     export enum TargetProperty {
         Dahan = "Dahan",
+        TwoDahan = "2 Dahan",
         Invaders = "Invaders",
         Town = "Town",
         City = "City",
@@ -59,6 +60,8 @@ namespace Types {
         TwoBeasts = "2 Beasts",
         Inland = "Inland",
         Disease = "Disease",
+        Strife = "Strfe",
+        Incarna = "Incarna",
     }
 
     export type TargetType = Land | TargetSpirit | TargetProperty;
@@ -71,13 +74,16 @@ namespace Types {
     }
 
     export class Ranges {
-        constructor(public from: Source, public range: number | number[], public land?: (Land[] | undefined)) {
+        constructor(public from: Source, public range: number | number[], public land?: (Land[] | undefined), public landProperty?: (TargetProperty | undefined)) {
         }
 
         toString() {
             let res = this.from + "";
             if (this.land) {
                 res += " on " + this.land;
+            }
+            if (this.landProperty) {
+                res += " with " + this.landProperty;
             }
             res += ": ";
             if (Array.isArray(this.range)) {
@@ -114,6 +120,7 @@ namespace Types {
         Promo = "Promo",
         Promo2 = "Promo2",
         HorizonsOfSpiritIsland = "Horizons of Spirit Island",
+        NatureIncarnate = "Nature Incarnate",
     }
 
     export enum Unique {
@@ -147,6 +154,15 @@ namespace Types {
         FathomlessMudOfTheSwamp = "Unique Power: Fathomless Mud of the Swamp",
         RisingHEatOfStoneAndSand = "Unique Power: Rising Heat of Stone and Sand",
         SunBrightWhirlwind = "Unique Power: Sun-Bright Whirlwind",
+        // Nature Incarnate
+        BreathOfDarknessDownYourSpine = "Unique Power: Breath of Darkness Down Your Spine",
+        DancesUpEarthquakes = "Unique Power: Dances Up Earthquakes",
+        EmberEyedBehemoth = "Unique Power: Ember-Eyed Behemoth",
+        HearthVigil = "Unique Power: Hearth-Vigil",
+        RelentlessGazeOfTheSun = "Unique Power: Relentless Gaze of the Sun",
+        ToweringRootsOfTheJungle = "Unique Power: Towering Roots of the Jungle",
+        WanderingVoiceKeensDelirium = "Unique Power: Wandering Voice Keens Delirium",
+        WoundedWatersBleeding = "Unique Power: Wounded Waters Bleeding",
     }
 
     export enum PowerDeckType {
@@ -231,6 +247,14 @@ namespace Types {
             case Unique.FathomlessMudOfTheSwamp:
             case Unique.RisingHEatOfStoneAndSand:
             case Unique.SunBrightWhirlwind:
+            case Unique.BreathOfDarknessDownYourSpine:
+            case Unique.DancesUpEarthquakes:
+            case Unique.EmberEyedBehemoth:
+            case Unique.HearthVigil:
+            case Unique.RelentlessGazeOfTheSun:
+            case Unique.ToweringRootsOfTheJungle:
+            case Unique.WanderingVoiceKeensDelirium:
+            case Unique.WoundedWatersBleeding:
                 return "rgba(0, 128, 0, 0.25)";
             default:
                 throw new Error();
@@ -527,8 +551,8 @@ namespace Types {
     }
 
     export class ChoiceEventCard extends EventCard {
-        constructor(set: ProductSet, name: string, public description: string, public choices: ChoiceDesc[],
-                    tokenevent: TokenEvent | null, dahanevent: DahanEvent | null) {
+        constructor(set: Types.ProductSet, name: string, public description: string, public defaultactions: string[] | null,
+                    public choices: Types.ChoiceDesc[], tokenevent: DB.TokenEvent | null, dahanevent: DB.DahanEvent | null) {
             super(set, EventType.ChoiceEvent, name, tokenevent, dahanevent);
         }
 
@@ -538,6 +562,9 @@ namespace Types {
             text += "<b>Type</b>: " + this.type + "<br/>";
             text += "<b>Name</b>: " + this.name + "<br/>";
             text += "<b>Description</b>: " + this.description + "<br/>";
+            for (let action of this.defaultactions ?? []) {
+                text += "• " + action + "<br/>";
+            }
             for (let [i, choice] of this.choices.entries()) {
                 text += "<b>Choice" + i + "</b>: " + choice + "<br/>";
             }
@@ -689,7 +716,7 @@ namespace Types {
                     condition = "If there is ever NO Blight here, players lose.";
                     break;
                 case BlightType.StillHealthyIsland:
-                    condition = "If there is ever NO Blight here, draw a new Blight Card. If comes into play already flipped.";
+                    condition = "If there is ever NO Blight here, draw a new Blight Card. It comes into play already flipped.";
                     break;
             }
             this.description = effect + " " + blightPerPlayer + " Blight per player. Any Blight removed from the board returns here. " + condition;

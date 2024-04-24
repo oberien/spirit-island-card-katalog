@@ -32,12 +32,16 @@ namespace DB {
         CasualtiesOfFangAndSting = "Casualties of Fang and Sting: On Each Board: Destroy 1 Explorer / Town in a land with Beasts.",
         QuitTheFarmedLands = "Quit the Farmed Lands: On Each Board: Push 1 Beasts to a land without Town / City. 1 Fear if Explorer are present there.",
         ExplorersBlunder = "Explorers Blunder: On Each Board: Destroy 2 Explorer among lands with Beasts.",
-        PreyOnTheHeedless = "Prey on the Heedless: In each land with Beasts, 1 Damage per Beasts.",
+        PreyOnTheHeedlessJE = "Prey on the Heedless: In each land with Beasts, 1 Damage per Beasts.",
+        PreyOnTheHeedlessNI = "Prey on the Heedless: In each land with Beasts: 1 Damage per Beasts.",
         HuntingParties = "Hunting Parties: For each land with Beasts and City: 1 Fear and Destroy 1 Beasts there.",
         BeastsChaseOffHomesteaders = "Beasts Chase Off Homesteaders: On Each Board: Push up to 2 Explorer or 1 Town from a land with Beasts.",
         TerrifyingBeasts = "Terrifying Beasts: 2 Fear per board with 2 or more Beasts.",
         LairInUntamedLands = "Lair in Untamed Lands: On Each Board: Add 1 Beasts to a land without Town / City / Blight.",
         BeastsPreyOnTheInjured = "Beasts Prey on the Injured: This turn, Beasts also count as Badlands. On Each Board: Destroy a Damaged Invader in a land with Beasts.",
+        // Nature Incarnate
+        TerritorialBeasts = "Territorial Beasts: On Each Board: Isolate a land with Beasts. 1 Fear if Invaders are present.",
+        SandStalkers = "Sand Stalkers: On Each Board: Add 1 Beasts to the Sands with the most Invaders. 1 Fear if Invaders are present there.",
 
         // Disease
         // Branch & Claw
@@ -54,9 +58,21 @@ namespace DB {
         OutbreaksShift = "Outbreaks Shift: On Each Board: Push 1 Disease to the adjacent land with the most Invaders (min. 1).",
         VirulenceAmongClosePackedHomes = "Virulence Among Close-Packed Homes: On Each Board: Add 1 Disease to the Inland land with the most Town / City (min. 1).",
         PestilenceArrivesOnCanvasSails = "Pestilence Arrives on Canvas Sails: On Each Board: Add 1 Disease to the Coastal land with the most Town / City (min. 1). In that land, 3 Damage to Dahan.",
+        // Nature Incarnate
+        PlaguesInPopulousLands = "Plagues in Populous Lands: On Each Board: Add 1 Disease to a land with 3 or more Invaders.",
 
         // Disease / Strife
+        // Branch & Claw
         Stricken = "Stricken: In lands with Disease / Strife, Invaders skip Ravage Actions.",
+
+        // Badlands
+        // Nature Incarnate
+        EcosystemDamage = "Ecosystem Damage: On Each Board: Add 1 Badlands to a land with Blight.",
+
+        // Badlands / Beasts
+        // Nature Incarnate
+        DangerousLands = "Dangerous Lands: On Each Board: 1 Damage in a land with Badlands / Beasts. 1 Damage to Dahan in a land with Badlands / Beasts and Dahan.",
+        SecureSettledTerritory = "Secure Settled Territory: On Each Board: In a land with Badlands / Beasts and Town / City: Destroy 1 Badlands / Beasts. 1 Damage to Dahan. 1 Damage.",
     }
 
     export enum DahanEvent {
@@ -102,7 +118,15 @@ namespace DB {
         RallyToTheDefenseOfDistantKin = "Rally to the Defense of Distant Kin: On Each Board: Gather 1 Dahan into a land with Dahan. In that land, Defend 1 per Dahan.",
         TellTheOldStories = "Tell the Old Stories: Each Spirit with at least 2 Dahan among its lands either Reclaims 1 Power Card or re-gains a Unique Power it previously Forgot.",
         ReturnToOldPillars = "Return to Old Pillars: On Each Board: Gather 1 or 2 Dahan into a land with Dahan Setup symbols.",
-        KeepFarFromTheLandsOfPLague = "Keep Far From the Lands of Plague: On Each Board: Push 3 Dahan from lands with Disease to lands without Disease.",
+        KeepFarFromTheLandsOfPlague = "Keep Far From the Lands of Plague: On Each Board: Push 3 Dahan from lands with Disease to lands without Disease.",
+        // Nature Incarnate
+        TendToTheLivingEarth = "Tend to the Living Earth: On Each Board with 5 or more Dahan: Remove 1 Blight in a land with Dahan.",
+        StrengthFromTrade = "Strength from Trade: Lands with Dahan have Defend 2. In lands with Town / City and no Dahan, Ravage Actions do +1 Damage.",
+        YearsOfHealthAndHarmony = "Years of Health and Harmony: On Each Board with 5 or more Dahan: Add 1 Dahan to the land with the most Dahan.",
+        NetworkOfSupportAndTrade = "Network of Support and Trade: When Invaders Ravage, if the land has Dahan, Defend 1 + Defend 1 per adjacent Dahan.",
+        SpreadingConflictPromptsCaution = "Spreading Conflict Prompts Caution: On Each Board: Push up to 3 Dahan from a land matching a Ravage card to a land not matching a Ravage card.",
+        WaningSupport = "Waning Support: On Each Board with Town / City ...and 5 or fewer Dahan: Destroy 1 Presence. ...and 3 or fewer Dahan: Also: Add 1 Blight to a land with Town / City.",
+        WarAmongTheDahan = "War Among the Dahan: On Each Board: In the land with the most Dahan (min. 2), Push half the Dahan (round down).",
     }
 
     class Events {
@@ -176,6 +200,14 @@ namespace DB {
 			["Remove 1 Blight per player from the Blight Card. Then, if the Blight Card has not flipped, keep Removing Blight until it flips. Gain 3 Energy per Blight Removed, divided as evenly as possible among all Spirits."]);
 		public static PourYourStrengthIntoTheIsland = new ChoiceDesc("Pour Your Strength Into the Island", null,
 			["Each Spirit either pays 3 Energy, Forgets 2 Power Cards, or returns 1 Presence to their Presence tracks.", "Add 1 Blight per Spirit to the Blight Card (From the box)."]);
+        // Nature Incarnate
+        public static EndureItsForcesAsBestYouCan = new ChoiceDesc("Endure Its Forces As Best You Can", null, ["Destroy 1 Presence and lose 1 Energy."]);
+        public static SeekToControlItThoughItExhaustsYou = new ChoiceDesc("Seek To Control It, Though It Exhausts You", null,
+            ["Choose any non-Major Power Card of yours (in hand, play, or discard). Put it into play (without paying its cost); use it immediately (even if already used this turn); and then Forget it.", "Discard all Power Cards (from hand)."]);
+        public static EncourageTheDestruction = new ChoiceDesc("Encourage the Destruction", null, ["4 Fear. Destroy half of Town (round up) and half of City (round up). Add 2 Blight without cascading."]);
+        public static BluntTheOffensive = new ChoiceDesc("Blunt the Offensive", null, ["Destroy 1 Town but do not gain Fear."]);
+        public static LetTheWarningWaftIntoDaysPast = new ChoiceDesc("Let the Warning waft into Days Past", null, ["Lose 1 Energy and replace your most expensive non-Unique Power Card in hand or discard pile (combined) with one of the same type: Reveal the top 4 cards of the deck, Take 1, put it where your card is, then put your card in that deck's discard."]);
+        public static HeadOffTheProblemsYourself = new ChoiceDesc("Head off the Problems Yourself", null, ["Add 1 Omen token (Scenario Marker) to the land without Omens that has the most Invaders (min. 1). After the Ravage Step next turn, at each Omen: 2 Fear. Invaders Ravage. Remove 1 Omen."]);
 
         // Stage Events
         // Branch & Claw
@@ -223,6 +255,11 @@ namespace DB {
         public static TerrorBreedsAggression = new EventDesc("Terror Breeds Aggression", "For every 2 Fear Cards currently in the Earned Fear Cards pile, Invaders do +1 Damage (per land) when Ravaging.");
         public static BureaucratsAdjustFunding = new EventDesc("Bureaucrats Adjust Funding", "On Each Board with 9 or more Town / City: Build Cards skip the highest-numbered matching land. On Each Board with 3 or fewer Town / City: Build Cards cause 1 extra Build Action in the highest-numbered matching land. (This can affect a land without Invaders.)");
         public static RansackAndRun = new EventDesc("Ransack and Run", "After the Ravage Step, On Each Board: In the land with the most City (min 1), Ravage, then remove 1 City.");
+        // Nature Incarnate
+        public static AnOminousDawn = new EventDesc("An Ominous Dawn", "1 Fear per Power Card in play that generates Fear. (In its instructions, not by destroying Town / City. Count thresholds even if you don't have the Elements. Generated Fear can't cause Wavering Resolve.)");
+        public static WaveringResolve = new EventDesc("Wavering Resolve", "Remove 1 Health worth of Invaders per Power Card in play that generates Fear. (In its instructions, not by destroying Town / City. Count thresholds even if you don't have the Elements.)");
+        public static TerrorSpikesUpwards = new EventDesc("Terror Spikes Upwards", "If you have any Earned Fear Cards, resolve the first one now as if the Terror Level were 1 higher (then discard it). Otherwise, 1 Fear per player. (Generated Fear can't cause Final Harvest.)");
+        public static FinalHarvest = new EventDesc("Final Harvest", "Each City does +3 Damage during Ravage Actions. After each Ravage Action, Remove 1 Town / City from that land.");
 
         // Healthy / Blighted Land
         // Branch & Claw
@@ -251,7 +288,7 @@ namespace DB {
         public static CivicEngagement = new EventDesc("Civic Engagement", "On Each Board: Remove 1 Strife. If you can't, on that board Invaders do +1 Damage (per land) when Ravaging in lands with Town / City.");
         public static LifesWebTornAsunder = new EventDesc("Life's Web Torn Asunder", "On Each Board with 6 or more Blight: Add 1 Blight to a land adjacent to Blight.");
         public static WoundedLandsAttractExplorers = new EventDesc("Wounded Lands Attract Explorers", "On Each Board: Add 1 Explorer to a land with Blight.");
-        public static TheWorldsVibranceFades = new EventDesc("The World's Vibrance Fades", "Remove 1 Blight per player from the Blight Card, returning it to the box. Each Spirit may prevent 1 Blight from being Removed by Destroying 2 of their own Presence.");
+        public static TheWorldsVibranceFades = new EventDesc("The World's Vibrance Fades", "Remove 1 Blight per player from the Blight Card, returning it to the box. Each Spirit may prevent 1 Blight from being Removed by Destroying 2 of their Presence.");
         public static SeekNewFarmland = new EventDesc("Seek New Farmland", "In each land with 2 or more Town, Push 1 Town to a land without Town.");
         public static VoraciousConsumption = new EventDesc("Voracious Consumption", "On Each Board: After the Ravage Step, add 1 Blight to a land with City and no Blight. Spirits may prevent this on any/all boards by Destroying 2 Presence from each board to be protected.");
         public static GradualCorruption = new EventDesc("Gradual Corruption", "On Each Board: Add 1 Blight to a land with Town / City. Spirits may prevent this on any/all boards by paying X Energy per board to protect, where X is the number of cards in the Invader discard. (This may be 0.)");
@@ -268,6 +305,14 @@ namespace DB {
         public static DissolutionThreatens = new EventDesc("Dissolution Threatens", "Spirits are losing awareness and control of pieces of themselves. Each Spirit chooses: ACCEPT THIS FRAGMENTATION: Destroy 2 Presence, adding 1 Wilds in place of each. -or- FOCUS YOUR WILL TOWARDS WHOLENESS: Add 1 of your Destroyed Presence to one of your lands. Next turn, all your Powers are Slow and cannot be made Fast.");
         public static TheStrugglesOfGrowth = new EventDesc("The Struggles of Growth", "A painful crux-point. Each Spirit chooses: TRADE REACH FOR DEEPER NATURE: Destroy 2 of your Presence. Gain a Power Card. -or- LEAVE BEHIND THAT WHICH RESTRAINS YOU: Forget a Power Card. Gain 2 Energy. Move up to 2 of your Presence up to 4 Range.");
         public static BlightDeepens = new EventDesc("Blight Deepens", "On Each Board: Add 1 Blight to a land with Blight, but do not cascade. Spirits may prevent this on any/all boards by Destroying 1 Presence from each board to be protected.")
+        // Nature Incarnate
+        public static AccumulatedDevastation = new EventDesc("Accumulated Devastation", "On Each Board: During the first successful Ravage Action (in one land) this Invader Phase, increase the total Damage ravaging Invaders deal to each land (but not to Dahan) by the current Invader Stage. Do this for at most one Ravage Action per board (for one Ravage Action in one land).");
+        public static FocusedFarming = new EventDesc("Focused Farming", "On Each Board: Add 1 Explorer and 1 Town to a land with Town / Blight.");
+        public static EssenceDisperses = new EventDesc("Essence Disperses", "Each Spirit chooses independently to: Forget 1 Power Card. -or- Lose 2 Energy (to min. 0) and Destroy 1 Presence. In the land where you destroyed Presence, return 1 Blight to the box (if possible).");
+        public static InfluxOfSettlers = new EventDesc("Influx of Settlers", "On the single board with the most Town / City: Add 1 Town per player, split between as many different lands as possible. (This will usually be 1 Town per chosen land.)");
+        public static LethargyAndDegeneration = new EventDesc("Lethargy and Degeneration", "On Each Board: Skip the first Ravage Action (in one land). Add 1 Blight to a land with Town / City. Spirits may prevent either / both effects on any / all boards (choose per board) by Destroying 2 Presence from each board to be protected.");
+        public static SearchForUnclaimedLand = new EventDesc("Search for Unclaimed Land", "On Each Board: Explore in the land with the fewest total Invaders / Dahan (no source required).");
+        public static WidespreadHunting = new EventDesc("Widespread Hunting", "When Town / City Ravage in a land: If no Beasts are present, Invaders do +2 Damage (total). Otherwise, Destroy 1 Beasts. Do this at most once per board (for one Ravage Action in one land).");
     }
 
     export const CARDS = [
@@ -812,7 +857,7 @@ namespace DB {
             "Add 2 Badlands. Gather up to 2 Beasts. 1 Damage per Blight / Beasts / Wilds. -If you have- 2 Fire, 3 Plant, 2 Animal: 2 Fear per Invader destroyed by the Power (max. 8 Fear)."),
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Draw Towards a Consuming Void", 8, Speed.Slow, new Ranges(Source.Presence, 0), LandAny,
             [], "Joshua Wright",
-            "Gather 1 Explorer, Town, City, Dahan, Presence, and Beasts from each adjacent land. 4 Fear. 15 Damage. 5 Damage to Dahan. Destroy 1 Presence from each Spirit. Remove 2 Beasts. -If you have- If you have no other power cards in play: Any number of times: Forget a Minor Power, a Major Power, and a Unique Power to perform the above effects again."),
+            "Gather 1 Explorer, 1 Town, 1 City, 1 Dahan, 1 Beasts, and 1 Presence (from any Spirit) from each adjacent land. 4 Fear. 15 Damage. 5 Damage to Dahan. Destroy 1 Presence from each Spirit. Destroy 2 Beasts. -If you have no other power cards in play-: Any number of times: Forget a Minor Power, and Major Power, and a Unique Power to perform the above effects again."),
         new PowerCard(ProductSet.JaggedEarth, PowerDeckType.Major, "Storm-Swath", 3, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,
             [Elements.Fire, Elements.Air, Elements.Water], "Jorge Ramos",
             "2 Fear. In both origin land and target land: 1 Damage to each Invader. -If you have- 2 Fire, 3 Air, 2 Water: +1 Fear. This Power has +1 Range. In a land adjacent to both origin and target, 1 Damage to each Invader. In lands where you did Damage, destroy 1 town."),
@@ -1157,6 +1202,153 @@ namespace DB {
             [Elements.Sun, Elements.Air, Elements.Plant], "Lucas Durham",
             "Choose up to 5 different Invaders (in target land). 1 Damage to each of them."),
 
+        // Nature Incarnate
+        // Majors
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Bargain of Coursing Paths", 2, Speed.Fast, new Ranges(Source.Presence, 0), TargetProperty.TwoDahan,
+            [Elements.Moon, Elements.Air, Elements.Water, Elements.Earth], "Agnieszka Dąbrowiecka",
+            "Bargain: 1 Presence now and -1 Energy / turn. Now: Mark both target land and another land with 2 or more Dahan. Ongoing: After pieces are added or moved into the marked lands: choose any land, then Move those pieces directly to that land. -If you have- 3 Air, 2 Water, 2 Earth: The Presence cost comes from your Presence tracks."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Bombard with Boulders and Stinging Seeds", 2, Speed.Slow, new Ranges(Source.Presence, 2, [Land.Mountain, Land.Jungle]), LandAny,
+            [Elements.Air, Elements.Earth, Elements.Plant], "Kat Guevara",
+            "1 Fear. 2 Damage. Add 1 Badlands. -If you have- 2 Air, 2 Earth, 3 Plant: 1 Fear. 2 Damage. Add 1 Wilds."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Exaltation of the Incandescent Sky", 7, Speed.Fast, null, TargetSpirit.Another,
+            [Elements.Sun, Elements.Fire, Elements.Air, Elements.Water], "Kat Guevara",
+            "Target Spirit may play 1 Power Card by paying its cost, make up to 2 of their Powers Fast this turn, and do 3 Damage in one of their lands. You may do likewise. -If you have- 3 Sun, 3 Fire, 4 Air, 2 Water: In any 4 lands of the island, Skip 1 Invader Action. 5 Fear (total)."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Flocking Red-Talons", 3, Speed.Fast, new Ranges(Source.Presence, 3, [Land.Wetland]), LandAny,
+            [Elements.Air, Elements.Water, Elements.Plant, Elements.Animal], "Kat Guevara",
+            "Add 1 Beasts. Move up to 2 Beasts within 3 Range to target land. For each Bests presents, choose a different Invader. 1 Damage to each of those Invaders. Push 1 Explorer / Town per Beasts. -If you have- 2 Air, 2 Plant, 3 Animal: Repeat this Power on a different land within 3 Range (of target land)."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Fragments of Yesteryear", 7, Speed.Slow, new Ranges(Source.Presence, 0), LandAny,
+            [Elements.Sun, Elements.Moon], "David Markiwsky",
+            "Remove all pieces, then Add the pieces matching target land's Setup symbols. -If you have- 3 Sun: This power may be Fast. 3 Moon: Don't remove Dahan, any Spirit's Presence, or Spirit Tokens. Don't add Invaders / Blight."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Inspire the Release of Stolen Lands", 4, Speed.Slow, new Ranges(Source.Presence, 2), TargetProperty.NoBlight,
+            [Elements.Sun, Elements.Water, Elements.Plant, Elements.Animal], "Agnieszka Dąbrowiecka",
+            "Gather up to 3 Dahan. Remove up to 3 Health worth of Invaders per Dahan. -If you have- 3 Sun, 3 Water, 2 Animal: This Power can target lands with Blight. If Dahan are present, Remove 1 Blight from target land, then Remove 1 Explorer, 1 Town, and 1 City from a land within 1 Range (of target land)."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Plague Ships Sail to Distant Ports", 4, Speed.Fast, new Ranges(Source.Presence, 1), [Land.Coastal, TargetProperty.City],
+            [Elements.Fire, Elements.Air, Elements.Water, Elements.Animal], "Kat Guevara",
+            "1 Fear. Add 4 Disease among Coastal lands (on any boards) other than target land. -If you have- 2 Fire, 2 Water, 2 Animal: Instead: 1 Fear. 3 Damage. Spirits may jointly spend 3 Energy per player (aided by removing Disease from the island for 3 Energy each) to remove the top card of the Fear Deck from the game. Add 1 Disease."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Ravaged Undergrowth Slithers Back to Life", 3, Speed.Slow, new Ranges(Source.SacredSite, 1), TargetProperty.Blight,
+            [Elements.Water, Elements.Plant, Elements.Animal], "Kat Guevara",
+            "Replace 1 Blgiht with 1 Wilds. 1 Fear. 3 Damage. Push that Wilds. -If you have- 3 Water, 2 Plant: Add 1 Wilds. You may Push it. In each land with Wilds within 1 Range (of target land): Push 1 Explorer and 1 Town to lands without Wilds."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Rumbling Earthquakes", 6, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,
+            [Elements.Fire, Elements.Earth], "Emily Hancock",
+            "This Power ignores Health bonuses. 3 Fear. 6 Damage, to Town / City only. 6 Damage among adjacent lands, to Town / City only. -If you have- 4 Earth: 6 Damage among target / adjacent lands, to Town / City only."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Solidify Echoes of Majesty Past", 4, Speed.Fast, null, TargetSpirit.Any,
+            [Elements.Sun, Elements.Moon, Elements.Air, Elements.Earth], "Emily Hancock",
+            "Choose one of target Spirit's lands. In that land and each adjacent land, Defend 3. They Add 1 Destroyed Presence to each adjacent land. Skip up to 1 Invader Action at each added Destroyed Presence. -If you have- 2 Sun, 2 Moon, 2 Earth: Target Spirit either Reclaims 1 Power Card or re-gains a Unique Power they previously forgot. They may play it by paying its cost."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Transformative Sacrifice", 3, Speed.Fast, null, TargetSpirit.Any,
+            [Elements.Moon, Elements.Fire, Elements.Water, Elements.Plant], "Kat Guevara",
+            "Target Spirit may Remove up to 3 Presence (from anywhere on the island). Then for each removed Presence, they Take a Minor Power and play it (for free). -If you have- 2 Moon, 3 Fire, 2 Plant: Before taking cards, they may also Remove 1 Presence from their Presence track to Take a Minor Power and play it."),
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Major, "Unearth a Beast of Wrathful Stone", 5, Speed.Fast, new Ranges(Source.SacredSite, 1), TargetProperty.Invaders,
+            [Elements.Moon, Elements.Fire, Elements.Earth, Elements.Animal], "David Markiwsky",
+            "After the next Invader Phase (on any turn) with no Ravage / Buiuld Actions in target land: 3 Fear. 12 Damage. Add 1 Beasts. You may Push that Beasts. 1 Fear and 2 Damage in its land."),
+        // Minors
+        new PowerCard(ProductSet.NatureIncarnate, PowerDeckType.Minor, "Roiling Bog and Snagging Thorn", 0, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
+            [Elements.Moon, Elements.Fire, Elements.Water, Elements.Plant], "Kat Guevara",
+            "1 Fear. Isolate. Defend 2. 1 Dahan does not participate in Ravage. (Check when ravaging; it does not take Damage and does not counterattack.)"),
+        // Uniques
+        new PowerCard(ProductSet.NatureIncarnate, Unique.BreathOfDarknessDownYourSpine, "Emerge from the Dread Night Wind", 1, Speed.Slow, null, LandAny,
+            [Elements.Moon, Elements.Air], "David Markiwsky",
+            "Add / Move Incarna to target land. 1 Fear. If exactly 1 Invader is present, Abduct it. Otherwise, Push up to 2 Explorer / Town to different lands. Push up to 2 Dahan."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.BreathOfDarknessDownYourSpine, "Reach from the Infinite Darkness", 0, Speed.Fast, null, TargetSpirit.Yourself,
+            [Elements.Moon, Elements.Air, Elements.Animal], "David Markiwsky",
+            "Abduct up to 2 Presence (of any Spirits, with their permission) from any lands on the island, ignoring land type restrictions on moving Presence. Each Spirit's Presence in Endless Dark grants them +1 Range with all their Powers (this turn)."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.BreathOfDarknessDownYourSpine, "Swallowed by the Endless Dark", 1, Speed.Fast, new Ranges(Source.Presence, 0), TargetProperty.Invaders,
+            [Elements.Moon, Elements.Air, Elements.Water], "David Markiwsky",
+            "2 Fear. Abduct 1 Explorer. -If you have- 3 Moon, 3 Air: Abduct 1 Invader."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.BreathOfDarknessDownYourSpine, "Terror of the Hunted", 1, Speed.Slow, new Ranges(Source.Presence, 0), TargetProperty.Invaders,
+            [Elements.Moon, Elements.Fire, Elements.Animal], "David Markiwsky",
+            "If Beasts are present, 1 Fear and Add 1 Strife. Add 1 Strife per Terror Level. If target land is Endless Dark, Add 1 Strife. (Strife only escapes with the Invader it's attached to.)"),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.DancesUpEarthquakes, "Inspire a Winding Dance", 0, Speed.Slow, new Ranges(Source.Presence, 1), TargetProperty.Invaders,
+            [Elements.Moon, Elements.Water, Elements.Earth, Elements.Animal], "Emily Hancock",
+            "Push up to 1 Explorer / Town. Gather up to 1 Dahan."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.DancesUpEarthquakes, "Exaltation of Echoed Steps", 1, Speed.Slow, null, TargetSpirit.Another,
+            [Elements.Moon, Elements.Water, Elements.Earth], "Emily Hancock",
+            "Target Spirit may Push 1 Presence, Bringing up to 1 Explorer / Town / Dahan / Beasts. You may do likewise."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.DancesUpEarthquakes, "Gift of Seismic Energy", 3, Speed.Fast, null, TargetSpirit.Any,
+            [Elements.Sun, Elements.Fire, Elements.Earth, Elements.Plant], "Emily Hancock",
+            "If you target yourself, gain 3 Energy. Otherwise, target Spirit gains 1 Energy per Power Card you have in play (max. 6). (Don't count Impending Card.)"),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.DancesUpEarthquakes, "Radiating Tremors", 2, Speed.Slow, new Ranges(Source.Presence, 0), LandAny,
+            [Elements.Moon, Elements.Fire, Elements.Earth], "Emily Hancock",
+            "2 Damage. You may Push any number of Quake, dividing them as evenly as possible between adjacent lands."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.DancesUpEarthquakes, "Resounding Footfalls Sow Dismay", 3, Speed.Fast, new Ranges(Source.Presence, 0), LandAny,
+            [Elements.Fire, Elements.Air, Elements.Earth], "Emily Hancock",
+            "1 Fear. Add 1 Quake. Skip all Ravage Actions."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.DancesUpEarthquakes, "Rumblings Portend a Greater Quake", 1, Speed.Fast, new Ranges(Source.Presence, 1), LandAny,
+            [Elements.Sun, Elements.Moon, Elements.Air, Elements.Earth], "Emily Hancock",
+            "If you have at least as many Impending Card as Power Cards in play, 1 Fear and Add 1 Quake. Push up to 3 Dahan."),
+
+        new PowerCard(ProductSet.NatureIncarnate, Unique.EmberEyedBehemoth, "Blazing Intimidation", 2, Speed.Fast, new Ranges(Source.Presence, 1), LandAny,
+            [Elements.Fire, Elements.Plant, Elements.Animal], "David Markiwsky",
+            "1 Fear. Push 2 Explorer / Town to a land without Incarna."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.EmberEyedBehemoth, "Exaltation of Grasping Roots",0, Speed.Slow, null, TargetSpirit.Another,
+            [Elements.Moon, Elements.Fire, Elements.Earth, Elements.Plant], "David Markiwsky",
+            "Target Spirit may Add 1 Wilds in one of their lands. You may do likewise."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.EmberEyedBehemoth, "Surging Lahar", 2, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,
+            [Elements.Fire, Elements.Water, Elements.Earth], "David Markiwsky",
+            "2 Damage. If your Presence is present, Add 1 Badlands."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.EmberEyedBehemoth, "Terrifying Rampage", 1, Speed.Fast, new Ranges(Source.Presence, 1), LandAny,
+            [Elements.Moon, Elements.Fire, Elements.Earth], "David Markiwsky",
+            "1 Fear. 2 Invaders don't participate in Ravage. (Choose the Invaders when ravaging; they don't deal Damage or take counterattack Damage.) Push 3 Dahan."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.HearthVigil, "Call to Vigilance", 2, Speed.Slow, new Ranges(Source.Presence, 1, undefined, TargetProperty.Dahan), LandAny,
+            [Elements.Sun, Elements.Air, Elements.Animal], "Aalaa Yassin",
+            "2 Fear if Invaders are present. For each Dahan in origin land, Push up to 1 Explorer / Town."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.HearthVigil, "Coordinated Raid", 1, Speed.Slow, new Ranges(Source.Presence, 1, undefined, TargetProperty.Dahan), LandAny,
+            [Elements.Sun, Elements.Earth, Elements.Animal], "Aalaa Yassin",
+            "1 Damage. If Dahan are present, 1 Damage."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.HearthVigil, "Favors of Story and Season", 1, Speed.Fast, null, TargetSpirit.Another,
+            [Elements.Sun, Elements.Earth, Elements.Plant, Elements.Animal], "Aalaa Yassin",
+            "Target Spirit may Gather up to 3 Dahan into one of their lands. If they have at least 30Dahan among their lands, they gain 10Energy and may Reclaim 1 Power Card instead of discarding it at the end of turn."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.HearthVigil, "Surrounded by the Dahan", 0, Speed.Fast, new Ranges(Source.Presence, 0), TargetProperty.Dahan,
+            [Elements.Moon, Elements.Air, Elements.Animal], "Aalaa Yassin",
+            "2 Fear if Invaders are present. 1 Fear if Dahan outnumber Town / City. Isolate target land."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.RelentlessGazeOfTheSun, "Blinding Glare", 0, Speed.Fast, new Ranges(Source.SacredSite, 0), TargetProperty.Invaders,
+            [Elements.Sun, Elements.Air], "Agnieszka Dąbrowiecka",
+            "2 Fear. -or- Skup up to one Ravage Action. -If you have- 5 Sun: Instead, 3 Fear. -or- Skip to one Invader Action."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.RelentlessGazeOfTheSun, "Focus the Sun's Rays", 0, Speed.Slow, new Ranges(Source.SacredSite, 2), LandAny,
+            [Elements.Sun, Elements.Fire, Elements.Air], "Agnieszka Dąbrowiecka",
+            "1 Damage. 2 Damage to Dahan. Move up to 3 Presence directly to target land (from anywhere on the island). You may Bring 1 Badlands (total) with those Presence."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.RelentlessGazeOfTheSun, "Unbearable Gaze", 1, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,
+            [Elements.Sun, Elements.Fire], "Agnieszka Dąbrowiecka",
+            "1 Fear. Push 2 Explorer / Town from origin or target land (or 1 Explorer / Town from each)."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.RelentlessGazeOfTheSun, "Wither Bodies, Scar Stones", 1, Speed.Slow, new Ranges(Source.SacredSite, 2), LandAny,
+            [Elements.Sun, Elements.Fire, Elements.Earth], "Agnieszka Dąbrowiecka",
+            "1 Damage. -or- Add 1 Badands."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.ToweringRootsOfTheJungle, "Blooming of teh Rocks and Trees", 0, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,
+            [Elements.Sun, Elements.Air, Elements.Earth, Elements.Plant], "Aalaa Yassin",
+            "If no Blight is present, Add 1 Vitality. -or- If no Invaders are present, Add 1 Wilds. -If you have- 3 Plant: You may do both."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.ToweringRootsOfTheJungle, "Boon of Resilient Power", 1, Speed.Slow, null, TargetSpirit.Any,
+            [Elements.Sun, Elements.Moon, Elements.Water, Elements.Plant], "Aalaa Yassin",
+            "Target Spirit may Add 1 Destroyed Presence to one of your lands. If you target yourself, gain a Major Power. Otherwise, target Spirits gains a Power Card."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.ToweringRootsOfTheJungle, "Entwine the Fates of All", 1, Speed.Fast, null, TargetSpirit.Any,
+            [Elements.Moon, Elements.Water, Elements.Earth, Elements.Plant], "Aalaa Yassin",
+            "In one of target Spirit's lands, Defend 2 per Presence (from all Spirits)."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.ToweringRootsOfTheJungle, "Radiant and Hallowed Grove", 2, Speed.Fast, null, TargetProperty.Incarna,
+            [Elements.Sun, Elements.Animal, Elements.Fire, Elements.Plant], "Aalaa Yassin",
+            "2 Fear if Invaders are present or adjacent. In both target and one adjacent land, you may Remove an Invader with Health less than or equal to the Terror Level. (Damage doesn't reduce Health.)"),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.WanderingVoiceKeensDelirium, "Exhale Confusion and Delirium", 0, Speed.Fast, new Ranges(Source.Presence, 1), TargetProperty.Strife,
+            [Elements.Sun, Elements.Animal, Elements.Air, Elements.Animal], "Emily Hancock",
+            "2 Fear. Invaders with Strife don't participate in Ravage. (Check when ravaging; they don't deal Damage or take counterattack Damage.)"),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.WanderingVoiceKeensDelirium, "Frightful Keening", 1, Speed.Slow, null, TargetProperty.Incarna,
+            [Elements.Sun, Elements.Fire, Elements.Air], "Emily Hancock",
+            "Push Incarna. If this pushes Incarna into a land with Invaders, 2 Fear there (before adding Strife)."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.WanderingVoiceKeensDelirium, "Turmoil's Touch", 0, Speed.Slow, null, TargetSpirit.Another,
+            [Elements.Sun, Elements.Animal, Elements.Air, Elements.Plant], "Emily Hancock",
+            "Target Spirit may either pay 1 Energy or discard a Power Card (from hand) to Take a Minor Power into their discard. You may do likewise"),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.WanderingVoiceKeensDelirium, "Twist Perceptions", 1, Speed.Slow, new Ranges(Source.Presence, 1), TargetProperty.Invaders,
+            [Elements.Animal, Elements.Air, Elements.Animal], "Emily Hancock",
+            "Add 10Strife. You may Push the Invader you added Strife to. (If you add Strife to Explorer / Town, you can push that Invader first with Senseless Roaming before pushing it with this Power.)"),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.WoundedWatersBleeding, "Blood Water and Bloodlust", 1, Speed.Slow, new Ranges(Source.Presence, 1, undefined, TargetProperty.Blight), LandAny,
+            [Elements.Fire, Elements.Water, Elements.Animal], "Nolan Nasser",
+            "Add 1 Beasts and 1 Disease."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.WoundedWatersBleeding, "Boon of Corrupted Blood", 1, Speed.Fast, null, TargetSpirit.Any,
+            [Elements.Sun, Elements.Fire, Elements.Animal], "Nolan Nasser",
+            "1 Damage in one of target Spirit's lands. If you target another Spirit, in that land also: Destroy 1 of their Presence. 1 Damage. Gather 1 Beasts."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.WoundedWatersBleeding, "Draw to the Water's Edge", 1, Speed.Fast, new Ranges(Source.Presence, 0), LandAny,
+            [Elements.Sun, Elements.Water, Elements.Plant], "Nolan Nasser",
+            "Gather up to 2 Town from a single land."),
+        new PowerCard(ProductSet.NatureIncarnate, Unique.WoundedWatersBleeding, "Wrack with Pain and Grief", 1, Speed.Slow, new Ranges(Source.Presence, 1, undefined, TargetProperty.Blight), TargetProperty.Invaders,
+            [Elements.Water, Elements.Plant, Elements.Animal], "Nolan Nasser",
+            "2 Fear. Push 1 Explorer and 1 Town."),
+
         // Fear Cards
         // Basegame
         new FearCard(ProductSet.Basegame, FearType.Fear, "Fear of the Unseen",
@@ -1326,33 +1518,54 @@ namespace DB {
             "Terror Level 1: Each player chooses a land to Isolate.",
             "Terror Level 2: Each player chooses a different land to Isolate. Also, Defend 2 in those lands.",
             "Terror Level 3: Each player chooses a different land to Isolate. Also, Defend 4 in those lands."),
+        // Nature Incarnate
+        new FearCard(ProductSet.NatureIncarnate, FearType.Fear, "Civil Unrest",
+            "Terror Level 1: On Each Board: Add 1 Strife to a Town / City in a land not matching a Ravage Card.",
+            "Terror Level 2: On Each Board: Add 1 Strife to a Town / City in a land not matching a Ravage Card. Each Invader takes 1 Damage per Strife it has.",
+            "Terror Level 3: On Each Board: Add 1 Strife. Each Invader takes 1 Damage per Strife it has."),
+        new FearCard(ProductSet.NatureIncarnate, FearType.Fear, "Dahan Gain the Edge",
+            "Terror Level 1: Each player chooses a different land with Dahan. In Each: Defend 2.",
+            "Terror Level 2: Each player chooses a different land with Dahan. In Each: 1 Damage and Defend 3.",
+            "Terror Level 3: Each player chooses a different land with Dahan. In Each: 2 Damage and Defend 4."),
+        new FearCard(ProductSet.NatureIncarnate, FearType.Fear, "Daunted by the Dahan",
+            "Terror Level 1: 1 Fear per board with both Invaders and Dahan. Invaders do -6 Damage to Dahan (per land) during Ravage.",
+            "Terror Level 2: 1 Fear per board with both Invaders and Dahan. Lands with Dahan have Defend 3. Invaders do -6 Damage to Dahan (per land) during Ravage.",
+            "Terror Level 3: 1 Fear per board with both Invaders and Dahan. Lands with Dahan have Defend 3. Invaders do -6 Damage to Dahan (per land) during Ravage. Isolate all lands with Dahan."),
+        new FearCard(ProductSet.NatureIncarnate, FearType.Fear, "Distracted by Local Troubles",
+            "Terror Level 1: On Each Board, in a land matching a Ravage Card: 1 Damage.",
+            "Terror Level 2: Invaders do -1 Damage per Damage they have taken. On Each Board, in a land matching a Ravage Card: 1 Damage each to up to 2 Invaders.",
+            "Terror Level 3: Invaders do -1 Damage per Damage they have taken. On Each Board, in two lands matching a Ravage Card: 2 Damage (per land)."),
+        new FearCard(ProductSet.NatureIncarnate, FearType.Fear, "Restlessness",
+            "Terror Level 1: Each player Pushes up to 1 Explorer / Town from a land not matching a Build card.",
+            "Terror Level 2: Each player Pushes up to 3 Explorer / Town from a land not matching a Build card.",
+            "Terror Level 3: Each player Removes up to 3 Explorer / Town from a land not matching a Build card."),
+        new FearCard(ProductSet.NatureIncarnate, FearType.Fear, "Seek Company",
+            "Terror Level 1: On Each Board: Gather up to 1 Explorer into a land with 2 or more Invaders.",
+            "Terror Level 2: On Each Board: Gather up to 3 Explorer / Town from a single land into a land with 2 or more Invaders.",
+            "Terror Level 3: On Each Board: Gather up to 4 Explorer / Town (total) into lands with 2 or more Invaders."),
+        new FearCard(ProductSet.NatureIncarnate, FearType.Fear, "Struggles over Farmland",
+            "Terror Level 1: Each player Adds 1 Strife in a land with Blight.",
+            "Terror Level 2: Each player Adds 1 Strife to a Town or Adds 1 Strife in a land with Blight.",
+            "Terror Level 3: Each player Adds 1 Strife. In each land with Blight, 1 Invader with Strife does Damage to other Invaders."),
+        new FearCard(ProductSet.NatureIncarnate, FearType.Fear, "Supply Chains Abandoned",
+            "Terror Level 1: On Each Board: Isolate one land.",
+            "Terror Level 2: On Each Board: Isolate one land. If Town / City are present, skip all Build Actions (in that land).",
+            "Terror Level 3: On Each Board: Isolate two lands. In each of those lands, if Town / City are present, skip all Build Actions (in that land)."),
+        new FearCard(ProductSet.NatureIncarnate, FearType.Fear, "Unsettled",
+            "Terror Level 1: On Each Board: Choose a land with Beasts / Strife / Dahan. Downgrade 1 Town / City there.",
+            "Terror Level 2: On Each Board: Choose a land with Beasts / Strife / Dahan. Downgrade 1 Town / City there ore skip the next Build Action there (this turn).",
+            "Terror Level 3: On Each Board: Choose a land with Beasts / Strife / Dahan. Remove 1 Invader there or skip the next Build Action there (this turn)."),
 
         // Events
         // Branch & Claw
-        new ChoiceEventCard(ProductSet.BranchAndClaw, "Years of Little Rain", "A terrible drought parches the island. You may:",
-            [Events.LetThePlantsDieAndTheLandWither, Events.ActToEaseTheDrought],
-            TokenEvent.BeastsAttack, DahanEvent.CannyDefense),
-        new ChoiceEventCard(ProductSet.BranchAndClaw, "Farmers Seek the Dahan for Aid", "The Dahan are uncertain whether to teach the Invaders farming techniques more in tune with the island's life. You recommend they:",
-            [Events.SpurnTheInvaders, Events.TeachTheInvaders],
-            TokenEvent.NewDiseases, null),
-        new ChoiceEventCard(ProductSet.BranchAndClaw, "New Species Spread", "New plants and animals brought by the Invaders damage the local ecology. You may:",
-            [Events.LetTheInvasiveSpeciesBloom, Events.TransmuteTheWorstOfTheSpecies],
-            TokenEvent.NewDiseases, DahanEvent.OfferingsOfPatternAndDance),
-        new ChoiceEventCard(ProductSet.BranchAndClaw, "War Touches the Island's Shores", "Invaders from a different faraway land assault the ones here, torching farms and bombarding Cities. You may:",
-            [Events.AllowTheAttacks, Events.HelpRepelTheNewcomers],
-            TokenEvent.BeastsFindNewHomes, DahanEvent.ReclaimTerritory),
-        new ChoiceEventCard(ProductSet.BranchAndClaw, "Sacred Sites under Threat", "Invaders have begun to find hidden places of natural power. You may:",
-            [Events.LetTheIslandsStrengthRepulseThem, Events.GuardThemYourselfForWellOrIll],
-            TokenEvent.BeastsProwl, DahanEvent.SpiritSpeakersSolveRiddlesOfPower),
-        new ChoiceEventCard(ProductSet.BranchAndClaw, "Outpaced", "Humanity has always been faster than you, but the Invaders' terrifying speed catches you off-guard. Each Spirit chooses independently for each of their Slow Power Cards played this turn:",
-            [Events.StaySteadyAndSlow, Events.WorkToMatchTheirPace],
-            TokenEvent.LingeringPlagues, DahanEvent.RaidsInForce),
-        new ChoiceEventCard(ProductSet.BranchAndClaw, "Missionaries Arrive", "They teach and spread lessons of a foreign god. You may:",
-            [Events.IgnoreTheirContactWithTheDahan, Events.CurseTheTonguesOfTheForeigners],
-            TokenEvent.PreyOnTheUnwary, null),
-        new ChoiceEventCard(ProductSet.BranchAndClaw, "A Strange Madness among the Beasts", "They grow even wilder and more savage. You may:",
-            [Events.LetThemRampageUntoDeath, Events.GuideTheMadness],
-            TokenEvent.SavageFrenzy, DahanEvent.SeekASaferHome),
+        new ChoiceEventCard(ProductSet.BranchAndClaw, "Years of Little Rain", "A terrible drought parches the island. You may:", null, [Events.LetThePlantsDieAndTheLandWither, Events.ActToEaseTheDrought], TokenEvent.BeastsAttack, DahanEvent.CannyDefense),
+        new ChoiceEventCard(ProductSet.BranchAndClaw, "Farmers Seek the Dahan for Aid", "The Dahan are uncertain whether to teach the Invaders farming techniques more in tune with the island's life. You recommend they:", null, [Events.SpurnTheInvaders, Events.TeachTheInvaders], TokenEvent.NewDiseases, null),
+        new ChoiceEventCard(ProductSet.BranchAndClaw, "New Species Spread", "New plants and animals brought by the Invaders damage the local ecology. You may:", null, [Events.LetTheInvasiveSpeciesBloom, Events.TransmuteTheWorstOfTheSpecies], TokenEvent.NewDiseases, DahanEvent.OfferingsOfPatternAndDance),
+        new ChoiceEventCard(ProductSet.BranchAndClaw, "War Touches the Island's Shores", "Invaders from a different faraway land assault the ones here, torching farms and bombarding Cities. You may:", null, [Events.AllowTheAttacks, Events.HelpRepelTheNewcomers], TokenEvent.BeastsFindNewHomes, DahanEvent.ReclaimTerritory),
+        new ChoiceEventCard(ProductSet.BranchAndClaw, "Sacred Sites under Threat", "Invaders have begun to find hidden places of natural power. You may:", null, [Events.LetTheIslandsStrengthRepulseThem, Events.GuardThemYourselfForWellOrIll], TokenEvent.BeastsProwl, DahanEvent.SpiritSpeakersSolveRiddlesOfPower),
+        new ChoiceEventCard(ProductSet.BranchAndClaw, "Outpaced", "Humanity has always been faster than you, but the Invaders' terrifying speed catches you off-guard. Each Spirit chooses independently for each of their Slow Power Cards played this turn:", null, [Events.StaySteadyAndSlow, Events.WorkToMatchTheirPace], TokenEvent.LingeringPlagues, DahanEvent.RaidsInForce),
+        new ChoiceEventCard(ProductSet.BranchAndClaw, "Missionaries Arrive", "They teach and spread lessons of a foreign god. You may:", null, [Events.IgnoreTheirContactWithTheDahan, Events.CurseTheTonguesOfTheForeigners], TokenEvent.PreyOnTheUnwary, null),
+        new ChoiceEventCard(ProductSet.BranchAndClaw, "A Strange Madness among the Beasts", "They grow even wilder and more savage. You may:", null, [Events.LetThemRampageUntoDeath, Events.GuideTheMadness], TokenEvent.SavageFrenzy, DahanEvent.SeekASaferHome),
         new StageEventCard(ProductSet.BranchAndClaw, Events.SeekingTheInterior, Events.LocalDiaspora, Events.LocalDiaspora,
             TokenEvent.BeastsProwl, DahanEvent.ForsakeTheBarrenLand),
         new StageEventCard(ProductSet.BranchAndClaw, Events.WaveOfReconnaissance, Events.Urbanization, Events.Urbanization,
@@ -1367,9 +1580,7 @@ namespace DB {
             TokenEvent.PreyOnTheUnwary, DahanEvent.RouseTheSpirits),
         new TerrorLevelEventCard(ProductSet.BranchAndClaw, Events.DistantExploration, Events.FearfulMobs, Events.FearfulMobs,
             TokenEvent.GrimToll, DahanEvent.FierceMien),
-        new ChoiceEventCard(ProductSet.BranchAndClaw, "Rising Interest in the Island", "Your island is unlike any the Invaders have seen. Their leaders begin to take interest in tales of strangeness. You may:",
-            [Events.IgnoreTheCuriosity, Events.WeaveLiesInTheMindsOfTheirObservers],
-            TokenEvent.BeastsOfTheJungle, DahanEvent.TrapsAndSnares),
+        new ChoiceEventCard(ProductSet.BranchAndClaw, "Rising Interest in the Island", "Your island is unlike any the Invaders have seen. Their leaders begin to take interest in tales of strangeness. You may:", null, [Events.IgnoreTheCuriosity, Events.WeaveLiesInTheMindsOfTheirObservers], TokenEvent.BeastsOfTheJungle, DahanEvent.TrapsAndSnares),
         new HealthyBlightedLandEventCard(ProductSet.BranchAndClaw, Events.PuttingDownRoots, Events.TheCenterCrumbles,
             TokenEvent.Stricken, DahanEvent.DriveOffTheInterlopers),
         new HealthyBlightedLandEventCard(ProductSet.BranchAndClaw, Events.SearchForNewLands, Events.DevastatedShores,
@@ -1392,28 +1603,16 @@ namespace DB {
             new StageEventCard(ProductSet.BranchAndClaw, Events.SmallUprising, Events.SmallUprising, Events.Rebellion,
                 null, DahanEvent.AidTheUprising)),
         // Jagged Earth
-        new ChoiceEventCard(ProductSet.JaggedEarth, "Lesser Spirits Imperiled", "The Invaders' spread is threatening many of the island's smaller Spirits. You may:",
-            [Events.TendToYourOwnStrength, Events.ForgeAWebOfMutualSupport],
-            TokenEvent.QuitTheFarmedLands, DahanEvent.ReturnToOldPillars),
-        new ChoiceEventCard(ProductSet.JaggedEarth, "Remnants of a Spirit's Heart", "A group of Dahan find a stony ridge with lingering blessings from an ancient mountain-Spirit. You may:",
-            [Events.LeaveItsStrengthWithTheDahan, Events.WithPatientFocusCraftAGreatWarding],
-            TokenEvent.HuntingParties, DahanEvent.AThousandSmallStruggles),
-        new ChoiceEventCard(ProductSet.JaggedEarth, "Numinous Crisis", "The spiritual energy of the island weakens as life's connections grow ever more tattered. You may:",
-            [Events.DrawStrengthFromItWhileYouCan, Events.PourYourStrengthIntoTheIsland],
-            TokenEvent.PlaguesBringFearAndDeath, DahanEvent.CarefulDefense),
-        new ChoiceEventCard(ProductSet.JaggedEarth, "Hard-Working Settlers", "The latest round of settlers are regrettably diligent, focused and curious. You may:",
-            [Events.ActCautiouslyInTheBackground, Events.CreateUnnervingDistractions],
-            TokenEvent.BeastsPreyOnTheInjured, null),
-        new ChoiceEventCard(ProductSet.JaggedEarth, "Dahan Trade with the Invaders", "Some seek knowledge, others are interested in tools and trade goods, still others simply curious. All hope to avoid violence, and the Invaders seem amenable - at least for now. You may:",
-            [Events.IgnoreTheirInterest, Events.DisplayYourWrathAtThisBetrayal, Events.ChangeAndHelpThemLearnFromTheEnemy],
-            TokenEvent.OutbreaksShift, null),
-       	new ChoiceEventCard(ProductSet.JaggedEarth, "Life's Balance Tilts", "The energies of life shift towards destruction, bringing wasting and disease to the animals of the island. Death is a part of life, but does this go too far? You may:",
-            [Events.LetDestructionHaveItsDay, Events.FortifyTheResilienceOfLife],
-            null, DahanEvent.AThousandSmallStruggles),
+        new ChoiceEventCard(ProductSet.JaggedEarth, "Lesser Spirits Imperiled", "The Invaders' spread is threatening many of the island's smaller Spirits. You may:", null, [Events.TendToYourOwnStrength, Events.ForgeAWebOfMutualSupport], TokenEvent.QuitTheFarmedLands, DahanEvent.ReturnToOldPillars),
+        new ChoiceEventCard(ProductSet.JaggedEarth, "Remnants of a Spirit's Heart", "A group of Dahan find a stony ridge with lingering blessings from an ancient mountain-Spirit. You may:", null, [Events.LeaveItsStrengthWithTheDahan, Events.WithPatientFocusCraftAGreatWarding], TokenEvent.HuntingParties, DahanEvent.AThousandSmallStruggles),
+        new ChoiceEventCard(ProductSet.JaggedEarth, "Numinous Crisis", "The spiritual energy of the island weakens as life's connections grow ever more tattered. You may:", null, [Events.DrawStrengthFromItWhileYouCan, Events.PourYourStrengthIntoTheIsland], TokenEvent.PlaguesBringFearAndDeath, DahanEvent.CarefulDefense),
+        new ChoiceEventCard(ProductSet.JaggedEarth, "Hard-Working Settlers", "The latest round of settlers are regrettably diligent, focused and curious. You may:", null, [Events.ActCautiouslyInTheBackground, Events.CreateUnnervingDistractions], TokenEvent.BeastsPreyOnTheInjured, null),
+        new ChoiceEventCard(ProductSet.JaggedEarth, "Dahan Trade with the Invaders", "Some seek knowledge, others are interested in tools and trade goods, still others simply curious. All hope to avoid violence, and the Invaders seem amenable - at least for now. You may:", null, [Events.IgnoreTheirInterest, Events.DisplayYourWrathAtThisBetrayal, Events.ChangeAndHelpThemLearnFromTheEnemy], TokenEvent.OutbreaksShift, null),
+       	new ChoiceEventCard(ProductSet.JaggedEarth, "Life's Balance Tilts", "The energies of life shift towards destruction, bringing wasting and disease to the animals of the island. Death is a part of life, but does this go too far? You may:", null, [Events.LetDestructionHaveItsDay, Events.FortifyTheResilienceOfLife], null, DahanEvent.AThousandSmallStruggles),
         new StageEventCard(ProductSet.JaggedEarth, Events.HarvestBountyHarvestDust, Events.HarvestBountyHarvestDust, Events.WidespreadClearcutting, TokenEvent.ExplorersBlunder, DahanEvent.CoordinatedStrikes),
-        new StageEventCard(ProductSet.JaggedEarth, Events.InvestedAristocracy, Events.InvestedAristocracy, Events.ForeignDignitariesVisit, TokenEvent.PreyOnTheHeedless, DahanEvent.ComingOfAge2Dahan),
-        new StageEventCard(ProductSet.JaggedEarth, Events.MapmakersChartTheWild, Events.MapmakersChartTheWild, Events.IncreasingAggression, TokenEvent.PreyOnTheHeedless, DahanEvent.ComingOfAgeNoToken),
-        new StageEventCard(ProductSet.JaggedEarth, Events.NoBraveryWithoutNumbers, Events.NoBraveryWithoutNumbers, Events.CourageOfTheCrowd, TokenEvent.PreyOnTheHeedless, DahanEvent.LeaveTheHostileLand),
+        new StageEventCard(ProductSet.JaggedEarth, Events.InvestedAristocracy, Events.InvestedAristocracy, Events.ForeignDignitariesVisit, TokenEvent.PreyOnTheHeedlessJE, DahanEvent.ComingOfAge2Dahan),
+        new StageEventCard(ProductSet.JaggedEarth, Events.MapmakersChartTheWild, Events.MapmakersChartTheWild, Events.IncreasingAggression, TokenEvent.PreyOnTheHeedlessJE, DahanEvent.ComingOfAgeNoToken),
+        new StageEventCard(ProductSet.JaggedEarth, Events.NoBraveryWithoutNumbers, Events.NoBraveryWithoutNumbers, Events.CourageOfTheCrowd, TokenEvent.PreyOnTheHeedlessJE, DahanEvent.LeaveTheHostileLand),
         new StageEventCard(ProductSet.JaggedEarth, Events.SmallerPortsSpringUp, Events.SmallerPortsSpringUp, Events.ExtensiveBuilding, TokenEvent.Stricken, DahanEvent.SettlersEncroachTooFar),
         new HealthyBlightedLandEventCard(ProductSet.JaggedEarth, Events.TheFrontierCalls, Events.SelfSacrificeBuysTime, TokenEvent.LairInUntamedLands, DahanEvent.SeekOutNewGrounds),
         new HealthyBlightedLandEventCard(ProductSet.JaggedEarth, Events.SeekNewFarmland, Events.VoraciousConsumption, TokenEvent.PlaguesBringFearAndDeath, DahanEvent.EngageOnTheirOwnTerms),
@@ -1424,7 +1623,7 @@ namespace DB {
         new HealthyBlightedLandEventCard(ProductSet.JaggedEarth, Events.ThrivingTrade, Events.PartitionedWilderness, TokenEvent.PestilenceArrivesOnCanvasSails, DahanEvent.CleverCooperation),
         new HealthyBlightedLandEventCard(ProductSet.JaggedEarth, Events.WoundedLandsAttractExplorers, Events.TheWorldsVibranceFades, TokenEvent.BeastsChaseOffHomesteaders, DahanEvent.RaidingAndRetaliation),
         new HealthyBlightedLandEventCard(ProductSet.JaggedEarth, Events.CoastalTownMultiply, Events.CooperationAmongTowns, TokenEvent.ExplorersBlunder, DahanEvent.ComingOfAgeNoBlightDisease),
-        new HealthyBlightedLandEventCard(ProductSet.JaggedEarth, Events.CivicEngagement, Events.LifesWebTornAsunder, TokenEvent.CasualtiesOfFangAndSting, DahanEvent.KeepFarFromTheLandsOfPLague),
+        new HealthyBlightedLandEventCard(ProductSet.JaggedEarth, Events.CivicEngagement, Events.LifesWebTornAsunder, TokenEvent.CasualtiesOfFangAndSting, DahanEvent.KeepFarFromTheLandsOfPlague),
         new HealthyBlightedLandEventCard(ProductSet.JaggedEarth, Events.SprawlContainedByTheWilds, Events.DissolutionThreatens, TokenEvent.ExplorersBlunder, DahanEvent.LayAmbushes),
         new HealthyBlightedLandEventCard(ProductSet.JaggedEarth, Events.TheStrugglesOfGrowth, Events.BlightDeepens, TokenEvent.IrregularOutbreaks, DahanEvent.CarefulDefense),
         new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.EagerExplorers, Events.Xenophobia, Events.Xenophobia, TokenEvent.BeastsChaseOffHomesteaders, DahanEvent.AtTheirGatesDemandingRedress),
@@ -1432,13 +1631,24 @@ namespace DB {
         new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.ResourcefulPopulace, Events.StripTheLandBare, Events.StripTheLandBare, TokenEvent.VirulenceAmongClosePackedHomes, DahanEvent.OfferingsOfStoryAndSeason),
         new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.RelentlessOptimism, Events.CulturesMixAndClash, Events.CulturesMixAndClash, TokenEvent.ForeignDiseases, DahanEvent.OfferingsOfPatternAndDance),
         new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.PullTogetherInAdversity, Events.PullTogetherInAdversity, Events.PurgeTheLandWithSaltAndFire, TokenEvent.ExplorersBlunder, DahanEvent.CarefulDefense),
-        new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.TemporaryTruce, Events.TemporaryCaution, Events.TemporaryCaution, TokenEvent.PreyOnTheHeedless, DahanEvent.SpeakOfTheSpiritsAnger),
+        new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.TemporaryTruce, Events.TemporaryCaution, Events.TemporaryCaution, TokenEvent.PreyOnTheHeedlessJE, DahanEvent.SpeakOfTheSpiritsAnger),
         new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.Overconfidence, Events.TerrorBreedsAggression, Events.TerrorBreedsAggression, TokenEvent.BeastsMultiply, DahanEvent.CoordinatedDefense),
+        // Nature Incarnate
+        new ChoiceEventCard(ProductSet.NatureIncarnate, "Ethereal Conjunction", "A confluence of spiritual forces gathers into an unformed maelstrom. Each Spirit chooses:", null, [Events.EndureItsForcesAsBestYouCan, Events.SeekToControlItThoughItExhaustsYou], TokenEvent.IrregularOutbreaks, DahanEvent.TendToTheLivingEarth),
+        new ChoiceEventCard(ProductSet.NatureIncarnate, "Far-Off Wars Touch the Island", "Invaders from a different, distant land launch an assault upon the island while the invaders here rally together in a wave of nationalism. Defending the island with them might come at too high a price.", ["Add a fear Card to the top of the Fear Deck.", "On Each Board, in the land with the most Town / City, choose (for that board) either:"], [Events.EncourageTheDestruction, Events.BluntTheOffensive], TokenEvent.EcosystemDamage, DahanEvent.ReturnToOldPillars),
+        new ChoiceEventCard(ProductSet.NatureIncarnate, "Visions Out of Time", "A Spirit more loosely time-moored than most warns of catastrophe's subtle seeds. Each Spirit chooses:", null, [Events.LetTheWarningWaftIntoDaysPast, Events.HeadOffTheProblemsYourself], TokenEvent.PreyOnTheHeedlessNI, DahanEvent.StrengthFromTrade),
+        new HealthyBlightedLandEventCard(ProductSet.NatureIncarnate, Events.AccumulatedDevastation, Events.TheWorldsVibranceFades, TokenEvent.TerritorialBeasts, DahanEvent.YearsOfHealthAndHarmony),
+        new HealthyBlightedLandEventCard(ProductSet.NatureIncarnate, Events.FocusedFarming, Events.EssenceDisperses, TokenEvent.ExplorersBlunder, DahanEvent.OfferingsOfStoryAndSeason),
+        new HealthyBlightedLandEventCard(ProductSet.NatureIncarnate, Events.InfluxOfSettlers, Events.LethargyAndDegeneration, TokenEvent.SandStalkers, DahanEvent.NetworkOfSupportAndTrade),
+        new HealthyBlightedLandEventCard(ProductSet.NatureIncarnate, Events.SearchForUnclaimedLand, Events.WidespreadHunting, TokenEvent.PlaguesInPopulousLands, DahanEvent.SpreadingConflictPromptsCaution),
+        new TerrorLevelEventCard(ProductSet.NatureIncarnate, Events.AnOminousDawn, Events.WaveringResolve, Events.WaveringResolve, TokenEvent.DangerousLands, DahanEvent.WaningSupport),
+        new TerrorLevelEventCard(ProductSet.NatureIncarnate, Events.TerrorSpikesUpwards, Events.TerrorSpikesUpwards, Events.FinalHarvest, TokenEvent.SecureSettledTerritory, DahanEvent.WarAmongTheDahan),
 
         // Blight
         // Basegame
         new BlightCard(ProductSet.Basegame, BlightType.BlightedIsland, "Downward Spiral", 5, "At the start of each Invader Phase each Spirit destroys 1 of their Presence."),
         new BlightCard(ProductSet.Basegame, BlightType.BlightedIsland, "Memory Fades to Dust", 4, "At the start of each Invader Phase each Spirit Forgets a Power or destroys 1 of their Presence."),
+        // Branch & Claw
         new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Back Against the Wall", 2, "Every Spirit Phase each Spirit gains +1 Energy and +1 Card Play."),
         new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Promising Farmlands", 4, "Immediately, on each board: Add 1 Town and 1 City to an Inland land with no Town / City."),
         new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Disintegrating Ecosystem", 5, "Immediately, on each board: Destroy 1 Beasts, then add 1Blight to a land with Town / City."),
@@ -1446,12 +1656,22 @@ namespace DB {
         new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Tipping Point", 5, "Immediately, destroy 3 resence from each Spirit."),
         new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "Erosion of Will", 3, "Immediately, 2 Fear per player. Each Spirit destroys 1 of their Presence and loses 1 Energy."),
         new BlightCard(ProductSet.BranchAndClaw, BlightType.BlightedIsland, "A Pall upon the Land", 3, "Immediately, on each board: destroy 1 Presence and remove 1 Town."),
+        // Jagged Earth
         new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "Unnatural Proliferation", 3, "Immediately: Each Spirit adds 1 Presence to a land with their Presence. On Each Board: Add 1 Dahan to a land with Dahan, and 2 City to the land with fewest Town / City (min. 1)."),
         new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "All Things Weaken", 3, "Ongoing, starting next turn: Invaders and Dahan have -1 Health (min. 1). The land takes Blight on 1 less Damage (normally 1). When you add Blight, it Destroys all Presence / Beasts in that land and 1 Presence (total) in an adjacent land."),
         new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "Thriving Communities", 4, "Immediately, on each board: In 4 different lands with Explorer / Town, Replace 1 Town with1 City or Replace 1 Explorer with 1 Town."),
         new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "Power Corrodes the Spirit", 4, "At the start of each Invader Phase each Spirit Destroys 1 of their Presence if they have 3 or more Power Cards in play, or have a Power Card in play costing 4 or more (printed) Energy."),
         new BlightCard(ProductSet.JaggedEarth, BlightType.BlightedIsland, "Untended Land Crumbles", 4, "At the start of each Invader Phase, On Each Board: Add 1 Blight to a land adjacent to Blight. Spirits may prevent this on any / all boards; each board to be protected requires jointly paying 3 Energy or Destroying 1 Presence from that board."),
         new BlightCard(ProductSet.JaggedEarth, BlightType.StillHealthyIsland, "Invaders find the Land to their Liking", 2, "Immediately: If the Terror Level is I / II / III, add 1 / 1.5 / 2 Fear Markers per player to the Fear pool. (Round down at Terror Level II.)"),
-        new BlightCard(ProductSet.JaggedEarth, BlightType.StillHealthyIsland, "Strong Earth Shatters Slowly", 2, "Immediately: Each player adds 1 Blight (from this card) to a land adjacentto Blight."),
+        new BlightCard(ProductSet.JaggedEarth, BlightType.StillHealthyIsland, "Strong Earth Shatters Slowly", 2, "Immediately: Each player adds 1 Blight (from this card) to a land adjacent to Blight."),
+        // Nature Incarnate
+        new BlightCard(ProductSet.NatureIncarnate, BlightType.BlightedIsland, "Attenuated Essence", 4, "Each Invader Phase: Each Spirit with at least 5 Presence on the island Destroys 1 Presence."),
+        new BlightCard(ProductSet.NatureIncarnate, BlightType.BlightedIsland, "Blight Corrodes the Spirit", 4, "Each Invader Phase: On Each Board, Destroy 1 Presence in a land with Blight."),
+        new BlightCard(ProductSet.NatureIncarnate, BlightType.BlightedIsland, "Burn Brightest Before the End", 2, "Immediately: Each Spirit Adds 1 Presence to one of their lands or removes 1 Presence from their Presence Tracks. (Presence removed from Presence Tracks goes to the Destroyed Presence supply.)"),
+        new BlightCard(ProductSet.NatureIncarnate, BlightType.BlightedIsland, "Intensifying Exploitation", 5, "Ongoing, starting next turn: During Ravage Actions, Invaders deal +2 Damage (per land)."),
+        new BlightCard(ProductSet.NatureIncarnate, BlightType.BlightedIsland, "Shattered Fragments of Power", 2, "Immediately: Draw 1 Major Power Card per Spirit plus 2 more. Each Spirit Takes 1 and gains 2 Energy. (Discard the 2 unselected cards.)"),
+        new BlightCard(ProductSet.NatureIncarnate, BlightType.BlightedIsland, "Slow Dissolution of Will", 3, "Immediately: Each Spirit chooses one of Badlands, Beasts or Wilds. (Put some of the chose Tokens next to your Spirit Panel as a reminder.) Each Invader Phase: Each Spirit Replaces 1 Presence with their chosen type of Spirit Token. (The Presence goes to the Destroyed Presence supply.)"),
+        new BlightCard(ProductSet.NatureIncarnate, BlightType.StillHealthyIsland, "The Border of Live and Death", 1, "Now and Each Invader Phase (until this card is replaced): Each Spirit with at least 2 Presence on the island Destroys 1 Presence and may discard a Power Card to gain 1 Energy."),
+        new BlightCard(ProductSet.NatureIncarnate, BlightType.StillHealthyIsland, "Thriving Crops", 2, "Immediately: On Each Board, Build in 3 lands. (Build Actions in lands without Invaders normally Build 1 Town.)"),
     ];
 }
