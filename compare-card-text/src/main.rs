@@ -104,8 +104,7 @@ fn get_cards() -> BTreeMap<String, String> {
 
     // eval code to give us the card texts
     let mut scope = runtime.handle_scope();
-    let scope = &mut v8::EscapableHandleScope::new(&mut scope);
-    let source = v8::String::new(scope, r#"
+    let json: v8::Local<'_, v8::String> = JsRuntime::eval(&mut scope, r#"
         const map = {};
         for (card of CARDS) {
             const name = card.getImagePath().slice(card.getImageFolder().length);
@@ -114,10 +113,7 @@ fn get_cards() -> BTreeMap<String, String> {
         }
         JSON.stringify(map)
     "#).unwrap();
-    let script = v8::Script::compile(scope, source, None).unwrap();
-    let v = script.run(scope).unwrap();
-    scope.escape(v);
-    let json = v.to_rust_string_lossy(scope);
+    let json = json.to_rust_string_lossy(&mut scope);
 
     serde_json::from_str(&json).unwrap()
 }
