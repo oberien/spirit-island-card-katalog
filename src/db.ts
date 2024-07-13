@@ -1322,7 +1322,7 @@ namespace DB {
             [Elements.Moon, Elements.Water, Elements.Earth, Elements.Plant], "Aalaa Yassin",
             "In one of target Spirit's lands, Defend 2 per Presence (from all Spirits)."),
         new PowerCard(ProductSet.NatureIncarnate, Unique.ToweringRootsOfTheJungle, "Radiant and Hallowed Grove", 2, Speed.Fast, null, TargetProperty.Incarna,
-            [Elements.Sun, Elements.Animal, Elements.Fire, Elements.Plant], "Aalaa Yassin",
+            [Elements.Sun, Elements.Moon, Elements.Fire, Elements.Plant], "Aalaa Yassin",
             "2 Fear if Invaders are present or adjacent. In both target and one adjacent land, you may Remove an Invader with Health less than or equal to the Terror Level. (Damage doesn't reduce Health.)"),
         new PowerCard(ProductSet.NatureIncarnate, Unique.WanderingVoiceKeensDelirium, "Exhale Confusion and Delirium", 0, Speed.Fast, new Ranges(Source.Presence, 1), TargetProperty.Strife,
             [Elements.Sun, Elements.Animal, Elements.Air, Elements.Animal], "Emily Hancock",
