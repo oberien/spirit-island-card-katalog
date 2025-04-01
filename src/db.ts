@@ -667,7 +667,7 @@ namespace DB {
         // Minor
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Inflame the Fires of Life", 1, Speed.Slow, new Ranges(Source.SacredSite, 1), LandAny,
             [Elements.Moon, Elements.Fire, Elements.Plant, Elements.Animal], "Kat Birmelin",
-            "Add 1 Disease. -or'- 1 Fear. Add 1 Strife. -If you have- 3 Animal: You may do both."),
+            "Add 1 Disease. -or- 1 Fear. Add 1 Strife. -If you have- 3 Animal: You may do both."),
         new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Minor, "Fire in the Sky", 1, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny,
             [Elements.Sun, Elements.Fire, Elements.Air], "Moro Rogers",
             "2 Fear. Add 1 Strife"),
