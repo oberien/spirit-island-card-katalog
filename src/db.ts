@@ -1671,7 +1671,7 @@ namespace DB {
         new BlightCard(ProductSet.NatureIncarnate, BlightType.BlightedIsland, "Intensifying Exploitation", 5, "Ongoing, starting next turn: During Ravage Actions, Invaders deal +2 Damage (per land)."),
         new BlightCard(ProductSet.NatureIncarnate, BlightType.BlightedIsland, "Shattered Fragments of Power", 2, "Immediately: Draw 1 Major Power Card per Spirit plus 2 more. Each Spirit Takes 1 and gains 2 Energy. (Discard the 2 unselected cards.)"),
         new BlightCard(ProductSet.NatureIncarnate, BlightType.BlightedIsland, "Slow Dissolution of Will", 3, "Immediately: Each Spirit chooses one of Badlands, Beasts or Wilds. (Put some of the chose Tokens next to your Spirit Panel as a reminder.) Each Invader Phase: Each Spirit Replaces 1 Presence with their chosen type of Spirit Token. (The Presence goes to the Destroyed Presence supply.)"),
-        new BlightCard(ProductSet.NatureIncarnate, BlightType.StillHealthyIsland, "The Border of Live and Death", 1, "Now and Each Invader Phase (until this card is replaced): Each Spirit with at least 2 Presence on the island Destroys 1 Presence and may discard a Power Card to gain 1 Energy."),
+        new BlightCard(ProductSet.NatureIncarnate, BlightType.StillHealthyIsland, "The Border of Life and Death", 1, "Now and Each Invader Phase (until this card is replaced): Each Spirit with at least 2 Presence on the island Destroys 1 Presence and may discard a Power Card to gain 1 Energy."),
         new BlightCard(ProductSet.NatureIncarnate, BlightType.StillHealthyIsland, "Thriving Crops", 2, "Immediately: On Each Board, Build in 3 lands. (Build Actions in lands without Invaders normally Build 1 Town.)"),
     ];
 }
